@@ -4,29 +4,34 @@ using UnityEngine;
 
 public class HealthBarLower_MS : MonoBehaviour
 {
-    public float ShieldHealth_MS = 100f;
-    // Start is called before the first frame update
+    public int ShieldHealth_MS;
+
     void Start()
     {
-        
+        ShieldHealth_MS = 100;
+        StartCoroutine(LowerVariable());
     }
 
-    IEnumerator LowerVariable()
+    public IEnumerator LowerVariable()
     {
-        while(ShieldHealth_MS >= 1)
-        {
-            ShieldHealth_MS -= 1;
-            //yield return new WaitForSeconds(2);
-        }
-        return LowerVariable();
+        while(ShieldHealth_MS >= 5)
+            {
+                ShieldHealth_MS -= 5;
+                yield return new WaitForSeconds(5);
+                Debug.Log(ShieldHealth_MS);
+            }
+        //return LowerVariable();
     }
 
-    // Update is called once per frame
     void Update()
     {
-        if(ShieldHealth_MS % 5 == 0){
-            Debug.Log(ShieldHealth_MS);
+
+
+
+        if(ShieldHealth_MS <= 95 && Input.GetKeyDown(KeyCode.P))
+        {
+            ShieldHealth_MS += 5;
         }
-            
+
     }
 }
