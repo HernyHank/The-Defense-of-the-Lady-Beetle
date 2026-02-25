@@ -14,11 +14,11 @@ public class PirateShip_DW : MonoBehaviour
     void Update()
     {
         
-        if Input.GetKeyDown(KeyCode.T){
+        //if Input.GetKeyDown(KeyCode.T){
 
 
 
-        }
+       // }
 
 
     }
