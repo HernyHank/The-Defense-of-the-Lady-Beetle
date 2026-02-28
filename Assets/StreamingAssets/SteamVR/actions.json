@@ -50,6 +50,15 @@
       "type": "boolean"
     },
     {
+      "name": "/actions/default/in/move",
+      "type": "vector2",
+      "requirement": "mandatory"
+    },
+    {
+      "name": "/actions/default/in/bIsHeld",
+      "type": "boolean"
+    },
+    {
       "name": "/actions/default/out/Haptic",
       "type": "vibration"
     },
