@@ -41,10 +41,10 @@ public class HealthBarLower_MS : MonoBehaviour
 
     public IEnumerator LowerVariable()
     {
-        while (ShieldHealth_MS >= 5)
+        while (ShieldHealth_MS >= 1)
         {
-            ShieldHealth_MS -= 5;
-            yield return new WaitForSeconds(5);
+            ShieldHealth_MS -= 1;
+            yield return new WaitForSeconds(1);
             Debug.Log(ShieldHealth_MS);
         }
     }
