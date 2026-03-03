@@ -156,7 +156,7 @@ MonoBehaviour:
   animator: {fileID: 1118298230368897822}
   handType: 2
   bIsHeld:
-    actionPath: 
+    actionPath: /actions/default/in/bIsHeld
     needsReinit: 0
   doorOption: {fileID: 0}
 --- !u!95 &1118298230368897822
