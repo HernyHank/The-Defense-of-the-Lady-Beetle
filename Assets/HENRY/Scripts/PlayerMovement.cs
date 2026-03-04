@@ -1,9 +1,10 @@
 using UnityEngine;
 using Valve.VR; // Don't forget this!
+using TMPro;
 
 public class VRPlayerMovement : MonoBehaviour
 {
-    public SteamVR_Input_Sources handType;
+    public SteamVR_Input_Sources leftHand;
     public SteamVR_Input_Sources rightHand;// Set to "Left Hand" in Inspector
     public SteamVR_Action_Vector2 moveAction;
     public SteamVR_Action_Boolean bIsHeld;
@@ -13,6 +14,7 @@ public class VRPlayerMovement : MonoBehaviour
     public float gravity = -9.81f;
 
     public Animator animator;
+    public TextMeshProUGUI UIText;
 
     public bool playerIsRotating = false;
 
@@ -27,31 +29,52 @@ public class VRPlayerMovement : MonoBehaviour
         animator = GetComponentInParent<Animator>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
-        if (other.CompareTag("RotationToggler"))
+        //makes sure that UI is turned off while rotating
+        if (playerIsRotating == false)
         {
-            Debug.Log("First one a go");
-            animator.SetBool("isOutsideShip", true);
-            playerIsRotating = true;
-        }
-        else
-        if (other.CompareTag("Rotation2ggler"))
-        {
-            Debug.Log("2ggler Ibound");
-            animator.SetBool("isOnWing", true);
-            playerIsRotating = true;
+            UIText.SetText("Hold B to rotate");
+
+            //first Collider
+            if (other.CompareTag("RotationToggler"))
+            {
+                /*Debug.Log("First one a go");*/
+                UIText.gameObject.SetActive(true);
+
+                //bHeld
+                if(bIsHeld.GetState(rightHand) == true)
+                {
+                    animator.SetBool("isOutsideShip", !animator.GetBool("isOutsideShip"));
+                    playerIsRotating = true;
+                    UIText.gameObject.SetActive(false);
+                }
+            }
+            //second Collider
+            else
+            if (other.CompareTag("Rotation2ggler"))
+            {
+                /*Debug.Log("2ggler Ibound");*/
+                UIText.gameObject.SetActive(true);
+
+                if(bIsHeld.GetState(rightHand) == true)
+                {
+                    animator.SetBool("isOnWing", !animator.GetBool("isOnWing"));
+                    playerIsRotating = true;
+                    UIText.gameObject.SetActive(false);
+                }
+            }
         }
     }
+
+    private void OnTriggerExit(Collider other)
+    {
+        UIText.gameObject.SetActive(false);
+    }
+
+
     void Update()
     {
-
-        //debug
-        /*if (bIsHeld.GetStateDown(rightHand))
-        {
-            RotationState();
-            playerIsRotating = true;
-        }*/
 
         if (!playerIsRotating)
         {
@@ -64,7 +87,7 @@ public class VRPlayerMovement : MonoBehaviour
 
         
         // 1. Get the Vector2 value (X and Y) from the joystick
-        Vector2 joystickValue = moveAction.GetAxis(handType);
+        Vector2 joystickValue = moveAction.GetAxis(leftHand);
         Vector3 move = Vector3.zero;
 
         
@@ -132,6 +155,7 @@ public class VRPlayerMovement : MonoBehaviour
         if (!animator.GetBool("isOutsideShip"))
         {
             rotationMode = 0;
+            Debug.Log("RotationMode set");
         }
         else if (animator.GetBool("isOnWing"))
         {

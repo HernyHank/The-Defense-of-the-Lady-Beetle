@@ -27,4 +27,5 @@ public class UI : MonoBehaviour
             bText.gameObject.SetActive(false);
         }
     }
+
 }
