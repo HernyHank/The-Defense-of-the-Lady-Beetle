@@ -11,12 +11,16 @@ public class UI : MonoBehaviour
     public SteamVR_Action_Boolean bIsHeld;
     public TextMeshProUGUI bText;
 
+    public Animator animator;
+
     // Update is called once per frame
     void Update()
     {
         if (bIsHeld.GetState(handType) == true)
         {
-            bText.gameObject.SetActive(true);
+            //bText.gameObject.SetActive(true);
+            Debug.Log("bPressed");
+            animator.SetBool("bIsPressed", true);
         }
         else
         {

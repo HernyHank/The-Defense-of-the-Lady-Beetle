@@ -26,7 +26,8 @@ public class isRotatingFalse : StateMachineBehaviour
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        PlayerRotationToggle script = animator.GetComponent<PlayerRotationToggle>();
+        Debug.Log("OnStateExitCalled");
+        VRPlayerMovement script = animator.GetComponentInChildren<VRPlayerMovement>();
 
         script.FinishRotation();
     }

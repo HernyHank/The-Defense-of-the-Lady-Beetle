@@ -8,38 +8,46 @@ public class PlayerRotationToggle : MonoBehaviour
     // Start is called before the first frame update
     public Animator animator;
 
-    private int insideShipToggle = 1;
     public bool isRotating = false;
     public TextMeshProUGUI bText;
 
-    private bool debugB = false;
+    //private bool debugB = false;
 
     // Update is called once per frame
     void Start()
     {
-        bText.gameObject.SetActive(debugB);
+       // bText.gameObject.SetActive(debugB);
         animator.enabled = false;
     }
 
     void OnTriggerEnter(Collider other)
     {
-        if(other.CompareTag("Player") && isRotating == false && animator != null)
+        if(other.CompareTag("Player")) // && isRotating == false && animator != null
         {
-            insideShipToggle *= -1;
-            animator.SetBool("isInsideShip", false);
+            animator.SetBool("isInsideShip", !animator.GetBool("isInsideShip"));
 
 
             isRotating = true;
-            debugB = !debugB;
-            bText.gameObject.SetActive(debugB);
+            //debugB = !debugB;
+            bText.SetText(animator.GetBool("isInsideShip").ToString());
             
-
-
         }
     }
 
     public void FinishRotation()
     {
         isRotating = false;
+    }
+
+    private void Update()
+    {
+        if(isRotating)
+        {
+            animator.enabled = true;
+        } 
+        else
+        {
+            animator.enabled = false;
+        }
     }
 }
