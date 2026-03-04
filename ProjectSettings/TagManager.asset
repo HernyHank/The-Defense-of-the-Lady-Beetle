@@ -6,6 +6,7 @@ TagManager:
   tags:
   - RotationToggler
   - Rotation2ggler
+  - PlayerShip
   layers:
   - Default
   - TransparentFX
