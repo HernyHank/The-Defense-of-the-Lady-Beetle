@@ -6,6 +6,10 @@ public class BatterySnapZone : MonoBehaviour
 {
     public Transform snapPoint;
     private Interactable currentBattery;
+    public bool IsBatteryInZone(GameObject obj)
+    {
+        return currentBattery != null && currentBattery.gameObject == obj;
+    }
 
     private void OnTriggerEnter(Collider other)
     {
@@ -39,7 +43,7 @@ public class BatterySnapZone : MonoBehaviour
         rb.isKinematic = true;
 
         float t = 0f;
-        float speed = 5f;
+        float speed = 1f;
 
         Vector3 startPos = obj.position;
         Quaternion startRot = obj.rotation;
