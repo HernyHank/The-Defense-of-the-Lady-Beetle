@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class DroidSpin_MS : MonoBehaviour
 {
+    [Header("Animator References")]
+    public Animator NeckJoint;
 
-    public Animator animator;
+
     void Start()
     {
-        animator = GetComponent<Animator>();
+        NeckJoint = GetComponent<Animator>();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.P))
         {
-            if (!animator.GetCurrentAnimatorStateInfo(0).IsName("DroidHeadSpin_MS"))
-            {
-                animator.Play("DroidHeadSpin_MS", 0, 0f);
-            }
+            if (NeckJoint != null)
+                NeckJoint.SetTrigger("HeadSpin");
             
         }
     }
