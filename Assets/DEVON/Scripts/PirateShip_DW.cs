@@ -10,6 +10,20 @@ public class PirateShip_DW : MonoBehaviour
 
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.P))
+        {
+            Debug.Log("P is pressed");
+
+            // Stop the orbit animation (return to origin)
+            if (orbitAnimator != null)
+                orbitAnimator.SetTrigger("StartOrbit");
+
+            // Start attack animation on the ship
+            if (shipAnimator != null)
+                shipAnimator.SetTrigger("StartFly");
+        }
+
+
         if (Input.GetKeyDown(KeyCode.T))
         {
             Debug.Log("T is pressed");
