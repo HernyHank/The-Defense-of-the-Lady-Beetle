@@ -201,7 +201,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Radius: 0.09
-  m_Center: {x: 0.000000029802322, y: 0.42, z: 0.07}
+  m_Center: {x: 0.000000029802322, y: 0.42, z: 0.46}
 --- !u!114 &15700581
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -287,7 +287,7 @@ GameObject:
   - component: {fileID: 183896198}
   - component: {fileID: 183896197}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
