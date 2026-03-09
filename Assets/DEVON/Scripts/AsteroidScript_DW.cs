@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class Asteroid : MonoBehaviour
 {
-    public float moveSpeed = 10f;        // How fast asteroid moves toward player
+    public float moveSpeed = 20f;        // How fast asteroid moves toward player
     public float driftForce = 5f;        // Speed after collision
     public float spinForce = 2f;         // Angular velocity after collision
 

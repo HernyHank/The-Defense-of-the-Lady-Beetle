@@ -22,10 +22,10 @@ public class FlightControl_DW : MonoBehaviour
         transform.position += move;
 
         // Clamp to spherical boundary
-        if (transform.position.magnitude > maxDistanceFromOrigin)
-        {
-            transform.position = transform.position.normalized * maxDistanceFromOrigin;
-        }
+       // if (transform.position.magnitude > maxDistanceFromOrigin)
+        //{
+        //    transform.position = transform.position.normalized * maxDistanceFromOrigin;
+        //}
 
         // ===== SMOOTH TILT =====
         float targetTiltX = -vertical * tiltAmount;
