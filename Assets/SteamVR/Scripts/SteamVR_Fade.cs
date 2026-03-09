@@ -54,6 +54,15 @@ namespace Valve.VR
 	}
 #endif
 
+        void Update()
+        {
+            if (Input.GetKeyDown(KeyCode.Space))
+            {
+                SteamVR_Fade.View(Color.black, 0);
+                SteamVR_Fade.View(Color.clear, 1);
+            }
+        }
+
         public void OnStartFade(Color newColor, float duration, bool fadeOverlay)
         {
             if (duration > 0.0f)
