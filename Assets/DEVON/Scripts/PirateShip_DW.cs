@@ -36,5 +36,8 @@ public class PirateShip_DW : MonoBehaviour
             if (shipAnimator != null)
                 shipAnimator.SetTrigger("Attack");
         }
+
+
     }
+
 }
