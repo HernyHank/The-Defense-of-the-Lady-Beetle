@@ -352,7 +352,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   neck: {fileID: 467500647}
-  speed: 100
+  speed: 28.3
 --- !u!114 &467500652
 MonoBehaviour:
   m_ObjectHideFlags: 0
