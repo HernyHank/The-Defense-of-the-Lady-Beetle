@@ -8,6 +8,9 @@ TagManager:
   - Rotation2ggler
   - PlayerShip
   - Climbable
+  - projectile
+  - FxTemporaire
+  - Hand
   layers:
   - Default
   - TransparentFX

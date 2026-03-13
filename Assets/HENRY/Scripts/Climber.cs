@@ -6,14 +6,14 @@ using Valve.VR;
 [RequireComponent(typeof(Rigidbody))]
 public class Climber : MonoBehaviour
 {
-    public ClimberHand RightHand;
-    public ClimberHand LeftHand;
+    public ClimberObject RightHand;
+    public ClimberObject LeftHand;
     public SteamVR_Action_Boolean ToggleGripButton;
     public SteamVR_Action_Pose position;
     public ConfigurableJoint ClimberHandle;
 
     private bool Climbing;
-    private ClimberHand ActiveHand;
+    private ClimberObject ActiveHand;
 
     void Update()
     {
@@ -25,7 +25,7 @@ public class Climber : MonoBehaviour
         }
     }
 
-    void updateHand(ClimberHand Hand)
+    void updateHand(ClimberObject Hand)
     {
         if (Climbing && Hand == ActiveHand)//if is the hand used for climbing check if we are letting go.
         {
