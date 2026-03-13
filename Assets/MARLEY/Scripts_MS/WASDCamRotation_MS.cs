@@ -5,53 +5,35 @@ using UnityEngine;
 public class WASDCamRotation_MS : MonoBehaviour
 {
     [SerializeField] GameObject neck;
-    [SerializeField] float speed = 20f;
+    [SerializeField] float speed = 1f;
 
-    Quaternion startingRotation;
+    float xRotation = 0f;
+    float yRotation = 0f;
 
-    private void Awake()
-    {
-        startingRotation = neck.transform.rotation;
-    }
     void Update()
     {
         if (Input.GetKey(KeyCode.D))
         {
-            neck.transform.Rotate(Vector3.up *speed * Time.deltaTime);
+            yRotation += speed * Time.deltaTime;
         }
-        else if (Input.GetKey(KeyCode.A))
+        if (Input.GetKey(KeyCode.A))
         {
-            neck.transform.Rotate(-Vector3.up * speed * Time.deltaTime);
+            yRotation -= speed * Time.deltaTime;
         }
 
         if (Input.GetKey(KeyCode.W))
         {
-            neck.transform.Rotate(-Vector3.right *speed * Time.deltaTime);
+            xRotation -= speed * Time.deltaTime;
         }
-        else if (Input.GetKey(KeyCode.S))
+        if (Input.GetKey(KeyCode.S))
         {
-            neck.transform.Rotate(Vector3.right * speed * Time.deltaTime);
+            xRotation += speed * Time.deltaTime;
         }
-        //ClampVerticalRotation();
+        xRotation = Mathf.Clamp(xRotation, -45f, 45f);
+        yRotation = Mathf.Clamp(yRotation, -45f, 45f);
+
+        neck.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
         
     }
 
-/*public void ClampVerticalRotation()
-    {
-        var euler = neck.transform.eulerAngles;
-        if (euler.x > 180)
-        {
-            euler.x -= 360;
-        }
-
-        if (euler.x < -180)
-        {
-            euler.x += 360;
-        }
-
-        euler.x = Mathf.Clamp(euler.x, -90, 90);
-            transform.neck.eulerAngles = euler;
-        
-            
-    }*/
 }

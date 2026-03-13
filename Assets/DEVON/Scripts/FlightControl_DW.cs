@@ -33,6 +33,15 @@ public class FlightControl_DW : MonoBehaviour
 
         Quaternion targetRotation = Quaternion.Euler(targetTiltX, 0f, targetTiltZ);
         transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * tiltSpeed);
+        
+        
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            PlayerShip_Shake_DW shake = GetComponentInChildren<PlayerShip_Shake_DW>();
+            if (shake != null)
+                shake.TriggerShake(2f, 14f);
+        }
+
     }
 
     void OnDrawGizmosSelected()
