@@ -228,7 +228,6 @@ GameObject:
   - component: {fileID: 11465950}
   - component: {fileID: 9109517763730526539}
   - component: {fileID: 8334112122401521581}
-  - component: {fileID: 3230925446516570998}
   m_Layer: 0
   m_Name: Player_Joan
   m_TagString: Untagged
@@ -298,12 +297,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64c1145bb3793f840b24a8ad2cc8e0c9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  handType: 0
+  leftHand: 0
+  rightHand: 0
   moveAction:
+    actionPath: 
+    needsReinit: 0
+  bIsHeld:
     actionPath: 
     needsReinit: 0
   speed: 2
   gravity: -9.81
+  animator: {fileID: 0}
+  UIText: {fileID: 0}
+  playerIsRotating: 0
 --- !u!143 &8334112122401521581
 CharacterController:
   m_ObjectHideFlags: 0
@@ -330,21 +336,6 @@ CharacterController:
   m_SkinWidth: 0.08
   m_MinMoveDistance: 0.001
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &3230925446516570998
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 107946}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7fd2eed8f751cbe43ae32191ae5d02c5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  ship: {fileID: 0}
-  animator: {fileID: 0}
-  isRotating: 0
 --- !u!1 &109154
 GameObject:
   m_ObjectHideFlags: 0

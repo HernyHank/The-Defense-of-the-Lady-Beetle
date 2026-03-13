@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Valve.VR;
 
-[RequireComponent(typeof(Rigidbody))]
+/*[RequireComponent(typeof(Rigidbody))]
 public class Climber : MonoBehaviour
 {
     public ClimberObject RightHand;
@@ -29,7 +29,7 @@ public class Climber : MonoBehaviour
     {
         if (Climbing && Hand == ActiveHand)//if is the hand used for climbing check if we are letting go.
         {
-            if (ToggleGripButton.GetStateUp(Hand.Hand))
+            if (ToggleGripButton.GetStateUp(Hand.handType))
             {
                 ClimberHandle.connectedBody = null;
                 Climbing = false;
@@ -39,7 +39,7 @@ public class Climber : MonoBehaviour
         }
         else
         {
-            if (ToggleGripButton.GetStateDown(Hand.Hand) || Hand.grabbing)
+            if (ToggleGripButton.GetStateDown(Hand.handType) || Hand.grabbing)
             {
                 Hand.grabbing = true;
                 if (Hand.TouchedCount > 0)
@@ -54,5 +54,7 @@ public class Climber : MonoBehaviour
             }
         }
     }
-}
+}*/
+
+
 

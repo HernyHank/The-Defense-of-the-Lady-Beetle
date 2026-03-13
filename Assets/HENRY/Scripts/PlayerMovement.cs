@@ -1,11 +1,13 @@
 using UnityEngine;
 using Valve.VR; // Don't forget this!
 using TMPro;
+using Valve.VR.InteractionSystem;
 
 public class VRPlayerMovement : MonoBehaviour
 {
     public SteamVR_Input_Sources leftHand;
-    public SteamVR_Input_Sources rightHand;// Set to "Left Hand" in Inspector
+    public SteamVR_Input_Sources rightHand;
+    public Hand activatedHand;// Set to "Left Hand" in Inspector
     public SteamVR_Action_Vector2 moveAction;
     public SteamVR_Action_Boolean bIsHeld;
     public float speed = 2.0f;
@@ -17,6 +19,8 @@ public class VRPlayerMovement : MonoBehaviour
     public TextMeshProUGUI UIText;
 
     public bool playerIsRotating = false;
+    public bool isClimbing = false;
+    public ConfigurableJoint ClimberHandle;
 
     private int rotationMode = 0;
 
@@ -76,15 +80,19 @@ public class VRPlayerMovement : MonoBehaviour
     void Update()
     {
 
-        if (!playerIsRotating)
+        if (!playerIsRotating && !isClimbing)
         {
             MoveNormally(rotationMode);
+        }
+
+        if (isClimbing)
+        {
+            Climb();
         }
     }
 
     void MoveNormally(int rotationMode)
     {
-
         
         // 1. Get the Vector2 value (X and Y) from the joystick
         Vector2 joystickValue = moveAction.GetAxis(leftHand);
@@ -106,13 +114,25 @@ public class VRPlayerMovement : MonoBehaviour
          }*/
         if (joystickValue.magnitude > 0.1f) // Deadzone check
         {
-
+            float verticalVelocity = 0;
             Vector3 direction = Vector3.zero;
             Vector3 headRotation = Vector3.zero;
             if (rotationMode == 0)
             {
                 direction = new Vector3(joystickValue.x, 0, joystickValue.y);
                 headRotation = new Vector3(0, GameObject.Find("VRCamera").transform.rotation.eulerAngles.y, 0);
+                //Gravity
+/*                        if (controller.isGrounded)
+                        {
+                            if (verticalVelocity < 0)
+                                verticalVelocity = -2; // keeps player grounded
+                        }
+                        else
+                        {
+                            verticalVelocity += gravity * Time.deltaTime;
+                        }*/
+                verticalVelocity += gravity * Time.deltaTime;
+
             }
             else if (rotationMode == 1)
             {
@@ -131,7 +151,9 @@ public class VRPlayerMovement : MonoBehaviour
 
             // 3. Move relative to where the player is looking
             // (Uses the Camera's Y rotation so 'Forward' is always where you look)
+            move.y = verticalVelocity;
             move = direction * speed;
+ 
         }
 
         // Gravity
@@ -148,6 +170,20 @@ public class VRPlayerMovement : MonoBehaviour
         //move.y = verticalVelocity;
 
         controller.Move(move * Time.deltaTime);
+    }
+
+    private Vector3 lastHandPosition;
+    void Climb()
+    {
+        Vector3 handDelta = activatedHand.transform.localPosition - lastHandPosition;
+
+        // Move the CharacterController in the opposite direction of the hand pull
+        // (If you pull the hand DOWN, the body goes UP)
+        controller.Move(transform.rotation * -handDelta);
+
+        // Store the current position for the next frame
+        lastHandPosition = activatedHand.transform.localPosition;
+       
     }
 
     public void FinishRotation()
@@ -170,6 +206,22 @@ public class VRPlayerMovement : MonoBehaviour
         playerIsRotating = false;
        
         Debug.Log("false toggled");
+    }
+
+    public void climbingToggle(Hand hand)
+    {
+        isClimbing = !isClimbing;
+        Debug.Log("isClimbingToggled " + isClimbing.ToString());
+        if (isClimbing)
+        {
+            activatedHand = hand;
+            lastHandPosition = hand.transform.localPosition;
+        }
+        else
+        {
+            ClimberHandle.connectedBody = null;
+            activatedHand = null;
+        }
     }
 
 
