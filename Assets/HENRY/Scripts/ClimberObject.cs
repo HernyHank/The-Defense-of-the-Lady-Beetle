@@ -36,7 +36,7 @@ public class ClimberObject : MonoBehaviour
             // This is the "Magic" call that makes it attached
             hand.AttachObject(this.gameObject, startingGrabType, attachmentFlags);
             VRPlayerMovement script = hand.GetComponentInParent<VRPlayerMovement>();
-            script.climbingToggle(hand);
+            script.climbingToggle(hand, true);
             //turn Rigid body on
         }
     }
@@ -54,7 +54,7 @@ public class ClimberObject : MonoBehaviour
         {
             hand.DetachObject(gameObject);
             VRPlayerMovement script = hand.GetComponentInParent<VRPlayerMovement>();
-            script.climbingToggle(hand);
+            script.climbingToggle(hand, false);
             //turn rigid body off
         }
     }

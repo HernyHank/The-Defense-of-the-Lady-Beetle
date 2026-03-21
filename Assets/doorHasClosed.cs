@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class buttonIsPressedFalse : StateMachineBehaviour
+public class doorHasClosed : StateMachineBehaviour
 {
     // OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
     //override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
@@ -17,17 +17,12 @@ public class buttonIsPressedFalse : StateMachineBehaviour
     //}
 
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
-    //override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
-    //{
-    //    
-    //}
-
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("buttonIsPressed", false);
-        DoorPresser script = animator.GetComponentInParent<DoorPresser>();
-
-        script.buttonFinishedPressing();
+        Debug.Log("door has closed");
+        DoorPresser script = animator.GetComponent<DoorPresser>();
+        script.doorFinishedClosing();
+        animator.SetBool("doorIsOpen", false);
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()

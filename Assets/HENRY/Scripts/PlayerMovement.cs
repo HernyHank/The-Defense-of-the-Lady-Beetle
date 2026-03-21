@@ -13,14 +13,14 @@ public class VRPlayerMovement : MonoBehaviour
     public float speed = 2.0f;
     CharacterController controller;
     float verticalVelocity;
-    public float gravity = -9.81f;
+    public float gravity = -1f;
 
     public Animator animator;
     public TextMeshProUGUI UIText;
 
     public bool playerIsRotating = false;
     public bool isClimbing = false;
-    public ConfigurableJoint ClimberHandle;
+    private int touchCount = 0;
 
     private int rotationMode = 0;
 
@@ -35,19 +35,19 @@ public class VRPlayerMovement : MonoBehaviour
 
     private void OnTriggerStay(Collider other)
     {
-        //makes sure that UI is turned off while rotating
+        //makes sure that UI is turned off while rotating}
         if (playerIsRotating == false)
-        {
-            UIText.SetText("Hold B to rotate");
+        {         
 
             //first Collider
             if (other.CompareTag("RotationToggler"))
             {
                 /*Debug.Log("First one a go");*/
+                UIText.SetText("Hold B to rotate");
                 UIText.gameObject.SetActive(true);
 
                 //bHeld
-                if(bIsHeld.GetState(rightHand) == true)
+                if (bIsHeld.GetState(rightHand) == true)
                 {
                     animator.SetBool("isOutsideShip", !animator.GetBool("isOutsideShip"));
                     playerIsRotating = true;
@@ -59,9 +59,10 @@ public class VRPlayerMovement : MonoBehaviour
             if (other.CompareTag("Rotation2ggler"))
             {
                 /*Debug.Log("2ggler Ibound");*/
+                UIText.SetText("Hold B to rotate");
                 UIText.gameObject.SetActive(true);
 
-                if(bIsHeld.GetState(rightHand) == true)
+                if (bIsHeld.GetState(rightHand) == true)
                 {
                     animator.SetBool("isOnWing", !animator.GetBool("isOnWing"));
                     playerIsRotating = true;
@@ -89,20 +90,22 @@ public class VRPlayerMovement : MonoBehaviour
         {
             Climb();
         }
+
+        Debug.Log(touchCount);
     }
 
     void MoveNormally(int rotationMode)
     {
-        
+
         // 1. Get the Vector2 value (X and Y) from the joystick
         Vector2 joystickValue = moveAction.GetAxis(leftHand);
         Vector3 move = Vector3.zero;
 
-        
-/*        else if (rotationMode == 2)
-        {
 
-        }*/
+        /*        else if (rotationMode == 2)
+                {
+
+                }*/
 
         /* float xValue = joystickValue.x;
          float zValue = joystickValue.y;
@@ -122,15 +125,15 @@ public class VRPlayerMovement : MonoBehaviour
                 direction = new Vector3(joystickValue.x, 0, joystickValue.y);
                 headRotation = new Vector3(0, GameObject.Find("VRCamera").transform.rotation.eulerAngles.y, 0);
                 //Gravity
-/*                        if (controller.isGrounded)
-                        {
-                            if (verticalVelocity < 0)
-                                verticalVelocity = -2; // keeps player grounded
-                        }
-                        else
-                        {
-                            verticalVelocity += gravity * Time.deltaTime;
-                        }*/
+                /*                        if (controller.isGrounded)
+                                        {
+                                            if (verticalVelocity < 0)
+                                                verticalVelocity = -2; // keeps player grounded
+                                        }
+                                        else
+                                        {
+                                            verticalVelocity += gravity * Time.deltaTime;
+                                        }*/
                 verticalVelocity += gravity * Time.deltaTime;
 
             }
@@ -151,13 +154,13 @@ public class VRPlayerMovement : MonoBehaviour
 
             // 3. Move relative to where the player is looking
             // (Uses the Camera's Y rotation so 'Forward' is always where you look)
-            move.y = verticalVelocity;
+
             move = direction * speed;
- 
+
         }
 
         // Gravity
-/*        if (controller.isGrounded)
+        if (controller.isGrounded)
         {
             if (verticalVelocity < 0)
                 verticalVelocity = -2; // keeps player grounded
@@ -165,9 +168,9 @@ public class VRPlayerMovement : MonoBehaviour
         else
         {
             verticalVelocity += gravity * Time.deltaTime;
-        }*/
+        }
 
-        //move.y = verticalVelocity;
+        move.y = verticalVelocity;
 
         controller.Move(move * Time.deltaTime);
     }
@@ -183,7 +186,7 @@ public class VRPlayerMovement : MonoBehaviour
 
         // Store the current position for the next frame
         lastHandPosition = activatedHand.transform.localPosition;
-       
+
     }
 
     public void FinishRotation()
@@ -201,28 +204,44 @@ public class VRPlayerMovement : MonoBehaviour
         {
             rotationMode = 1;
         }
-        
-        
+
+
         playerIsRotating = false;
-       
+
         Debug.Log("false toggled");
     }
 
-    public void climbingToggle(Hand hand)
+    public void climbingToggle(Hand hand, bool grabType)
     {
-        isClimbing = !isClimbing;
-        Debug.Log("isClimbingToggled " + isClimbing.ToString());
-        if (isClimbing)
+        if (isClimbing == false && grabType == true)
         {
             activatedHand = hand;
             lastHandPosition = hand.transform.localPosition;
+           // touchCount++;
+            isClimbing = true;
+        }
+        else if (isClimbing == true && grabType == true)
+        {
+            activatedHand = hand;
+            lastHandPosition = hand.transform.localPosition;
+            //touchCount++;
+        }
+        else if (isClimbing == true && grabType == false)
+        {
+            activatedHand = null;
+            //touchCount--;
+            isClimbing = false;
+        }
+
+/*        if (touchCount > 0)
+        {
+            isClimbing = true;
         }
         else
         {
-            ClimberHandle.connectedBody = null;
-            activatedHand = null;
-        }
+            isClimbing = false;
+            Debug.Log("isClimbingToggled " + isClimbing.ToString());
+        }*/
     }
-
-
 }
+

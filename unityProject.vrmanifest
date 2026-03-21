@@ -5,7 +5,7 @@
       "app_key": "application.generated.unity.the_defense_of_the_lady_beetle.exe",
       "launch_type": "url",
       "url": "steam://launch/",
-      "action_manifest_path": "C:\\Users\\57831181\\Desktop\\The-Defense-of-the-Lady-Beetle\\Assets\\StreamingAssets\\SteamVR\\actions.json",
+      "action_manifest_path": "C:\\Users\\emastudent\\Documents\\GitHub\\The-Defense-of-the-Lady-Beetle\\Assets\\StreamingAssets\\SteamVR\\actions.json",
       "strings": {
         "en_us": {
           "name": "The_Defense_of_the_Lady_Beetle [Testing]"
