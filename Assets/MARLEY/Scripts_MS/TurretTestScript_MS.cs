@@ -8,31 +8,25 @@ public class TurretTestScript_MS : MonoBehaviour
     private int pirateShotLayer;
 
 
-/*private void Start()
-    {
-        pirateShotLayer = LayerMask.NameToLayer("PirateShot");
-    }*/
 
-    void OnCollisionStay(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
-        //int otherLayer = collision.gameObject.layer;
-
-       // if (otherLayer == pirateShotLayer)
-        //{
+        Debug.Log("Colliding");
+    }
+    void OnTriggerStay(Collider other)
+    {
 
             isColliding = true;
-            Debug.Log("Colliding");
-            if (Input.GetKey(KeyCode.K) && isColliding == true)
+            if (Input.GetKey(KeyCode.K) && other.CompareTag("Gun"))
             {
-                Debug.Log("Pirate ship is destroyed!");
+                Debug.Log("collPirate ship is destroyed!");
+                this.gameObject.SetActive(false);
             }
 
-
-        //}
        
     }
     //not specitying which object the ship is colliding with. Might cause problems later so keep that in mind.^^^vvv
-    private void OnCollisionExit(Collision collision)
+    private void OnTriggerExit(Collision collision)
     {
         isColliding = false;
         Debug.Log("No longer colliding");
@@ -49,16 +43,10 @@ public class TurretTestScript_MS : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             Debug.Log("Pressed K. isColliding = " + isColliding);
+            
         }
 
-        if (Input.GetKeyDown(KeyCode.K) && isColliding)
-        {
-            Debug.Log("Pirate ship is destroyed!");
-        }
+        
 
-        /*if (Input.GetKey(KeyCode.P) && isColliding)
-        {
-            Debug.Log("Pirate ship is destroyed!");
-        }*/
     }
 }
