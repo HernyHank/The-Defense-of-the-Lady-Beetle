@@ -7,6 +7,8 @@ public class ButtonPress : MonoBehaviour
 {
 
     public Animator animator;
+
+    public int buttonNumber = 0;
     // Start is called before the first frame update
     void Start()
     {
@@ -28,6 +30,9 @@ public class ButtonPress : MonoBehaviour
     private void OnHandHoverBegin(Hand hand)
     {
         Debug.Log($"[VR] {hand.name} started hovering over {gameObject.name}");
+        TurretMonitorController Foo = this.GetComponentInParent<TurretMonitorController>();
+        Foo.OnPress(buttonNumber);
+
         animator.SetBool("buttonIsPressed", true);
     }
 
