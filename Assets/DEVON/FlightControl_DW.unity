@@ -1222,6 +1222,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 1857231885}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 372f53562140f6c419de883430aa063a,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1857231886}
   m_SourcePrefab: {fileID: 100100000, guid: 372f53562140f6c419de883430aa063a, type: 3}
 --- !u!1 &1351626584
 GameObject:
@@ -1883,6 +1887,19 @@ MonoBehaviour:
   shakeFrequency: 14
   wobbleIntensity: 4
   wobbleFrequency: 3
+--- !u!114 &1857231886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1857231881}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: df6b8d1151040974da4250d65cc7743d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  cooldownTime: 3
 --- !u!1 &1904365498
 GameObject:
   m_ObjectHideFlags: 0

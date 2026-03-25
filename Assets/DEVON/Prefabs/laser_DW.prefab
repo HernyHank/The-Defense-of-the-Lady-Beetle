@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 283264848940723437}
   - component: {fileID: 8213149605645528534}
   - component: {fileID: 7666336098566882741}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: Capsule (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -118,7 +118,7 @@ GameObject:
   - component: {fileID: 6304606290989033705}
   - component: {fileID: 5506356711612834121}
   - component: {fileID: 2832234522711716676}
-  m_Layer: 0
+  m_Layer: 7
   m_Name: laser_DW
   m_TagString: Untagged
   m_Icon: {fileID: 0}

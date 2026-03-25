@@ -15,10 +15,11 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Asteroid
   - Water
   - UI
   - PS_Gun_Object
+  - Laser
   - 
   - 
   - 
@@ -40,8 +41,7 @@ TagManager:
   - 
   - 
   - 
-  - 
-  - 
+  - PirateShot
   - 
   - 
   m_SortingLayers:
