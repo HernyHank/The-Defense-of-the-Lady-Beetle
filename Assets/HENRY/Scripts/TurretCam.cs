@@ -12,6 +12,11 @@ public class TurretCam : MonoBehaviour
     float xRotation;
     float yRotation;
 
+    public float clampCeiling = 45;
+    public float clampFloor = 45;
+    public float clampLeftbound = 45;
+    public float clampRightbound = 45;
+
     private void Start()
     {
         Vector3 currentRot = neck.transform.localEulerAngles;
@@ -42,8 +47,8 @@ public class TurretCam : MonoBehaviour
         {
             xRotation += speed * Time.deltaTime;
         }
-        xRotation = Mathf.Clamp(xRotation, initXRotation - 45f, initXRotation + 45f);
-        yRotation = Mathf.Clamp(yRotation, initYRotation - 45f, initYRotation + 45f);
+        xRotation = Mathf.Clamp(xRotation, initXRotation - clampCeiling, initXRotation + clampFloor);
+        yRotation = Mathf.Clamp(yRotation, initYRotation - clampLeftbound, initYRotation + clampRightbound);
 
         neck.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
         
