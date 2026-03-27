@@ -14,7 +14,7 @@ public class Gun_DW : MonoBehaviour
             Shoot();
         }
 
-        //Debug.DrawRay(shootPoint.position, shootPoint.forward * 10f, Color.red, 2f);
+       // Debug.DrawRay(shootPoint.position, shootPoint.forward * 10f, Color.red, 2f);
     }
 
     void Shoot()
