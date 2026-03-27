@@ -160,17 +160,20 @@ public class VRPlayerMovement : MonoBehaviour
         }
 
         // Gravity
-        if (controller.isGrounded)
+        if (rotationMode == 0)
         {
-            if (verticalVelocity < 0)
-                verticalVelocity = -2; // keeps player grounded
-        }
-        else
-        {
-            verticalVelocity += gravity * Time.deltaTime;
-        }
+            if (controller.isGrounded)
+            {
+                if (verticalVelocity < 0)
+                    verticalVelocity = -2; // keeps player grounded
+            }
+            else
+            {
+                verticalVelocity += gravity * Time.deltaTime;
+            }
 
-        move.y = verticalVelocity;
+            move.y = verticalVelocity;
+        }
 
         controller.Move(move * Time.deltaTime);
     }
