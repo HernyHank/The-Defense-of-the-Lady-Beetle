@@ -15,7 +15,6 @@ public class PirateDestroy_HM : MonoBehaviour
     }
     void OnTriggerStay(Collider other)
     {
-
             isColliding = true;
             if (Input.GetKey(KeyCode.K) && other.CompareTag("Gun"))
             {

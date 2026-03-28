@@ -20,7 +20,6 @@ public class VRPlayerMovement : MonoBehaviour
 
     public bool playerIsRotating = false;
     public bool isClimbing = false;
-    private int touchCount = 0;
 
     private int rotationMode = 0;
 
@@ -91,7 +90,7 @@ public class VRPlayerMovement : MonoBehaviour
             Climb();
         }
 
-        Debug.Log(touchCount);
+        //Debug.Log(touchCount);
     }
 
     void MoveNormally(int rotationMode)

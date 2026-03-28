@@ -21,9 +21,9 @@ public class DoorPresser : MonoBehaviour
             animator.SetBool("buttonIsPressed", true);
         }*/
 
-        Debug.Log("Button is pressed: " + animator.GetBool("buttonIsPressed"));
+/*        Debug.Log("Button is pressed: " + animator.GetBool("buttonIsPressed"));
         Debug.Log("Player is in box: " + !animator.GetBool("playerHasExited"));
-        Debug.Log("Door is open: " + animator.GetBool("doorIsOpen"));
+        Debug.Log("Door is open: " + animator.GetBool("doorIsOpen"));*/
 
     }
 
