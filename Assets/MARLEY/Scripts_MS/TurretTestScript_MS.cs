@@ -26,7 +26,7 @@ public class TurretTestScript_MS : MonoBehaviour
        
     }
     //not specitying which object the ship is colliding with. Might cause problems later so keep that in mind.^^^vvv
-    private void OnTriggerExit(Collision collision)
+    private void OnTriggerExit(Collider other)
     {
         isColliding = false;
         Debug.Log("No longer colliding");

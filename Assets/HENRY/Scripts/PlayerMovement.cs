@@ -20,6 +20,7 @@ public class VRPlayerMovement : MonoBehaviour
 
     public bool playerIsRotating = false;
     public bool isClimbing = false;
+    public bool isPeeing = false;
 
     private int rotationMode = 0;
 
@@ -80,7 +81,7 @@ public class VRPlayerMovement : MonoBehaviour
     void Update()
     {
 
-        if (!playerIsRotating && !isClimbing)
+        if (!playerIsRotating && !isClimbing && !isPeeing)
         {
             MoveNormally(rotationMode);
         }
@@ -244,6 +245,31 @@ public class VRPlayerMovement : MonoBehaviour
             isClimbing = false;
             Debug.Log("isClimbingToggled " + isClimbing.ToString());
         }*/
+    }
+
+    public void SetUIText(string text, bool textIsOn)
+    {
+        UIText.SetText(text);
+        UIText.gameObject.SetActive(textIsOn);
+    }
+
+    public bool GetBState()
+    {
+        return bIsHeld.state;
+    }
+
+    public void SetJoanTransform(Vector3 newPosition, Vector3 newRotation, bool playerCanMove)
+    {
+        if (controller != null) controller.enabled = false;
+
+        // 2. Set the position and rotation
+        transform.position = newPosition;
+        transform.rotation = Quaternion.Euler(newRotation);
+
+        // 3. Re-enable the controller
+        if (controller != null) controller.enabled = true;
+
+        isPeeing = !playerCanMove;
     }
 }
 

@@ -6,9 +6,17 @@ public class EventController : MonoBehaviour
 {
     public string[] eventNames;
     public int currentEvent;
+    public int previousEvent;
+
+    public VRPlayerMovement script;
+
+    public pottyScript pottyScript;
 
     void Start()
     {
+
+
+
         eventNames = new string[]
         {
             "The Wake-up", "Routine", "The Calm", "The Ambush", "Evasive",
@@ -17,7 +25,11 @@ public class EventController : MonoBehaviour
         };
 
         currentEvent = 0;
+        previousEvent = 0;
         Debug.Log("Current Event: " + eventNames[currentEvent]);
+
+        script.SetUIText(eventNames[currentEvent], true); // Show "The Wake-up" immediately
+        StartCoroutine(FlashMode(4f));
     }
 
     private void Update()
@@ -32,6 +44,12 @@ public class EventController : MonoBehaviour
     private void EventCaller()
     {
         bool isCompleted = false;
+
+        if (currentEvent != previousEvent)
+        {
+            isCompleted = true;
+        }
+        previousEvent = currentEvent;
 
         // The switch statement is a cleaner way to handle 13 different IDs
         switch (currentEvent)
@@ -53,43 +71,177 @@ public class EventController : MonoBehaviour
 
         if (isCompleted)
         {
-            currentEvent++;
+            currentEvent++; // Move to the next event index (e.g., from 0 to 1)
+
+            // Check if we still have events left
             if (currentEvent < eventNames.Length)
             {
-                Debug.Log("Now Starting: " + eventNames[currentEvent]);
+                // 1. Get the name of the NEW event we just switched to
+                string newEventName = eventNames[currentEvent];
+
+                Debug.Log("Now Starting: " + newEventName);
+
+                // 2. Update the VR UI
+                script.SetUIText(newEventName, true);
+
+                // 3. Start the timer to hide the text
+                StartCoroutine(FlashMode(3f));
             }
             else
             {
                 Debug.Log("All Events Completed!");
+                script.SetUIText("Mission Complete", true);
             }
         }
     }
 
+    public IEnumerator FlashMode(float waitTime)
+    {
+
+        yield return new WaitForSeconds(waitTime);
+
+        script.SetUIText("You shouldn't see this", false);
+    }
+
+/*    public void EventComplete()
+    {
+        currentEvent++;
+    }*/
+
     // --- EVENT METHODS ---
 
-    private bool TheWakeUp() { return false; }
+    private bool TheWakeUp() {
 
-    private bool Routine() { return false; }
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
+        
+        return false;    
+    }
 
-    private bool TheCalm() { return false; }
+    private bool Routine() 
+    {
+        if(pottyScript != null)
+        {
+            if (pottyScript.eventComplete)
+            {
+                return true;
+            }
+        }
+        else
+        {
+            Debug.Log("Cloudn't find da potty scrip");
+        }
+        return false;
+    }
 
-    private bool TheAmbush() { return false; }
+    private bool TheCalm() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
 
-    private bool Evasive() { return false; }
+        return false;
+    }
 
-    private bool Retaliation() { return false; }
+    private bool TheAmbush() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
 
-    private bool TheBreach() { return false; }
+        return false;
+    }
 
-    private bool TheEVA() { return false; }
+    private bool Evasive() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
 
-    private bool TheRepair() { return false; }
+        return false;
+    }
 
-    private bool Calibration() { return false; }
+    private bool Retaliation() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
 
-    private bool AsteroidField() { return false; }
+        return false;
+    }
 
-    private bool BossFight() { return false; }
+    private bool TheBreach() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
 
-    private bool Conclusion() { return false; }
+        return false;
+    }
+
+    private bool TheEVA() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool TheRepair() {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool Calibration() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool AsteroidField() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool BossFight() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    private bool Conclusion() 
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            return true;
+        }
+
+        return false;
+    }
 }
