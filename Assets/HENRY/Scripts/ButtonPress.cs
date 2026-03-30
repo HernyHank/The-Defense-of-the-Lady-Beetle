@@ -73,6 +73,11 @@ public class ButtonPress : MonoBehaviour
         }
     }
 
+    public ButtonType GetButtonType()
+    {
+        return typeOfButton;
+    }
+
     // Rest of your SteamVR methods...
     /*    private void OnHandHoverEnd(Hand hand) => Debug.Log($"[VR] {hand.name} stopped hovering.");
         private void OnAttachedToHand(Hand hand) => Debug.Log($"[VR] Attached to {hand.name}!");

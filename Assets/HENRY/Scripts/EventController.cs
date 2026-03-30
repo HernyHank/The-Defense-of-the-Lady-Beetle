@@ -260,11 +260,21 @@ public class EventController : MonoBehaviour
             shipsAfoot[chosenSlot] = true;
 
             GameObject cameraObj = GameObject.Find("CameraJoint (" + chosenSlot + ")");
-            if(cameraObj = null)
+            if(cameraObj != null)
             {
-                Debug.Log("Couldn't find camera obj");
+                Debug.Log(cameraObj.name);
+            } else
+            {
+                Debug.Log("Did not find camera join");
             }
             PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
+
+            if (script != null) {
+                Debug.Log("found script" + script.name);
+            } else
+            {
+                Debug.Log("found object but not script");
+            }
 
             Transform child = turretMonitor.transform.Find("Button " + chosenSlot);
             ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();

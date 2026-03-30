@@ -75913,6 +75913,16 @@ PrefabInstance:
       propertyPath: cam4Script
       value: 
       objectReference: {fileID: 1566579737}
+    - target: {fileID: 3494098145174714803, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_Name
+      value: Button 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4150544795799763491, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_Name
+      value: Button 3
+      objectReference: {fileID: 0}
     - target: {fileID: 4956140171854402197, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: typeOfButton
@@ -75937,6 +75947,16 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalScale.z
       value: 7.89951
+      objectReference: {fileID: 0}
+    - target: {fileID: 8185852680752764173, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_Name
+      value: Button 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 8271034271696631109, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_Name
+      value: Button 0
       objectReference: {fileID: 0}
     - target: {fileID: 9120681250841253815, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
