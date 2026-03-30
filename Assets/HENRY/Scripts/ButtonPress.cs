@@ -5,53 +5,49 @@ using Valve.VR.InteractionSystem;
 
 public class ButtonPress : MonoBehaviour
 {
+    public enum ButtonType
+    {
+        Door,
+        Turret
+    }
 
     public Animator animator;
-
     public int buttonNumber = 0;
     // Start is called before the first frame update
+    [Header("Settings")]
+    public ButtonType typeOfButton; // This creates the dropdown in the Inspector
     void Start()
     {
         animator = GetComponent<Animator>();
     }
 
-    // Update is called once per frame
-    void Update()
-    {
-        //Debug
-/*        if(Input.GetKeyDown(KeyCode.P))
-        {
-            animator.SetBool("buttonIsPressed", true);
-        }*/
-
-
-    }
-
     private void OnHandHoverBegin(Hand hand)
     {
-        Debug.Log($"[VR] {hand.name} started hovering over {gameObject.name}");
-        TurretMonitorController Foo = this.GetComponentInParent<TurretMonitorController>();
-        Foo.OnPress(buttonNumber);
+        /*Debug.Log($"[VR] {hand.name} started hovering over {gameObject.name}");*/
 
-        animator.SetBool("buttonIsPressed", true);
+        // Check the type: If it's NOT a Door, we call the parent controller
+        if (typeOfButton != ButtonType.Door)
+        {
+            TurretMonitorController Foo = this.GetComponentInParent<TurretMonitorController>();
+            if (Foo != null)
+            {
+                Foo.OnPress(buttonNumber);
+            }
+        }
+        else
+        {
+            /*Debug.Log("Button is a Door type - Skipping Turret Controller.");*/
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("buttonIsPressed", true);
+        }
     }
 
-    // Triggered by Hand.cs Line 195
-    private void OnHandHoverEnd(Hand hand)
-    {
-        Debug.Log($"[VR] {hand.name} stopped hovering.");
-    }
-
-    // Triggered by Hand.cs Line 419
-    private void OnAttachedToHand(Hand hand)
-    {
-        Debug.Log($"[VR] Attached to {hand.name}!");
-    }
-
-    // Triggered by Hand.cs Line 523
-    private void OnDetachedFromHand(Hand hand)
-    {
-        Debug.Log("[VR] Detached from hand.");
-    }
+    // Rest of your SteamVR methods...
+/*    private void OnHandHoverEnd(Hand hand) => Debug.Log($"[VR] {hand.name} stopped hovering.");
+    private void OnAttachedToHand(Hand hand) => Debug.Log($"[VR] Attached to {hand.name}!");
+    private void OnDetachedFromHand(Hand hand) => Debug.Log("[VR] Detached from hand.");*/
 
 }

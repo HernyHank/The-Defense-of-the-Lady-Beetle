@@ -299,6 +299,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   leftHand: 0
   rightHand: 0
+  activatedHand: {fileID: 0}
   moveAction:
     actionPath: 
     needsReinit: 0
@@ -310,6 +311,8 @@ MonoBehaviour:
   animator: {fileID: 0}
   UIText: {fileID: 0}
   playerIsRotating: 0
+  isClimbing: 0
+  isPeeing: 0
 --- !u!143 &8334112122401521581
 CharacterController:
   m_ObjectHideFlags: 0
@@ -2913,7 +2916,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: B
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
