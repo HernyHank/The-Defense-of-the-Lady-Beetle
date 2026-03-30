@@ -8,9 +8,14 @@ public class EventController : MonoBehaviour
     public int currentEvent;
     public int previousEvent;
 
-    public VRPlayerMovement script;
+    public string currentRoom = "bedroom";
 
+    public VRPlayerMovement script;
+    //Phase 2
     public pottyScript pottyScript;
+
+    //Phase 3
+    public GameObject turretMonitor;
 
     void Start()
     {
@@ -67,6 +72,11 @@ public class EventController : MonoBehaviour
             case 10: isCompleted = AsteroidField(); break;
             case 11: isCompleted = BossFight(); break;
             case 12: isCompleted = Conclusion(); break;
+        }
+
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            isCompleted = true;
         }
 
         if (isCompleted)
@@ -138,7 +148,7 @@ public class EventController : MonoBehaviour
 
     private bool TheCalm() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (currentRoom == "PilotRoom")
         {
             return true;
         }
@@ -146,15 +156,143 @@ public class EventController : MonoBehaviour
         return false;
     }
 
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+
+    //HENRY"S ATTEMPT
+    /*bool[] shipsAfoot = new bool[4];
+    int shipCounter;
+    bool hasStarted = false;
     private bool TheAmbush() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        int shipCounter = 0;
+        int singleShipIndex = 0;
+
+        if (shipCounter == 0 && !hasStarted)
+        {
+            singleShipIndex = Random.Range(0, 4);
+            shipsAfoot[singleShipIndex] = true;
+            PirateShip_HM pirateShipScript = GameObject.Find("CameraJoint (" + singleShipIndex + ")").GetComponentInChildren<PirateShip_HM>();
+            pirateShipScript.SpawnPirateShip();
+            hasStarted = true;
+        }
+
+        for (int i = 0; i < shipsAfoot.Length; i++)
+        {
+            if (shipsAfoot[i])
+            {
+                shipCounter++;
+            }
+        }
+
+        if (shipCounter == 0)
+        {
+            return true;
+        }
+
+        return false;
+    }*/
+    /*    private IEnumerator PirateAttackRoutine(PirateShip_HM script, float waitTime)
+        {
+            yield return new WaitForSeconds(waitTime);
+            script.PirateShipAttack(Random.Range(1, 4));
+        }*/
+    bool[] shipsAfoot = new bool[4];
+    int shipCounter;
+    bool ambushStarted = false; // Add this to your class variables
+
+    private bool TheAmbush()
+    {
+        // If we haven't started the ambush yet, kick it off!
+        if (!ambushStarted)
+        {
+            ambushStarted = true;
+            StartCoroutine(AmbushSequence());
+        }
+
+        // This event only "completes" when all ships are destroyed (or whatever your win condition is)
+        if (ambushStarted && AllShipsDestroyed())
         {
             return true;
         }
 
         return false;
     }
+
+    // A new helper function to check if the sea is clear
+    private bool AllShipsDestroyed()
+    {
+        foreach (bool ship in shipsAfoot)
+        {
+            if (ship) return false;
+        }
+        return true;
+    }
+
+    private IEnumerator AmbushSequence()
+    {
+        // Wave 1: Spawn 2 ships with a delay between them
+        SpawnSingleShip();
+        yield return new WaitForSeconds(3f);
+
+        SpawnSingleShip();
+        yield return new WaitForSeconds(5f);
+
+        SpawnSingleShip();
+        yield return new WaitForSeconds(1f);
+
+        // Wave 2... etc.
+    }
+
+    private void SpawnSingleShip()
+    {
+        List<int> emptySlots = new List<int>();
+        for (int i = 0; i < shipsAfoot.Length; i++)
+        {
+            if (!shipsAfoot[i]) emptySlots.Add(i);
+        }
+
+        if (emptySlots.Count > 0)
+        {
+            int chosenSlot = emptySlots[Random.Range(0, emptySlots.Count)];
+            shipsAfoot[chosenSlot] = true;
+
+            GameObject cameraObj = GameObject.Find("CameraJoint (" + chosenSlot + ")");
+            if(cameraObj = null)
+            {
+                Debug.Log("Couldn't find camera obj");
+            }
+            PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
+
+            Transform child = turretMonitor.transform.Find("Button " + chosenSlot);
+            ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();
+
+            script.SpawnPirateShip();
+            StartCoroutine(PirateAttackRoutine(script, buttonScript, 5.0f, chosenSlot));
+        }
+    }
+    private IEnumerator PirateAttackRoutine(PirateShip_HM script, ButtonPress buttonScript, float waitTime, int chosenSlot)
+    {
+        yield return new WaitForSeconds(waitTime);
+        script.PirateShipAttack(chosenSlot);
+        buttonScript.SetMaterial("Warning");
+    }
+
+    public void DestroyShip(int index)
+    {
+        shipsAfoot[index] = false;
+
+        Transform child = turretMonitor.transform.Find("Button " + index);
+        ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();
+        buttonScript.SetMaterial("Normal");
+    }
+
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
 
     private bool Evasive() 
     {
@@ -243,5 +381,11 @@ public class EventController : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void SetCurrentRoom(string room)
+    {
+        currentRoom = room;
+        Debug.Log(currentRoom);
     }
 }

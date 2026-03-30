@@ -7,9 +7,8 @@ public class PirateShip_HM : MonoBehaviour
     [Header("Animator References")]
     public Animator orbitAnimator;   // Animator on the empty orbit object
     public Animator shipAnimator;
-    private int attackMode = 1;// Animator on the spaceship
 
-    void Update()
+/*    void Update()
     {
         if (Input.GetKeyDown(KeyCode.V))
         {
@@ -29,8 +28,8 @@ public class PirateShip_HM : MonoBehaviour
             shipAnimator.SetInteger("attackMode", attackMode);
         }
 
-        /*        Debug.Log(shipAnimator.GetInteger("attackMode"));
-        */
+        *//*        Debug.Log(shipAnimator.GetInteger("attackMode"));
+        *//*
         if (Input.GetKeyDown(KeyCode.P))
         {
             Debug.Log("P is pressed");
@@ -59,6 +58,57 @@ public class PirateShip_HM : MonoBehaviour
         }
 
 
+    }*/
+
+    /*    bool[] shipsAfoot = new bool[4];
+
+        public int SpawnPirateShip()
+        {
+            int cameraNum = Random.Range(0, 4);
+
+            shipsAfoot[cameraNum] = true;
+            GameObject specificCam = GameObject.Find("CameraJoint (" + cameraNum + ")");
+
+            return cameraNum;
+
+        }*/
+
+    public void SpawnPirateShip()
+    {
+        {
+            if (orbitAnimator != null)
+                orbitAnimator.SetTrigger("StartOrbit");
+
+            // Start attack animation on the ship
+            if (shipAnimator != null)
+                shipAnimator.SetTrigger("StartFly");
+        }
     }
+
+    public void PirateShipAttack(int mode)
+    {
+        shipAnimator.SetInteger("attackMode", mode);
+
+        if (orbitAnimator != null)
+            orbitAnimator.SetTrigger("StopOrbit");
+
+        // Start attack animation on the ship
+        if (shipAnimator != null)
+            shipAnimator.SetTrigger("Attack");
+    }
+
+    public void PrepareNextAttack(float delay)
+    {
+        StartCoroutine(AttackAfterDelay(delay));
+    }
+
+    private IEnumerator AttackAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        // Call your existing attack logic
+        PirateShipAttack(Random.Range(1, 4));
+    }
+
+
 
 }

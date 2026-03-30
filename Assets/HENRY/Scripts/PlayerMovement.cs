@@ -5,11 +5,14 @@ using Valve.VR.InteractionSystem;
 
 public class VRPlayerMovement : MonoBehaviour
 {
+    public EventController eventController;
+
     public SteamVR_Input_Sources leftHand;
     public SteamVR_Input_Sources rightHand;
     public Hand activatedHand;// Set to "Left Hand" in Inspector
     public SteamVR_Action_Vector2 moveAction;
     public SteamVR_Action_Boolean bIsHeld;
+    public SteamVR_Action_Boolean sprint;
     public float speed = 2.0f;
     CharacterController controller;
     float verticalVelocity;
@@ -31,6 +34,18 @@ public class VRPlayerMovement : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponentInParent<Animator>();
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        string tag = other.tag;
+        if(tag == "PilotRoom" ||
+            tag == "TurretRoom" ||
+            tag == "Pantry" ||
+            tag == "Airlock")
+        {
+            eventController.SetCurrentRoom(tag);
+        }
     }
 
     private void OnTriggerStay(Collider other)
@@ -74,7 +89,12 @@ public class VRPlayerMovement : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        UIText.gameObject.SetActive(false);
+        if (other.CompareTag("RotationToggler") || other.CompareTag("Rotation2ggler"))
+        {
+            UIText.gameObject.SetActive(false);
+        }
+
+        eventController.SetCurrentRoom("InBetweenRooms");
     }
 
 
@@ -120,26 +140,30 @@ public class VRPlayerMovement : MonoBehaviour
             Debug.Log("danger zone");
         }*/
 
-        //if (joystickValue.magnitude > 0.1f) // Deadzone check
-        //{
+        if (joystickValue.magnitude > 0.1f) // Deadzone check
+        {
             float verticalVelocity = 0;
             Vector3 direction = Vector3.zero;
             Vector3 headRotation = Vector3.zero;
             if (rotationMode == 0)
             {
+                if(bIsHeld.GetState(leftHand) == true)
+            {
+                speed *= 1.4f;
+            }
                 direction = new Vector3(joystickValue.x, 0, joystickValue.y);
                 headRotation = new Vector3(0, GameObject.Find("VRCamera").transform.rotation.eulerAngles.y, 0);
-                //Gravity
-                /*if (controller.isGrounded)
-                {
-                    if (verticalVelocity < 0)
-                        verticalVelocity = -2; // keeps player grounded
-                }
-                else
-                {
-                    verticalVelocity += gravity * Time.deltaTime;
-                }*/
+            //Gravity
+            if (controller.isGrounded)
+            {
+                if (verticalVelocity < 0)
+                    verticalVelocity = -2; // keeps player grounded
+            }
+            else
+            {
                 verticalVelocity += gravity * Time.deltaTime;
+            }
+            verticalVelocity += gravity * Time.deltaTime;
 
             }
 
@@ -212,7 +236,7 @@ public class VRPlayerMovement : MonoBehaviour
 
             move = direction * speed;
 
-        //}
+        }
 
         // Gravity
         if (rotationMode == 0)

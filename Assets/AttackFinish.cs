@@ -4,21 +4,22 @@ public class AttackFinish : StateMachineBehaviour
 {
     override public void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        // 1. Find the specific manager object in the scene
+        // 1. Get the parent animator
+        Animator orbitAnimator = animator.transform.GetComponentInParent<Animator>();
 
-
-        // 2. Get the Animator component from that object
-        Animator orbitAnimator = animator.transform.parent.GetComponentInParent<Animator>();
-        Debug.Log(animator.gameObject);
-            if (orbitAnimator != null)
-            {
-                Debug.Log("Animator found");
-                orbitAnimator.SetTrigger("StartOrbit");
-            } else
+        if (orbitAnimator != null)
         {
-            Debug.Log("Animator NOT found");
+            orbitAnimator.SetTrigger("StartOrbit");
         }
 
-            animator.SetTrigger("StartFly");
+        animator.SetTrigger("StartFly");
+
+        // 2. Tell the PirateShip script to handle the delay and the next attack
+        PirateShip_HM pirateScript = animator.GetComponent<PirateShip_HM>();
+        if (pirateScript != null)
+        {
+            // We tell the script to start its own internal timer
+            pirateScript.PrepareNextAttack(2f);
+        }
     }
 }
