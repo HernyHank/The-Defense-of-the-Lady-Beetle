@@ -8,14 +8,14 @@ public class Asteroid : MonoBehaviour
 
     private Rigidbody rb;
     private bool hasHitPlayer = false;
+    public int bounciness = 5;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
 
         // Initially move manually, not physics
-        rb.isKinematic = true;
-        rb.useGravity = false;
+        rb.isKinematic = false;
     }
 
     void Update()
@@ -29,20 +29,19 @@ public class Asteroid : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("PlayerShip") && !hasHitPlayer)
+        if (collision.gameObject.CompareTag("PlayerShip")) // && !hasHitPlayer
         {
             hasHitPlayer = true;
 
             // Enable physics
             rb.isKinematic = false;
-            rb.useGravity = false;
 
             // Optional: make it float away from the ship
             Vector3 driftDir = (transform.position - collision.transform.position).normalized;
-            rb.velocity = driftDir * driftForce;
+            rb.velocity = driftDir * driftForce * bounciness;
 
             // Optional: spin the asteroid
             rb.angularVelocity = Random.onUnitSphere * spinForce;
-        }
+        } 
     }
 }

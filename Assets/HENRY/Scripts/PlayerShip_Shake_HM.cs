@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerShip_Shake_HM : MonoBehaviour
 {
+    public VRPlayerMovement playerScript;
+
     [Header("Shake Settings")]
     public float shakeDuration = 2f;
     public float shakeIntensity = 14f;
@@ -21,10 +23,15 @@ public class PlayerShip_Shake_HM : MonoBehaviour
         pitchAxis = transform.right; // local X axis = nose-down pitch
     }
 
+    bool hasShaken = false;
+
     void Update()
     {
         if (shakeTimer > 0f)
         {
+            playerScript.shipIsShaking = true;
+            Debug.Log(playerScript.shipIsShaking);
+            hasShaken = true;
             shakeTimer -= Time.deltaTime;
             float progress = 1f - (shakeTimer / shakeDuration);
 
@@ -43,6 +50,13 @@ public class PlayerShip_Shake_HM : MonoBehaviour
             // Combine pitch + roll
             transform.localRotation = originalRotation * pitchOffset * rollOffset;
         }
+        else if (shakeTimer <= 0 && hasShaken == true)
+        {
+            
+            playerScript.shipIsShaking = false;
+            Debug.Log(playerScript.shipIsShaking);
+            hasShaken = false;
+        }
         else
         {
             transform.localRotation = Quaternion.Lerp(
@@ -51,6 +65,12 @@ public class PlayerShip_Shake_HM : MonoBehaviour
                 Time.deltaTime * 4f
             );
         }
+
+        if (Input.GetKey(KeyCode.Alpha0))
+        {
+            TriggerShake(5f,5f);
+        }
+
     }
 
     public void TriggerShake(float duration, float intensity)

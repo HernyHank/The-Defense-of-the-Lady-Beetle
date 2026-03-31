@@ -31,9 +31,9 @@ public class PlayerShip_ShakeTrigger_HM : MonoBehaviour
         int otherLayer = collision.gameObject.layer;
 
         // Check if it's Asteroid OR Laser
-        if (otherLayer == asteroidLayer || otherLayer == laserLayer)
+        if (otherLayer == asteroidLayer)
         {
-            var shake = GetComponent<PlayerShip_Shake_HM>();
+            var shake = GetComponentInParent<PlayerShip_Shake_HM>();
 
             if (shake != null)
             {

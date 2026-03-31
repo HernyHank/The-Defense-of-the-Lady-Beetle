@@ -24,6 +24,7 @@ public class VRPlayerMovement : MonoBehaviour
     public bool playerIsRotating = false;
     public bool isClimbing = false;
     public bool isPeeing = false;
+    public bool shipIsShaking = false;
 
     private int rotationMode = 0;
 
@@ -36,7 +37,7 @@ public class VRPlayerMovement : MonoBehaviour
         animator = GetComponentInParent<Animator>();
     }
 
-    private void OnTriggerEnter(Collider other)
+/*    private void OnTriggerEnter(Collider other)
     {
         string tag = other.tag;
         if(tag == "PilotRoom" ||
@@ -46,7 +47,7 @@ public class VRPlayerMovement : MonoBehaviour
         {
             eventController.SetCurrentRoom(tag);
         }
-    }
+    }*/
 
     private void OnTriggerStay(Collider other)
     {
@@ -94,14 +95,14 @@ public class VRPlayerMovement : MonoBehaviour
             UIText.gameObject.SetActive(false);
         }
 
-        eventController.SetCurrentRoom("InBetweenRooms");
+       // eventController.SetCurrentRoom("InBetweenRooms");
     }
 
 
     void Update()
     {
 
-        if (!playerIsRotating && !isClimbing && !isPeeing)
+        if (!playerIsRotating && !isClimbing && !isPeeing && !shipIsShaking)
         {
             MoveNormally(rotationMode);
         }
@@ -163,7 +164,6 @@ public class VRPlayerMovement : MonoBehaviour
             {
                 verticalVelocity += gravity * Time.deltaTime;
             }
-            verticalVelocity += gravity * Time.deltaTime;
 
             }
 

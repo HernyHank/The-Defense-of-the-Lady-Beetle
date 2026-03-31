@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class TurretCam : MonoBehaviour
 {
+    public EventController Controller;
     [SerializeField] GameObject neck;
     [SerializeField] float speed = 1f;
 
@@ -19,6 +20,7 @@ public class TurretCam : MonoBehaviour
 
     private void Start()
     {
+        Controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
         Vector3 currentRot = neck.transform.localEulerAngles;
 
         initXRotation = (currentRot.x > 180) ? currentRot.x - 360 : currentRot.x;
@@ -30,27 +32,33 @@ public class TurretCam : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKey(KeyCode.D))
+        //Right
+        if (Controller.currentRoom == "TurretRoom")
         {
-            yRotation += speed * Time.deltaTime;
-        }
-        if (Input.GetKey(KeyCode.A))
-        {
-            yRotation -= speed * Time.deltaTime;
-        }
+            if (Input.GetKey(KeyCode.Keypad6))
+            {
+                yRotation += speed * Time.deltaTime;
+            }
+            //Left
+            if (Input.GetKey(KeyCode.Keypad4))
+            {
+                yRotation -= speed * Time.deltaTime;
+            }
+            //Up
+            if (Input.GetKey(KeyCode.Keypad8))
+            {
+                xRotation -= speed * Time.deltaTime;
+            }
+            //Down
+            if (Input.GetKey(KeyCode.Keypad5))
+            {
+                xRotation += speed * Time.deltaTime;
+            }
+            xRotation = Mathf.Clamp(xRotation, initXRotation - clampCeiling, initXRotation + clampFloor);
+            yRotation = Mathf.Clamp(yRotation, initYRotation - clampLeftbound, initYRotation + clampRightbound);
 
-        if (Input.GetKey(KeyCode.W))
-        {
-            xRotation -= speed * Time.deltaTime;
+            neck.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
         }
-        if (Input.GetKey(KeyCode.S))
-        {
-            xRotation += speed * Time.deltaTime;
-        }
-        xRotation = Mathf.Clamp(xRotation, initXRotation - clampCeiling, initXRotation + clampFloor);
-        yRotation = Mathf.Clamp(yRotation, initYRotation - clampLeftbound, initYRotation + clampRightbound);
-
-        neck.transform.localRotation = Quaternion.Euler(xRotation, yRotation, 0f);
         
     }
 

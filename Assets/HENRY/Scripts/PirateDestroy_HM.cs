@@ -7,14 +7,17 @@ public class PirateDestroy_HM : MonoBehaviour
     private int pirateShotLayer;
     public EventController controller;
 
-
+    private void Awake()
+    {
+        controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
+    }
 
     void OnTriggerStay(Collider other)
     {
             if (Input.GetKey(KeyCode.K) && other.CompareTag("Gun"))
             {
                 Debug.Log("collPirate ship is destroyed!");
-            getParentAndSend();
+                getParentAndSend();
                 this.gameObject.SetActive(false);
             }
 
@@ -25,7 +28,7 @@ public class PirateDestroy_HM : MonoBehaviour
     public void getParentAndSend()
     {
         Transform currentParent = transform;
-        for (int i = 0; i < 4; i++)
+        for (int i = 0; i < 3; i++)
         {
             if (currentParent.parent != null)
             {
@@ -33,6 +36,7 @@ public class PirateDestroy_HM : MonoBehaviour
             }
         }
         string targetName = currentParent.name;
+        Debug.Log(targetName);
 
         // Split by space and parentheses
         string[] parts = targetName.Split(new char[] { ' ', '(', ')' }, System.StringSplitOptions.RemoveEmptyEntries);

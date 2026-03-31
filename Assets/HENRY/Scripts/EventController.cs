@@ -44,6 +44,7 @@ public class EventController : MonoBehaviour
         {
             EventCaller();
         }
+        //Debug.Log(currentRoom);
     }
 
     private void EventCaller()
