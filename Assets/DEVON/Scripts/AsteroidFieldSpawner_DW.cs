@@ -1,7 +1,10 @@
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class AsteroidFieldSpawner : MonoBehaviour
 {
+    public EventController controller;
     [Header("Asteroid Prefabs")]
     public GameObject[] asteroidPrefabs;
 
@@ -16,12 +19,12 @@ public class AsteroidFieldSpawner : MonoBehaviour
 
     void Start()
     {
-        SpawnField();
+        //SpawnField(asteroidCount);
     }
 
-    void SpawnField()
+    public void SpawnField(int numberOfAsteroids, float asteroidDuration)
     {
-        for (int i = 0; i < asteroidCount; i++)
+        for (int i = 0; i < numberOfAsteroids; i++)
         {
             GameObject prefab = asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)];
 
@@ -42,5 +45,22 @@ public class AsteroidFieldSpawner : MonoBehaviour
             // Optional: scale variation
             asteroid.transform.localScale *= Random.Range(0.7f, 1.6f);
         }
+        StartCoroutine(KeepAsteroids(asteroidDuration));
+    }
+
+    IEnumerator KeepAsteroids(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        ClearField();
+    }
+
+    public void ClearField()
+    {
+        for (int i = transform.childCount - 1; i >= 0; i--)
+        {
+                Destroy(transform.GetChild(i).gameObject);
+                controller.steroidsSpawned = false;
+        }
+
     }
 }

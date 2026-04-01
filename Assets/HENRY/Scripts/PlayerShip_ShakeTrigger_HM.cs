@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class PlayerShip_ShakeTrigger_HM : MonoBehaviour
 {
+    
     private int asteroidLayer;
     private int laserLayer;
 
+    public EventController controller;
     public float cooldownTime = 3f;
     private float cooldownTimer = 0f;
 

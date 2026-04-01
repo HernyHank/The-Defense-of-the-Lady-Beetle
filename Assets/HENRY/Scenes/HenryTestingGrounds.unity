@@ -26409,6 +26409,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9bf381cbc6bba4846884e3c413366095, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  controller: {fileID: 1177612671}
   asteroidPrefabs:
   - {fileID: 2621681855778678812, guid: 62fe3e0b137ae2549ae8795893325c23, type: 3}
   - {fileID: 7512086461090422715, guid: ac4163bb04c70fd478b19879ea4902ad, type: 3}
@@ -26420,9 +26421,9 @@ MonoBehaviour:
   - {fileID: 52908029039439426, guid: d592c9bd7d8eb904ca42ca49f8d05888, type: 3}
   - {fileID: 5990893376284657046, guid: 721bcb3753c6e8f469809b2878b62e4d, type: 3}
   asteroidCount: 1150
-  spawnWidth: 203.8
-  spawnHeight: 136.1
-  spawnDistance: 100
+  spawnWidth: 142.8
+  spawnHeight: 108.8
+  spawnDistance: 116.2
   spawnDepth: 200
 --- !u!43 &406849385
 Mesh:
@@ -34090,7 +34091,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6170a32ad171a43b75094470348b54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  controller: {fileID: 1177612671}
 --- !u!1001 &543802293
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -46235,7 +46236,6 @@ Transform:
   - {fileID: 12328551}
   - {fileID: 961022753}
   - {fileID: 965918068}
-  - {fileID: 1177612672}
   - {fileID: 573444419}
   - {fileID: 550410204}
   m_Father: {fileID: 0}
@@ -46569,7 +46569,7 @@ GameObject:
   - component: {fileID: 764809290}
   - component: {fileID: 764809292}
   - component: {fileID: 764809291}
-  - component: {fileID: 764809293}
+  - component: {fileID: 764809295}
   - component: {fileID: 764809294}
   m_Layer: 0
   m_Name: ShipCollider
@@ -46641,19 +46641,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!114 &764809293
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 764809289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8477dffa2487d7c47b5f635c0cf5e311, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  cooldownTime: 3
 --- !u!65 &764809294
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -46675,6 +46662,20 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.50820154, y: 0.86787987, z: 11.498636}
   m_Center: {x: -4.8400636, y: 2.4370003, z: -8.93526}
+--- !u!114 &764809295
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 764809289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8477dffa2487d7c47b5f635c0cf5e311, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  controller: {fileID: 1177612671}
+  cooldownTime: 3
 --- !u!4 &782404792 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5246358107706950738, guid: b6e583565a3a8964da091461d953de95,
@@ -57624,7 +57625,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!65 &988963339
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -57922,6 +57923,12 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 2c7e85f4b03483447a66947c83fb7468, type: 3}
+--- !u!1 &1022670589 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3685921909786689940, guid: 4fb95163fac965d4da622a6e0ec0521f,
+    type: 3}
+  m_PrefabInstance: {fileID: 7209906364833501817}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1028651987 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 1358517091587708099, guid: c108b3e3c2b76e941abce5f10f084524,
@@ -61395,8 +61402,23 @@ MonoBehaviour:
   previousEvent: 0
   currentRoom: bedroom
   script: {fileID: 748567429}
+  beetleHealth: 100
   pottyScript: {fileID: 1663281386}
+  calmConversationTime: 1
   turretMonitor: {fileID: 34003287}
+  asteroidSpawnScript: {fileID: 402712350}
+  evasiveTimer: 45
+  evasiveAsteroidCount: 800
+  CameraParent: {fileID: 1147241146}
+  breachTimer: 80
+  wingHoleBlobbed: 0
+  powerBankBlobbed: 0
+  turretUIObject: {fileID: 1022670589}
+  batteryShotIntoSpace: 0
+  goodBatteryInPlace: 0
+  bossFightAsteroidCount: 1100
+  bossAsteroidTimer: 20
+  steroidsSpawned: 0
 --- !u!4 &1177612672
 Transform:
   m_ObjectHideFlags: 0
@@ -61405,8 +61427,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1177612670}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -19.854874, y: -56.62126, z: -9.999119}
+  m_LocalRotation: {x: -0, y: -0.7119457, z: -0, w: 0.70223457}
+  m_LocalPosition: {x: 74.03085, y: 4.7129593, z: -9.575681}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -61414,7 +61436,7 @@ Transform:
   - {fileID: 1605315917}
   - {fileID: 1573193715}
   - {fileID: 538935085}
-  m_Father: {fileID: 732156035}
+  m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1178300846
 PrefabInstance:
@@ -67366,7 +67388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6170a32ad171a43b75094470348b54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  controller: {fileID: 1177612671}
 --- !u!43 &1574515421
 Mesh:
   m_ObjectHideFlags: 0
@@ -67816,7 +67838,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6170a32ad171a43b75094470348b54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  controller: {fileID: 1177612671}
 --- !u!114 &1628359902 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 1351140659639362460, guid: d1d5a6fe8050ac2499685e4730a7c2a0,
@@ -72587,7 +72609,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b6170a32ad171a43b75094470348b54, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  controller: {fileID: 0}
+  controller: {fileID: 1177612671}
 --- !u!43 &1851098002
 Mesh:
   m_ObjectHideFlags: 0
@@ -76184,6 +76206,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4436727015253673148, guid: 6f8ecbb1d2ad9584f933558141dac660,
         type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4436727015253673148, guid: 6f8ecbb1d2ad9584f933558141dac660,
+        type: 3}
       propertyPath: m_TargetTexture
       value: 
       objectReference: {fileID: 8400000, guid: 296e501f6aa8f0441be3ae7c7ab3a6e7, type: 2}
@@ -76322,6 +76349,11 @@ PrefabInstance:
       propertyPath: typeOfButton
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 1231208620279439791, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_Mesh
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 2079659407524845228, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: m_Name
@@ -76397,6 +76429,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: Button 1
       objectReference: {fileID: 0}
+    - target: {fileID: 3685921909786689940, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4150544795799763491, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: m_Name
@@ -76436,6 +76473,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Enabled
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7420306207903091053, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_Enabled
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8185852680752764173, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
@@ -80702,3 +80744,4 @@ SceneRoots:
   - {fileID: 512942236}
   - {fileID: 732156035}
   - {fileID: 988963342}
+  - {fileID: 1177612672}

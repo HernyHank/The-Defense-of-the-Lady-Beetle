@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class EventController : MonoBehaviour
 {
@@ -10,12 +11,39 @@ public class EventController : MonoBehaviour
 
     public string currentRoom = "bedroom";
 
+    [Header("Universals")]
     public VRPlayerMovement script;
-    //Phase 2
+    public float beetleHealth = 100;
+
+    [Header("Routine")]
     public pottyScript pottyScript;
 
-    //Phase 3
+    [Header("The Calm")]
+    public float calmConversationTime = 1f;
+
+    [Header("Ambush")]
     public GameObject turretMonitor;
+
+    [Header("Evasive")]
+    public AsteroidFieldSpawner asteroidSpawnScript;
+    public float evasiveTimer = 40f;
+    public int evasiveAsteroidCount = 800;
+
+    [Header("Breach")]
+    public GameObject CameraParent;
+    public float breachTimer = 80f;
+    public bool wingHoleBlobbed = false;
+    public bool powerBankBlobbed = false;
+    public GameObject turretUIObject;
+
+    [Header("Calibration")]
+    public bool batteryShotIntoSpace = false;
+    public bool goodBatteryInPlace = true;
+
+    [Header("AsteroidField")]
+    public int bossFightAsteroidCount = 1100;
+    public float bossAsteroidTimer = 20f;
+
 
     void Start()
     {
@@ -75,11 +103,27 @@ public class EventController : MonoBehaviour
             case 12: isCompleted = Conclusion(); break;
         }
 
+        //Debug
         if (Input.GetKeyDown(KeyCode.L))
         {
             isCompleted = true;
         }
 
+        if (Input.GetKeyDown(KeyCode.M))
+        {
+            isCompleted = true;
+            currentEvent++;
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad7))
+        {
+            currentRoom = "PilotRoom";
+        }
+
+        if (Input.GetKeyDown(KeyCode.Keypad9))
+        {
+            currentRoom = "TurretRoom";
+        }
         if (isCompleted)
         {
             currentEvent++; // Move to the next event index (e.g., from 0 to 1)
@@ -114,13 +158,64 @@ public class EventController : MonoBehaviour
         script.SetUIText("You shouldn't see this", false);
     }
 
-/*    public void EventComplete()
+    //timer
+    private float timerTarget = -1f;
+    public void SetTimer(float duration)
     {
-        currentEvent++;
-    }*/
+        // Current time + how long we want to wait
+        timerTarget = Time.time + duration;
+    }
+    public bool IsTimerFinished()
+    {
+        // If no timer was set, it's technically "finished" or hasn't started
+        if (timerTarget == -1f) return true;
 
+        if (Time.time >= timerTarget)
+        {
+            timerTarget = -1f; // Reset so it doesn't stay true forever
+            return true;
+        }
+        return false;
+    }
+
+    bool isDeathTimerSet = false;
+    public void PlayerDeathSequence()
+    {
+        script.SetUIText("You have died", true);
+
+        //TODO: Disable player Controller, Teleport them to respawn point Depending on level, enable playerController, setUItext = false
+        if (!isDeathTimerSet) 
+        {
+            SetTimer(4f);
+            isDeathTimerSet = true;
+        } 
+        else
+        {
+            if(IsTimerFinished())
+            {
+                //teleportPlayer
+                script.SetUIText("You shouldn't see this", false);
+                currentEvent++;
+                currentEvent--;
+            }       
+        }       
+    }
+
+    public void SetCurrentRoom(string room)
+    {
+        currentRoom = room;
+        Debug.Log(currentRoom);
+    }
+
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
     // --- EVENT METHODS ---
-
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
     private bool TheWakeUp() {
 
         if (Input.GetKeyDown(KeyCode.L))
@@ -130,6 +225,11 @@ public class EventController : MonoBehaviour
         
         return false;    
     }
+
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
 
     private bool Routine() 
     {
@@ -147,12 +247,42 @@ public class EventController : MonoBehaviour
         return false;
     }
 
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+    //---------------------------------------------//
+
+    bool calmFieldSpawned = false;
+    bool calmTimersBeenCalled = false;
+    bool playerWalkedInOnce = false;
     private bool TheCalm() 
     {
+        if (!calmFieldSpawned)
+        {
+            asteroidSpawnScript.SpawnField(200, 20f);
+            calmFieldSpawned = true;
+        }
+
         if (currentRoom == "PilotRoom")
         {
-            return true;
+            playerWalkedInOnce = true;
+        } 
+        
+        if(!calmTimersBeenCalled && playerWalkedInOnce)
+        {
+            SetTimer(5f);
+            calmTimersBeenCalled = true;
         }
+
+        if (calmTimersBeenCalled)
+        {
+            bool timerState = IsTimerFinished();
+            if(timerState == true)
+            {
+                return true;
+            }
+        }
+
 
         return false;
     }
@@ -162,44 +292,6 @@ public class EventController : MonoBehaviour
     //---------------------------------------------//
     //---------------------------------------------//
 
-    //HENRY"S ATTEMPT
-    /*bool[] shipsAfoot = new bool[4];
-    int shipCounter;
-    bool hasStarted = false;
-    private bool TheAmbush() 
-    {
-        int shipCounter = 0;
-        int singleShipIndex = 0;
-
-        if (shipCounter == 0 && !hasStarted)
-        {
-            singleShipIndex = Random.Range(0, 4);
-            shipsAfoot[singleShipIndex] = true;
-            PirateShip_HM pirateShipScript = GameObject.Find("CameraJoint (" + singleShipIndex + ")").GetComponentInChildren<PirateShip_HM>();
-            pirateShipScript.SpawnPirateShip();
-            hasStarted = true;
-        }
-
-        for (int i = 0; i < shipsAfoot.Length; i++)
-        {
-            if (shipsAfoot[i])
-            {
-                shipCounter++;
-            }
-        }
-
-        if (shipCounter == 0)
-        {
-            return true;
-        }
-
-        return false;
-    }*/
-    /*    private IEnumerator PirateAttackRoutine(PirateShip_HM script, float waitTime)
-        {
-            yield return new WaitForSeconds(waitTime);
-            script.PirateShipAttack(Random.Range(1, 4));
-        }*/
     bool[] shipsAfoot = new bool[4];
     int shipCounter;
     bool ambushStarted = false; // Add this to your class variables
@@ -216,6 +308,7 @@ public class EventController : MonoBehaviour
         // This event only "completes" when all ships are destroyed (or whatever your win condition is)
         if (ambushStarted && AllShipsDestroyed())
         {
+            ambushStarted = false;
             return true;
         }
 
@@ -232,6 +325,17 @@ public class EventController : MonoBehaviour
         return true;
     }
 
+    private int GetRemainingShips()
+    {
+        int remainingShipsCounter = 0;
+        foreach (bool ship in shipsAfoot)
+        {
+            if (ship)
+                remainingShipsCounter++;
+        }
+        return remainingShipsCounter;
+    }
+
     private IEnumerator AmbushSequence()
     {
         // Wave 1: Spawn 2 ships with a delay between them
@@ -240,10 +344,6 @@ public class EventController : MonoBehaviour
 
         SpawnSingleShip();
         yield return new WaitForSeconds(5f);
-
-        SpawnSingleShip();
-        yield return new WaitForSeconds(1f);
-
         // Wave 2... etc.
     }
 
@@ -305,58 +405,113 @@ public class EventController : MonoBehaviour
     //---------------------------------------------//
     //---------------------------------------------//
 
+    public bool steroidsSpawned = false;
+    bool evasiveTimerSet = false;
+
     private bool Evasive() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (!steroidsSpawned)
         {
-            return true;
+            asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
+            steroidsSpawned = true;
         }
 
+        if (!evasiveTimerSet)
+        {
+            SetTimer(evasiveTimer);
+            evasiveTimerSet = true;
+        } else if(evasiveTimerSet)
+        {
+            bool timerDone = IsTimerFinished();
+            if (timerDone)
+            {
+                return true;
+            }
+        }
+        
         return false;
     }
 
+    bool shipsHasGoneUpTo4 = false;
     private bool Retaliation() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (!ambushStarted)
         {
+            ambushStarted = true;
+            StartCoroutine(AmbushSequence2());
+        }
+
+        // This event only "completes" when all ships are destroyed (or whatever your win condition is)
+        if (ambushStarted && GetRemainingShips() == 1 && shipsHasGoneUpTo4)
+        {
+            ambushStarted = false;
             return true;
         }
 
         return false;
     }
 
+    IEnumerator AmbushSequence2()
+    {
+        SpawnSingleShip();
+        SpawnSingleShip();
+        yield return new WaitForSeconds(5f);
+        SpawnSingleShip();
+        SpawnSingleShip();
+        shipsHasGoneUpTo4 = true;
+    }
+
+    bool breachTimersBeenSet = false;
     private bool TheBreach() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        /*TurretMonitorController turretScript = turretMonitor.GetComponent<TurretMonitorController>();
+        turretScript.enabled = false;*/
+
+
+        //TextMeshProUGUI turretUI = turretMonitor.GetComponentInChildren<TextMeshProUGUI>();
+        turretUIObject.SetActive(true);
+        //turretUI.enabled = true;
+        //setcameraNotWorkingUI to true;
+        if (!breachTimersBeenSet)
+        {
+            SetTimer(breachTimer);
+        }
+
+        if(wingHoleBlobbed && powerBankBlobbed)
         {
             return true;
         }
 
+        if (IsTimerFinished())
+        {
+            PlayerDeathSequence();
+        }
         return false;
     }
 
     private bool TheEVA() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            return true;
-        }
-
-        return false;
+        return true;
     }
 
-    private bool TheRepair() {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            return true;
-        }
-
-        return false;
+    private bool TheRepair() 
+    {
+        return true;
     }
 
     private bool Calibration() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        turretUIObject.SetActive(false);
+        if (goodBatteryInPlace)
+        {
+
+            TurretMonitorController turretScript = turretMonitor.GetComponent<TurretMonitorController>();
+            turretScript.enabled = true;
+            
+            TextMeshProUGUI turretUI = turretMonitor.GetComponentInChildren<TextMeshProUGUI>();
+            turretUI.enabled = false;
+        }
+        if(batteryShotIntoSpace && goodBatteryInPlace && AllShipsDestroyed())
         {
             return true;
         }
@@ -366,7 +521,48 @@ public class EventController : MonoBehaviour
 
     private bool AsteroidField() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
+        if (!steroidsSpawned)
+        {
+            asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
+            steroidsSpawned = true;
+        }
+
+        if (!evasiveTimerSet)
+        {
+            SetTimer(evasiveTimer);
+            evasiveTimerSet = true;
+        }
+        else if (evasiveTimerSet)
+        {
+            bool timerDone = IsTimerFinished();
+            if (timerDone)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    bool bossFightStarted = false;
+    bool bossFightComplete = false;
+    bool asteroidsShouldBeSpawned = true;
+    private bool BossFight() 
+    {
+        if (asteroidsShouldBeSpawned)
+        {
+            StartCoroutine(BossFightAsteroidSpawner());
+            asteroidsShouldBeSpawned = false;
+        }
+
+
+        if (!bossFightStarted)
+        {
+            StartCoroutine(RealDealBossFight());
+            bossFightStarted = true;
+        }
+
+        if (bossFightComplete)
         {
             return true;
         }
@@ -374,29 +570,46 @@ public class EventController : MonoBehaviour
         return false;
     }
 
-    private bool BossFight() 
+    IEnumerator BossFightAsteroidSpawner()
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            return true;
-        }
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        yield return new WaitForSeconds(bossAsteroidTimer);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        yield return new WaitForSeconds(bossAsteroidTimer);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        yield return new WaitForSeconds(bossAsteroidTimer);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        yield return new WaitForSeconds(bossAsteroidTimer);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        yield return new WaitForSeconds(bossAsteroidTimer);
+    }
 
-        return false;
+    IEnumerator RealDealBossFight()
+    {
+        yield return new WaitForSeconds(5f);
+        SpawnSingleShip();
+        SpawnSingleShip();
+        SpawnSingleShip();
+        SpawnSingleShip();
+        yield return new WaitUntil(() => GetRemainingShips() == 2);
+        SpawnSingleShip();
+        SpawnSingleShip();
+        yield return new WaitUntil(() => GetRemainingShips() == 2);
+        SpawnSingleShip();
+        SpawnSingleShip();
+        yield return new WaitUntil(() => AllShipsDestroyed());
+
+        bossFightComplete = true;
     }
 
     private bool Conclusion() 
     {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            return true;
-        }
+        script.SetUIText("You have won the game", true);
 
-        return false;
+
+
+
+        return true;
     }
 
-    public void SetCurrentRoom(string room)
-    {
-        currentRoom = room;
-        Debug.Log(currentRoom);
-    }
 }
