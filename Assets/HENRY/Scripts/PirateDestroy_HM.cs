@@ -35,7 +35,7 @@ public class PirateDestroy_HM : MonoBehaviour
             }
         }
         string targetName = currentParent.name;
-        Debug.Log(targetName);
+        //Debug.Log(targetName);
 
         // Split by space and parentheses
         string[] parts = targetName.Split(new char[] { ' ', '(', ')' }, System.StringSplitOptions.RemoveEmptyEntries);

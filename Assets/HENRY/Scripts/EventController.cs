@@ -358,10 +358,9 @@ public class EventController : MonoBehaviour
         // Wave 2... etc.
     }
 
-    //TODO add randomization back in
+    List<int> emptySlots = new List<int>();
     private void SpawnSingleShip()
     {
-        List<int> emptySlots = new List<int>();
         for (int i = 0; i < shipsAfoot.Length; i++)
         {
             if (!shipsAfoot[i]) emptySlots.Add(i);
@@ -372,19 +371,31 @@ public class EventController : MonoBehaviour
             int chosenSlot = emptySlots[Random.Range(0, emptySlots.Count)];
            
             shipsAfoot[chosenSlot] = true;
+            emptySlots.Remove(chosenSlot);
 
+            //get the camera the ship is parented to
             GameObject cameraObj = GameObject.Find("CameraJoint (" + chosenSlot + ")");
+            Debug.Log(cameraObj + " is active");
             if(cameraObj != null)
             {
-                Debug.Log("found " + cameraObj.name);
+               // Debug.Log("found " + cameraObj.name);
             } else
             {
                 Debug.Log("Did not find camera join");
             }
+            
+            //get the orbitScript
             PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
 
+            //Get the specific pirate ship object
+            PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
+            if (pirateGoonScript != null && pirateGoonScript.isActiveAndEnabled == false)
+            {
+                pirateGoonScript.gameObject.SetActive(true);
+            }
+
             if (script != null) {
-                Debug.Log("found script" + script.name);
+                //Debug.Log("found script" + script.name);
             } else
             {
                 Debug.Log("found object but not script");
@@ -393,7 +404,7 @@ public class EventController : MonoBehaviour
             Transform child = turretMonitor.transform.Find("Button " + chosenSlot);
             if (child != null)
             {
-                Debug.Log("Found child: " + child.name);
+               // Debug.Log("Found child: " + child.name);
             } else
             {
                 Debug.Log("Uh oh null child");
@@ -414,7 +425,7 @@ public class EventController : MonoBehaviour
     public void DestroyShip(int index)
     {
         shipsAfoot[index] = false;
-        Debug.Log("ship" + index + "destroyed");
+        Debug.Log("Ship" + index + "destroyed");
 
         Transform child = turretMonitor.transform.Find("Button " + index);
         ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();
