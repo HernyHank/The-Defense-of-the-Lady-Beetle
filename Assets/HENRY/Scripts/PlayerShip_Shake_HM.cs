@@ -30,7 +30,7 @@ public class PlayerShip_Shake_HM : MonoBehaviour
         if (shakeTimer > 0f)
         {
             playerScript.shipIsShaking = true;
-            Debug.Log(playerScript.shipIsShaking);
+            //Debug.Log(playerScript.shipIsShaking);
             hasShaken = true;
             shakeTimer -= Time.deltaTime;
             float progress = 1f - (shakeTimer / shakeDuration);
@@ -54,7 +54,7 @@ public class PlayerShip_Shake_HM : MonoBehaviour
         {
             
             playerScript.shipIsShaking = false;
-            Debug.Log(playerScript.shipIsShaking);
+            //Debug.Log(playerScript.shipIsShaking);
             hasShaken = false;
         }
         else

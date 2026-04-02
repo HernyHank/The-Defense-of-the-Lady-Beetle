@@ -58640,6 +58640,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1227386086}
     m_Modifications:
+    - target: {fileID: 4344907610392759562, guid: b6e583565a3a8964da091461d953de95,
+        type: 3}
+      propertyPath: controller
+      value: 
+      objectReference: {fileID: 1177612671}
     - target: {fileID: 5246358107706950738, guid: b6e583565a3a8964da091461d953de95,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -61052,7 +61057,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1147241147}
   m_Layer: 0
-  m_Name: Cameras
+  m_Name: CAMERAS
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -61085,6 +61090,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 804941499}
     m_Modifications:
+    - target: {fileID: 4344907610392759562, guid: b6e583565a3a8964da091461d953de95,
+        type: 3}
+      propertyPath: controller
+      value: 
+      objectReference: {fileID: 1177612671}
     - target: {fileID: 5246358107706950738, guid: b6e583565a3a8964da091461d953de95,
         type: 3}
       propertyPath: m_LocalPosition.x

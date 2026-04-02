@@ -77,11 +77,21 @@ public class PirateShip_HM : MonoBehaviour
     {
         {
             if (orbitAnimator != null)
+            {
                 orbitAnimator.SetTrigger("StartOrbit");
+            } else
+            {
+                Debug.Log("Couldn't find orbit animator");
+            }
 
             // Start attack animation on the ship
             if (shipAnimator != null)
+            { 
                 shipAnimator.SetTrigger("StartFly");
+            } else
+            {
+                Debug.Log("couldn't find ship animator");
+            }
         }
     }
 
@@ -90,11 +100,20 @@ public class PirateShip_HM : MonoBehaviour
         shipAnimator.SetInteger("attackMode", mode);
 
         if (orbitAnimator != null)
+        {
             orbitAnimator.SetTrigger("StopOrbit");
-
+        } else
+        {
+            Debug.Log("couldn't find orbit animator");
+        }
         // Start attack animation on the ship
         if (shipAnimator != null)
+        {
             shipAnimator.SetTrigger("Attack");
+        } else
+        {
+            Debug.Log("couldn't find ship animator");
+        }
     }
 
     public void PrepareNextAttack(float delay)
