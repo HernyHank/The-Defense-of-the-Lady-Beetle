@@ -148,6 +148,11 @@ public class EventController : MonoBehaviour
                 script.SetUIText("Mission Complete", true);
             }
         }
+
+        if(beetleHealth <= 0)
+        {
+            PlayerDeathSequence();
+        }
     }
 
     public IEnumerator FlashMode(float waitTime)
@@ -295,6 +300,7 @@ public class EventController : MonoBehaviour
     bool[] shipsAfoot = new bool[4];
     int shipCounter;
     bool ambushStarted = false; // Add this to your class variables
+    bool shipCountReachedTwo = false;
 
     private bool TheAmbush()
     {
@@ -306,9 +312,11 @@ public class EventController : MonoBehaviour
         }
 
         // This event only "completes" when all ships are destroyed (or whatever your win condition is)
-        if (ambushStarted && AllShipsDestroyed())
+        if (ambushStarted && AllShipsDestroyed() && shipCountReachedTwo)
         {
             ambushStarted = false;
+            shipCounter = 0;
+            shipCountReachedTwo = false;
             return true;
         }
 
@@ -322,6 +330,7 @@ public class EventController : MonoBehaviour
         {
             if (ship) return false;
         }
+        Debug.Log("AllShipsDestroyed Called");
         return true;
     }
 
@@ -336,6 +345,7 @@ public class EventController : MonoBehaviour
         return remainingShipsCounter;
     }
 
+    //TODO turn back on second ship
     private IEnumerator AmbushSequence()
     {
         // Wave 1: Spawn 2 ships with a delay between them
@@ -343,13 +353,14 @@ public class EventController : MonoBehaviour
         yield return new WaitForSeconds(3f);
 
         SpawnSingleShip();
-        yield return new WaitForSeconds(5f);
+
+        shipCountReachedTwo = true;
         // Wave 2... etc.
     }
 
+    List<int> emptySlots = new List<int>();
     private void SpawnSingleShip()
     {
-        List<int> emptySlots = new List<int>();
         for (int i = 0; i < shipsAfoot.Length; i++)
         {
             if (!shipsAfoot[i]) emptySlots.Add(i);
@@ -358,42 +369,63 @@ public class EventController : MonoBehaviour
         if (emptySlots.Count > 0)
         {
             int chosenSlot = emptySlots[Random.Range(0, emptySlots.Count)];
+           
             shipsAfoot[chosenSlot] = true;
+            emptySlots.Remove(chosenSlot);
 
+            //get the camera the ship is parented to
             GameObject cameraObj = GameObject.Find("CameraJoint (" + chosenSlot + ")");
+            Debug.Log(cameraObj + " is active");
             if(cameraObj != null)
             {
-                Debug.Log(cameraObj.name);
+               // Debug.Log("found " + cameraObj.name);
             } else
             {
                 Debug.Log("Did not find camera join");
             }
+            
+            //get the orbitScript
             PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
 
+            //Get the specific pirate ship object
+            PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
+            if (pirateGoonScript != null && pirateGoonScript.isActiveAndEnabled == false)
+            {
+                pirateGoonScript.gameObject.SetActive(true);
+            }
+
             if (script != null) {
-                Debug.Log("found script" + script.name);
+                //Debug.Log("found script" + script.name);
             } else
             {
                 Debug.Log("found object but not script");
             }
 
             Transform child = turretMonitor.transform.Find("Button " + chosenSlot);
+            if (child != null)
+            {
+               // Debug.Log("Found child: " + child.name);
+            } else
+            {
+                Debug.Log("Uh oh null child");
+            }
             ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();
 
             script.SpawnPirateShip();
-            StartCoroutine(PirateAttackRoutine(script, buttonScript, 5.0f, chosenSlot));
+            StartCoroutine(PirateAttackRoutine(script, buttonScript, 5.0f, Random.Range(1, 4)));
         }
     }
-    private IEnumerator PirateAttackRoutine(PirateShip_HM script, ButtonPress buttonScript, float waitTime, int chosenSlot)
+    private IEnumerator PirateAttackRoutine(PirateShip_HM script, ButtonPress buttonScript, float waitTime, int attackMode)
     {
         yield return new WaitForSeconds(waitTime);
-        script.PirateShipAttack(chosenSlot);
+        script.PirateShipAttack(attackMode);
         buttonScript.SetMaterial("Warning");
     }
 
     public void DestroyShip(int index)
     {
         shipsAfoot[index] = false;
+        Debug.Log("Ship" + index + "destroyed");
 
         Transform child = turretMonitor.transform.Find("Button " + index);
         ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();

@@ -9,7 +9,7 @@ public class PirateDestroy_HM : MonoBehaviour
 
     private void Awake()
     {
-        controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
+        //controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
     }
 
     void OnTriggerStay(Collider other)
@@ -21,9 +21,8 @@ public class PirateDestroy_HM : MonoBehaviour
                 this.gameObject.SetActive(false);
             }
 
-       
+        return;
     }
-    //not specitying which object the ship is colliding with. Might cause problems later so keep that in mind.^^^vvv
 
     public void getParentAndSend()
     {
@@ -36,11 +35,13 @@ public class PirateDestroy_HM : MonoBehaviour
             }
         }
         string targetName = currentParent.name;
-        Debug.Log(targetName);
+        //Debug.Log(targetName);
 
         // Split by space and parentheses
         string[] parts = targetName.Split(new char[] { ' ', '(', ')' }, System.StringSplitOptions.RemoveEmptyEntries);
         int index = int.Parse(parts[1]);
+
+        Debug.Log("sending destroy ship of index" + index);
 
         controller.DestroyShip(index);
     }

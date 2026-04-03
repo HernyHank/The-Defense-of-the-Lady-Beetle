@@ -17,7 +17,7 @@ public class GunAppearanceScript_HM : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             gunRenderer.enabled = true;
-            Debug.Log("gun is shot");
+           // Debug.Log("gun is shot");
         }
 
         if (Input.GetKeyUp(KeyCode.K))
