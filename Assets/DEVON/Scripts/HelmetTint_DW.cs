@@ -4,42 +4,51 @@ using UnityEngine;
 
 public class HelmetTint_DW : MonoBehaviour
 {
-	//public Animator TrashChuteAnimator;
+	public GameObject helmetObject;   // parent object holding all meshes
+	public GameObject tintObject;
 
+	private MeshRenderer[] helmetRenderers;
 
-	// Start is called before the first frame update
 	void Start()
 	{
-
+		// Get ALL mesh renderers in the helmet (including children)
+		if (helmetObject != null)
+			helmetRenderers = helmetObject.GetComponentsInChildren<MeshRenderer>();
 	}
 
-	// Update is called once per frame
-	void Update()
+	void SetHelmetVisible(bool visible)
 	{
+		if (helmetRenderers == null) return;
 
+		foreach (MeshRenderer r in helmetRenderers)
+		{
+			r.enabled = visible;
+		}
 	}
-
 
 	void OnTriggerEnter(Collider other)
 	{
-		if (other.CompareTag("TrashBattery"))
+		if (other.CompareTag("PlayerHelmet"))
 		{
-			//if (TrashChuteAnimator != null)
-			//	TrashChuteAnimator.SetTrigger("ChuteClose");
+			Debug.Log("Helmet ON");
 
-			Debug.Log("Trash Chute door closing");
+			SetHelmetVisible(false);
+
+			if (tintObject != null)
+				tintObject.SetActive(true);
 		}
 	}
 
 	void OnTriggerExit(Collider other)
 	{
-		if (other.CompareTag("TrashBattery"))
+		if (other.CompareTag("PlayerHelmet"))
 		{
-		//	if (TrashChuteAnimator != null)
-			//	TrashChuteAnimator.SetTrigger("ChuteOpen");
+			Debug.Log("Helmet OFF");
 
-			Debug.Log("Trash Chute door opening");
+			SetHelmetVisible(true);
+
+			if (tintObject != null)
+				tintObject.SetActive(false);
 		}
 	}
-
 }

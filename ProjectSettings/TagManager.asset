@@ -18,6 +18,8 @@ TagManager:
   - Pantry
   - Airlock
   - TrashBattery
+  - PlayerHead
+  - PlayerHelmet
   layers:
   - Default
   - TransparentFX

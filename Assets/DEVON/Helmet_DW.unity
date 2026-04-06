@@ -200,15 +200,68 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: -4408699497978001091, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: -1957821634923771095, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: c6a72b8a46680e844ad67bc918e7ebe2,
         type: 3}
       propertyPath: m_Name
       value: helmet_untextured
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: PlayerHelmet
+      objectReference: {fileID: 0}
+    - target: {fileID: 1943982399035288057, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 2866621852552652557, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3006328815571793890, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3779745573541866595, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3866593634652410967, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 4740814647129551044, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      propertyPath: m_TagString
+      value: PlayerHelmet
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 723719756}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 723719757}
   m_SourcePrefab: {fileID: 100100000, guid: c6a72b8a46680e844ad67bc918e7ebe2, type: 3}
 --- !u!1 &645790877
 GameObject:
@@ -328,6 +381,62 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!1 &723719754 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c6a72b8a46680e844ad67bc918e7ebe2,
+    type: 3}
+  m_PrefabInstance: {fileID: 256548981}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &723719756
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723719754}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.065
+  m_Height: 0.2
+  m_Direction: 1
+  m_Center: {x: 0.005, y: 0.14, z: 0}
+--- !u!54 &723719757
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 723719754}
+  serializedVersion: 4
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &1055732247
 GameObject:
   m_ObjectHideFlags: 0
@@ -340,7 +449,7 @@ GameObject:
   - component: {fileID: 1055732251}
   - component: {fileID: 1055732250}
   - component: {fileID: 1055732249}
-  - component: {fileID: 1055732248}
+  - component: {fileID: 1055732253}
   m_Layer: 0
   m_Name: HelmetTriggerCollider
   m_TagString: Untagged
@@ -348,19 +457,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1055732248
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1055732247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3ef58a08f009ba64c8679e94dcc12982, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TrashChuteAnimator: {fileID: 0}
 --- !u!65 &1055732249
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -447,6 +543,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1055732253
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1055732247}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8787004dd37c50243b17455886ba7af7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  helmetObject: {fileID: 723719754}
+  tintObject: {fileID: 1508563055}
 --- !u!1 &1508563055
 GameObject:
   m_ObjectHideFlags: 0
@@ -466,7 +576,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1508563056
 MonoBehaviour:
   m_ObjectHideFlags: 0
