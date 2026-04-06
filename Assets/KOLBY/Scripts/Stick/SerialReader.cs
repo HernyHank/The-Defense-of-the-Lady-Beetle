@@ -3,37 +3,41 @@ using UnityEngine;
 
 public class SerialReader : MonoBehaviour
 {
-    SerialPort serial = new SerialPort("COM5", 115200);
+    SerialPort serial;
 
     void Start()
     {
         serial = new SerialPort("COM5", 115200);
-        serial.ReadTimeout = 100;
+        serial.DtrEnable = true;
+        serial.RtsEnable = true;
+        serial.NewLine = "\n";
+        serial.ReadTimeout = 500;
 
         serial.Open();
         Debug.Log("Serial port opened");
 
-        System.Threading.Thread.Sleep(3000); // give board time to reboot
+        System.Threading.Thread.Sleep(3000);
     }
 
     void Update()
     {
-        if (serial.IsOpen)
+        if (serial != null && serial.IsOpen)
         {
             try
             {
-                string data = serial.ReadLine();
-                Debug.Log(data);
+                while (serial.BytesToRead > 0)
+                {
+                    string data = serial.ReadLine();
+                    Debug.Log(data);
+                }
             }
-            catch
-            {
-            }
+            catch { }
         }
     }
 
     void OnApplicationQuit()
     {
-        if (serial.IsOpen)
+        if (serial != null && serial.IsOpen)
         {
             serial.Close();
         }
