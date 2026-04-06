@@ -351,7 +351,7 @@ public class EventController : MonoBehaviour
         SpawnSingleShip();
         yield return new WaitForSeconds(3f);
 
-        SpawnSingleShip();
+        /*SpawnSingleShip();*/
 
         shipCountReachedTwo = true;
         // Wave 2... etc.
@@ -367,7 +367,8 @@ public class EventController : MonoBehaviour
 
         if (emptySlots.Count > 0)
         {
-            int chosenSlot = emptySlots[Random.Range(0, emptySlots.Count)];
+            /*int chosenSlot = emptySlots[Random.Range(0, emptySlots.Count)];*/
+            int chosenSlot = 2;
            
             shipsAfoot[chosenSlot] = true;
             emptySlots.Remove(chosenSlot);

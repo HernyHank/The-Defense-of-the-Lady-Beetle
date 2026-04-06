@@ -23,7 +23,7 @@ public class GunAppearanceScript_HM : MonoBehaviour
 
     void Update()
     {
-        Debug.Log("Turret can shoot value: " + controller.turretCanShoot);
+        //Debug.Log("Turret can shoot value: " + controller.turretCanShoot);
         if (Input.GetKeyDown(KeyCode.K) && controller.turretCanShoot)
         {
             gunRenderer.enabled = true;
