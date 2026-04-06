@@ -298,7 +298,6 @@ public class EventController : MonoBehaviour
     //---------------------------------------------//
 
     bool[] shipsAfoot = new bool[4];
-    int shipCounter;
     bool ambushStarted = false; // Add this to your class variables
     bool shipCountReachedTwo = false;
 
@@ -315,8 +314,8 @@ public class EventController : MonoBehaviour
         if (ambushStarted && AllShipsDestroyed() && shipCountReachedTwo)
         {
             ambushStarted = false;
-            shipCounter = 0;
             shipCountReachedTwo = false;
+            emptySlots.Clear();
             return true;
         }
 
@@ -389,10 +388,14 @@ public class EventController : MonoBehaviour
 
             //Get the specific pirate ship object
             PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
-            if (pirateGoonScript != null && pirateGoonScript.isActiveAndEnabled == false)
+/*            if (pirateGoonScript != null)
             {
+                Debug.Log("Pirate goon script FOUND on: " + pirateGoonScript.gameObject.name);
                 pirateGoonScript.gameObject.SetActive(true);
-            }
+            } else
+            {
+                Debug.Log("Pirate goon script NOT found on " + cameraObj.name);
+            }*/
 
             if (script != null) {
                 //Debug.Log("found script" + script.name);
@@ -477,6 +480,7 @@ public class EventController : MonoBehaviour
         if (ambushStarted && GetRemainingShips() == 1 && shipsHasGoneUpTo4)
         {
             ambushStarted = false;
+            turretCanShoot = false;
             return true;
         }
 
@@ -494,6 +498,7 @@ public class EventController : MonoBehaviour
     }
 
     bool breachTimersBeenSet = false;
+    public bool turretCanShoot = true;
     private bool TheBreach() 
     {
         /*TurretMonitorController turretScript = turretMonitor.GetComponent<TurretMonitorController>();
@@ -502,6 +507,8 @@ public class EventController : MonoBehaviour
 
         //TextMeshProUGUI turretUI = turretMonitor.GetComponentInChildren<TextMeshProUGUI>();
         turretUIObject.SetActive(true);
+        turretCanShoot = false;
+
         //turretUI.enabled = true;
         //setcameraNotWorkingUI to true;
         if (!breachTimersBeenSet)
@@ -509,15 +516,17 @@ public class EventController : MonoBehaviour
             SetTimer(breachTimer);
         }
 
-        if(wingHoleBlobbed && powerBankBlobbed)
-        {
-            return true;
-        }
-
         if (IsTimerFinished())
         {
             PlayerDeathSequence();
         }
+
+        if (wingHoleBlobbed && powerBankBlobbed)
+        {
+            turretCanShoot = true;
+            return true;
+        }
+
         return false;
     }
 
@@ -533,6 +542,7 @@ public class EventController : MonoBehaviour
 
     private bool Calibration() 
     {
+        turretCanShoot = true;
         turretUIObject.SetActive(false);
         if (goodBatteryInPlace)
         {
