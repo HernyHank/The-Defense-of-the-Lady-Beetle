@@ -33,7 +33,7 @@ public class TurretCam : MonoBehaviour
     void Update()
     {
         //Right
-        if (Controller.currentRoom == "TurretRoom")
+        if (Controller.currentRoom == "TurretRoom" && Controller.turretCanShoot == true)
         {
             if (Input.GetKey(KeyCode.Keypad6))
             {
