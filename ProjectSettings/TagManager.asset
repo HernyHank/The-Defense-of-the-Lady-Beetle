@@ -12,6 +12,12 @@ TagManager:
   - FxTemporaire
   - Hand
   - Gun
+  - BlobCollider
+  - PilotRoom
+  - TurretRoom
+  - Pantry
+  - Airlock
+  - TrashBattery
   layers:
   - Default
   - TransparentFX

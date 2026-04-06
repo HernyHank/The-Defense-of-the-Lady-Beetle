@@ -5,53 +5,82 @@ using Valve.VR.InteractionSystem;
 
 public class ButtonPress : MonoBehaviour
 {
-
-    public Animator animator;
-
-    public int buttonNumber = 0;
-    // Start is called before the first frame update
-    void Start()
+    public enum ButtonType
     {
-        animator = GetComponent<Animator>();
+        Door,
+        Turret
     }
 
-    // Update is called once per frame
-    void Update()
+    public Material normalMaterial;
+    public Material warningMaterial;
+    public Material inactiveMaterial;
+
+    private Renderer myRenderer;
+
+    public Animator animator;
+    public int buttonNumber = 0;
+    // Start is called before the first frame update
+    [Header("Settings")]
+    public ButtonType typeOfButton; // This creates the dropdown in the Inspector
+    void Awake()
     {
-        //Debug
-/*        if(Input.GetKeyDown(KeyCode.P))
-        {
-            animator.SetBool("buttonIsPressed", true);
-        }*/
-
-
+        // 2. Grab the Renderer component once at the start
+        animator = GetComponent<Animator>();
+        myRenderer = GetComponent<Renderer>();
     }
 
     private void OnHandHoverBegin(Hand hand)
     {
-        Debug.Log($"[VR] {hand.name} started hovering over {gameObject.name}");
-        TurretMonitorController Foo = this.GetComponentInParent<TurretMonitorController>();
-        Foo.OnPress(buttonNumber);
+        /*Debug.Log($"[VR] {hand.name} started hovering over {gameObject.name}");*/
 
-        animator.SetBool("buttonIsPressed", true);
+        // Check the type: If it's NOT a Door, we call the parent controller
+        if (typeOfButton != ButtonType.Door)
+        {
+            TurretMonitorController Foo = this.GetComponentInParent<TurretMonitorController>();
+            if (Foo != null)
+            {
+                Foo.OnPress(buttonNumber);
+            }
+        }
+        else
+        {
+            /*Debug.Log("Button is a Door type - Skipping Turret Controller.");*/
+        }
+
+        if (animator != null)
+        {
+            animator.SetBool("buttonIsPressed", true);
+        }
     }
 
-    // Triggered by Hand.cs Line 195
-    private void OnHandHoverEnd(Hand hand)
+    public void SetMaterial(string materialType)
     {
-        Debug.Log($"[VR] {hand.name} stopped hovering.");
+        // 3. Switch based on the string sent by the button press
+        switch (materialType)
+        {
+            case "Normal":
+                myRenderer.material = normalMaterial;
+                break;
+            case "Warning":
+                myRenderer.material = warningMaterial;
+                break;
+            case "Inactive":
+                myRenderer.material = inactiveMaterial;
+                break;
+            default:
+                Debug.LogWarning("Material type not recognized!");
+                break;
+        }
     }
 
-    // Triggered by Hand.cs Line 419
-    private void OnAttachedToHand(Hand hand)
+    public ButtonType GetButtonType()
     {
-        Debug.Log($"[VR] Attached to {hand.name}!");
+        return typeOfButton;
     }
 
-    // Triggered by Hand.cs Line 523
-    private void OnDetachedFromHand(Hand hand)
-    {
-        Debug.Log("[VR] Detached from hand.");
-    }
+    // Rest of your SteamVR methods...
+    /*    private void OnHandHoverEnd(Hand hand) => Debug.Log($"[VR] {hand.name} stopped hovering.");
+        private void OnAttachedToHand(Hand hand) => Debug.Log($"[VR] Attached to {hand.name}!");
+        private void OnDetachedFromHand(Hand hand) => Debug.Log("[VR] Detached from hand.");*/
 
 }

@@ -19,7 +19,7 @@ public class doorIsOpen : StateMachineBehaviour
     // OnStateExit is called when a transition ends and the state machine finishes evaluating this state
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        Debug.Log("door is open");
+        /*Debug.Log("door is open");*/
         DoorPresser script = animator.GetComponent<DoorPresser>();
         script.doorFinishedOpening();
     }

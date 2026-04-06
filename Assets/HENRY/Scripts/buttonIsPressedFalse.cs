@@ -24,10 +24,14 @@ public class buttonIsPressedFalse : StateMachineBehaviour
 
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
+        ButtonPress buttonScript = animator.GetComponent<ButtonPress>();
         animator.SetBool("buttonIsPressed", false);
-        DoorPresser script = animator.GetComponentInParent<DoorPresser>();
 
-        script.buttonFinishedPressing();
+        if (buttonScript.GetButtonType() == ButtonPress.ButtonType.Door)
+        {
+            DoorPresser doorScript = animator.GetComponentInParent<DoorPresser>();
+            doorScript.buttonFinishedPressing();
+        }    
     }
 
     // OnStateMove is called right after Animator.OnAnimatorMove()
