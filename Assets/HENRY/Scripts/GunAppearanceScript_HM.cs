@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GunAppearanceScript_HM : MonoBehaviour
@@ -7,32 +5,54 @@ public class GunAppearanceScript_HM : MonoBehaviour
     private Renderer gunRenderer;
     EventController controller;
 
+    [Header("Shooting Settings")]
+    public float cooldown = 0.5f;
+    private float lastShotTime;
+
+    // Optional: public state (other scripts can read this)
+    public bool isFiring { get; private set; }
+
+    // For detecting button press (not hold)
+    private bool previousButtonState = false;
+
     void Start()
     {
         controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
-        if(controller != null)
-        {
-            Debug.Log("found" + controller.name);
-        } else
-        {
-            Debug.Log("did NOT find controller");
-        }
+
         gunRenderer = GetComponent<Renderer>();
-        gunRenderer.enabled = false; // hide at start
+        gunRenderer.enabled = false;
     }
 
     void Update()
     {
-        //Debug.Log("Turret can shoot value: " + controller.turretCanShoot);
-        if (Input.GetKeyDown(KeyCode.K) && controller.turretCanShoot)
+        isFiring = false;
+
+        if (!controller.turretCanShoot) return;
+
+        bool currentButton = JoystickManager.Instance.button2;
+
+        // Detect "button down" (pressed this frame, not held)
+        bool buttonPressed = currentButton && !previousButtonState;
+
+        if (buttonPressed && Time.time >= lastShotTime + cooldown)
         {
-            gunRenderer.enabled = true;
-           // Debug.Log("gun is shot");
+            Fire();
         }
 
-        if (Input.GetKeyUp(KeyCode.K))
-        {
-            gunRenderer.enabled = false;
-        }
+        previousButtonState = currentButton;
+    }
+
+    void Fire()
+    {
+        lastShotTime = Time.time;
+        isFiring = true;
+
+        gunRenderer.enabled = true;
+        Invoke(nameof(StopFiring), 0.1f); // how long the cylinder shows
+    }
+
+    void StopFiring()
+    {
+        gunRenderer.enabled = false;
     }
 }
