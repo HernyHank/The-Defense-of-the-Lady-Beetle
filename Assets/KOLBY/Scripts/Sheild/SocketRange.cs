@@ -5,7 +5,21 @@ using System.Collections;
 public class BatterySnapZone : MonoBehaviour
 {
     public Transform snapPoint;
+
+    public enum SnapZoneType
+    {
+        Generator,
+        Trash
+    }
+
+    public SnapZoneType zoneType;
+
+    public Animator doorAnimator;          // Only used for Trash
+    public Transform ejectDirection;       // Empty GameObject pointing outward
+    public float ejectForce = 5f;
+
     private Interactable currentBattery;
+
     public bool IsBatteryInZone(GameObject obj)
     {
         return currentBattery != null && currentBattery.gameObject == obj;
@@ -13,31 +27,42 @@ public class BatterySnapZone : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Interactable interactable = other.GetComponent<Interactable>();
-        if (interactable != null)
+        BatterySnap battery = other.GetComponent<BatterySnap>();
+        if (battery != null)
         {
-            currentBattery = interactable;
+            currentBattery = battery.GetComponent<Interactable>();
+            battery.SetCurrentZone(this);
         }
     }
 
     private void OnTriggerExit(Collider other)
     {
-        if (currentBattery != null && other.gameObject == currentBattery.gameObject)
+        BatterySnap battery = other.GetComponent<BatterySnap>();
+
+        if (battery != null)
         {
-            currentBattery = null;
+            battery.ClearZone(this);
+
+            if (currentBattery != null && other.gameObject == currentBattery.gameObject)
+            {
+                currentBattery = null;
+            }
         }
     }
 
-    public void TrySnap()
+    public void TrySnap(BatterySnap battery)
     {
         if (currentBattery != null)
         {
-            StartCoroutine(SnapToPosition(currentBattery.transform));
+            StartCoroutine(SnapToPosition(battery));
         }
     }
-    IEnumerator SnapToPosition(Transform obj)
+
+    IEnumerator SnapToPosition(BatterySnap battery)
     {
+        Transform obj = battery.transform;
         Rigidbody rb = obj.GetComponent<Rigidbody>();
+
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
@@ -60,5 +85,79 @@ public class BatterySnapZone : MonoBehaviour
 
         obj.position = snapPoint.position;
         obj.rotation = snapPoint.rotation;
+
+        // ?? SNAP FINISHED ? decide what happens
+        OnBatterySnapped(battery);
+    }
+
+    void OnBatterySnapped(BatterySnap battery)
+    {
+        if (zoneType == SnapZoneType.Generator)
+        {
+            HandleGenerator(battery);
+        }
+        else if (zoneType == SnapZoneType.Trash)
+        {
+            HandleTrash(battery);
+        }
+    }
+
+    void HandleGenerator(BatterySnap battery)
+    {
+        if (battery.currentState == BatterySnap.BatteryState.Full)
+        {
+            Debug.Log("Generator powered!");
+            // TODO: Stop alarm here
+        }
+        else
+        {
+            Debug.Log("Empty battery - still broken.");
+            // TODO: Keep alarm going
+        }
+    }
+
+    void HandleTrash(BatterySnap battery)
+    {
+        if (battery.currentState == BatterySnap.BatteryState.Empty)
+        {
+            StartCoroutine(DisposeBattery(battery));
+        }
+        else
+        {
+            Debug.Log("Full battery inserted into trash - doing nothing.");
+        }
+    }
+
+    IEnumerator DisposeBattery(BatterySnap battery)
+    {
+        battery.SetInteractable(false);
+
+        // Close door
+        if (doorAnimator != null)
+        {
+            doorAnimator.SetTrigger("ChuteClose");
+        }
+
+        yield return new WaitForSeconds(1f);
+
+        Rigidbody rb = battery.GetComponent<Rigidbody>();
+        rb.isKinematic = false;
+        rb.useGravity = false;
+
+        if (ejectDirection != null)
+        {
+            rb.AddForce(ejectDirection.forward * ejectForce, ForceMode.Impulse);
+        }
+
+        yield return new WaitForSeconds(0.5f);
+
+        if (doorAnimator != null)
+        {
+            doorAnimator.SetTrigger("ChuteOpen");
+        }
+
+        yield return new WaitForSeconds(4f);
+
+        Destroy(battery.gameObject);
     }
 }

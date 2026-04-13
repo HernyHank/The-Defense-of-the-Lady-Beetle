@@ -53,7 +53,8 @@ public class BatteryPhysicsGrab : MonoBehaviour
 
         if (snapZone != null && snapZone.IsBatteryInZone(gameObject))
         {
-            snapZone.TrySnap();
+            BatterySnap battery = GetComponent<BatterySnap>();
+            snapZone.TrySnap(battery);
         }
         else
         {

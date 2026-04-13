@@ -3,22 +3,58 @@ using Valve.VR.InteractionSystem;
 
 public class BatterySnap : MonoBehaviour
 {
-    public BatterySnapZone snapZone;
+    private BatterySnapZone currentZone;
+
+    public enum BatteryState
+    {
+        Full,
+        Empty
+    }
+
+    public BatteryState currentState = BatteryState.Full;
+
+    private Interactable interactable;
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        interactable = GetComponent<Interactable>();
+        rb = GetComponent<Rigidbody>();
+    }
 
     private void OnDetachedFromHand(Hand hand)
     {
-      
-
-        if(snapZone.IsBatteryInZone(this.gameObject))
-{
-            snapZone.TrySnap();
+        if (currentZone != null)
+        {
+            currentZone.TrySnap(this);
         }
-else
+        else
         {
             // Normal drop
-            Rigidbody rb = GetComponent<Rigidbody>();
             rb.isKinematic = false;
             rb.useGravity = true;
+        }
+    }
+
+    // Called by SnapZone
+    public void SetCurrentZone(BatterySnapZone zone)
+    {
+        currentZone = zone;
+    }
+
+    public void ClearZone(BatterySnapZone zone)
+    {
+        if (currentZone == zone)
+        {
+            currentZone = null;
+        }
+    }
+
+    public void SetInteractable(bool enabled)
+    {
+        if (interactable != null)
+        {
+            interactable.enabled = enabled;
         }
     }
 }

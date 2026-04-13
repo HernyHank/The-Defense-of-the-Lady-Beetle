@@ -15,7 +15,8 @@ public class BatterySnap_DW : MonoBehaviour
 
         if(snapZone.IsBatteryInZone(this.gameObject))
 {
-            snapZone.TrySnap();
+            BatterySnap battery = GetComponent<BatterySnap>();
+            snapZone.TrySnap(battery);
         }
 else
         {
