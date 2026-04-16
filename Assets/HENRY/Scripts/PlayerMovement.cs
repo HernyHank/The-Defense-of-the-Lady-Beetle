@@ -350,6 +350,11 @@ public class VRPlayerMovement : MonoBehaviour
 
         isPeeing = !playerCanMove;
     }
+
+    public void RealRoomModeBehavior(int mode)
+    {
+
+    }
 }
 
 

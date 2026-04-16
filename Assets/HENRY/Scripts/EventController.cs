@@ -72,6 +72,8 @@ public class EventController : MonoBehaviour
         {
             EventCaller();
         }
+
+        RoomConditionals(); 
         //Debug.Log(currentRoom);
     }
 
@@ -210,6 +212,36 @@ public class EventController : MonoBehaviour
     {
         currentRoom = room;
         Debug.Log(currentRoom);
+    }
+
+    public bool pilotMode = false;
+
+    public void RoomConditionals()
+    {
+        if(currentRoom == "PilotRoom")
+        {
+            script.SetUIText("Hold Right Circle to enter Pilot Mode", true);
+            if(script.GetBState())
+            {
+                script.RealRoomModeBehavior(0);
+                script.SetUIText("You shouldn't see this", false);
+            }
+        }
+
+        if(currentRoom == "TurretRoom")
+        {
+            script.SetUIText("Hold Left Circle to enter Turret Mode", true);
+            if (script.GetBState())
+            {
+                script.RealRoomModeBehavior(1);
+                script.SetUIText("You shouldn't see this", false);
+            }
+        }
+
+        if(currentRoom == "InBetweenRooms")
+        {
+            script.SetUIText("You shouldn't see this", false);
+        }
     }
 
     //---------------------------------------------//
