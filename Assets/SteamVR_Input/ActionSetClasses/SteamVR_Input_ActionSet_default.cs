@@ -137,6 +137,14 @@ namespace Valve.VR
             }
         }
         
+        public virtual SteamVR_Action_Boolean bIsDoublePressed
+        {
+            get
+            {
+                return SteamVR_Actions.default_bIsDoublePressed;
+            }
+        }
+        
         public virtual SteamVR_Action_Vibration Haptic
         {
             get

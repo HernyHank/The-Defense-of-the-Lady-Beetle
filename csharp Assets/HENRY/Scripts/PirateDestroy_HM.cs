@@ -35,11 +35,6 @@ public class PirateDestroy_HM : MonoBehaviour
 
     public void getParentAndSend()
     {
-
-        orbitAnimator.Rebind();
-        orbitAnimator.Update(0f);
-        bodyAnimator.Rebind();
-        bodyAnimator.Update(0f);
         // Safely walk up the hierarchy with a hard limit to avoid infinite loops
         Transform currentParent = transform;
         const int maxLevelsUp = 10;

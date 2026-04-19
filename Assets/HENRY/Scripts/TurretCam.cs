@@ -38,6 +38,10 @@ public class TurretCam : MonoBehaviour
             float xInput = JoystickManager.Instance.xInput;
             float yInput = JoystickManager.Instance.yInput;
 
+            //DEBUG KEYBOARD INPUT
+/*            float xInput = Input.GetAxisRaw("Horizontal");
+            float yInput = Input.GetAxisRaw("Vertical");*/
+
             // Apply rotation
             yRotation += xInput * speed * Time.deltaTime;
             xRotation -= yInput * speed * Time.deltaTime;

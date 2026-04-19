@@ -12,6 +12,7 @@ public class VRPlayerMovement : MonoBehaviour
     public Hand activatedHand;// Set to "Left Hand" in Inspector
     public SteamVR_Action_Vector2 moveAction;
     public SteamVR_Action_Boolean bIsHeld;
+    public SteamVR_Action_Boolean bIsDoublePressed;
     public SteamVR_Action_Boolean sprint;
     public float speed = 2.0f;
     CharacterController controller;
@@ -28,7 +29,8 @@ public class VRPlayerMovement : MonoBehaviour
 
     private int rotationMode = 0;
 
-
+    public Transform pilotModeTransform;
+    public Transform turretModeTransform;
 
 
     void Start()
@@ -102,7 +104,7 @@ public class VRPlayerMovement : MonoBehaviour
     void Update()
     {
 
-        if (!playerIsRotating && !isClimbing && !isPeeing && !shipIsShaking)
+        if (!playerIsRotating && !isClimbing && !isPeeing && !shipIsShaking && !eventController.pilotMode && !eventController.turretMode)
         {
             MoveNormally(rotationMode);
         }
@@ -337,6 +339,11 @@ public class VRPlayerMovement : MonoBehaviour
         return bIsHeld.state;
     }
 
+    public bool GetBIsDoublePressedState()
+    {
+        return bIsDoublePressed.state;
+    }
+
     public void SetJoanTransform(Vector3 newPosition, Vector3 newRotation, bool playerCanMove)
     {
         if (controller != null) controller.enabled = false;
@@ -354,6 +361,37 @@ public class VRPlayerMovement : MonoBehaviour
     public void RealRoomModeBehavior(int mode)
     {
 
+        if(mode == 0)
+        {
+            transform.position = pilotModeTransform.position;
+            transform.rotation = pilotModeTransform.rotation;
+        }
+
+        if (mode == 1)
+        {
+            transform.position = turretModeTransform.position;
+            transform.rotation = turretModeTransform.rotation;
+        }
+    }
+
+    public void DisableController()
+    {
+        controller.enabled = false;
+    }
+
+    public void EnableController()
+    {
+        controller.enabled = true;
+    }
+
+    public void SetJoanTransform(int mode)
+    {
+        if(mode == 1)
+        {
+            Vector3 euler = transform.eulerAngles;
+            euler.x = 0f;
+            transform.eulerAngles = euler;
+        }
     }
 }
 

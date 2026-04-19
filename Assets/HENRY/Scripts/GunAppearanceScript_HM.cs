@@ -29,6 +29,7 @@ public class GunAppearanceScript_HM : MonoBehaviour
 
         if (!controller.turretCanShoot) return;
 
+        //JOYSTICK SHOOTy
         bool currentButton = JoystickManager.Instance.button2;
 
         // Detect "button down" (pressed this frame, not held)
@@ -39,6 +40,11 @@ public class GunAppearanceScript_HM : MonoBehaviour
             Fire();
         }
 
+        //DEBUG KEYBOARD SHOOTy
+        /*        if (Input.GetKeyDown(KeyCode.K))
+                {
+                    Fire();
+                }*/
         previousButtonState = currentButton;
     }
 

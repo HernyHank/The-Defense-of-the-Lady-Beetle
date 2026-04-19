@@ -25,7 +25,7 @@ public class JoystickManager : MonoBehaviour
 
     void Start()
     {
-        serial = new SerialPort("COM5", 115200);
+        serial = new SerialPort("COM3", 115200);
         serial.DtrEnable = true;
         serial.RtsEnable = true;
         serial.ReadTimeout = 50;

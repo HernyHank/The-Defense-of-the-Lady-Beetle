@@ -32,10 +32,10 @@ public class TurretMonitorController : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchToCam1();
+        /*if (Input.GetKeyDown(KeyCode.Alpha1)) SwitchToCam1();
         if (Input.GetKeyDown(KeyCode.Alpha2)) SwitchToCam2();
         if (Input.GetKeyDown(KeyCode.Alpha3)) SwitchToCam3();
-        if (Input.GetKeyDown(KeyCode.Alpha4)) SwitchToCam4();
+        if (Input.GetKeyDown(KeyCode.Alpha4)) SwitchToCam4();*/
     }
 
     public void OnPress(int x)

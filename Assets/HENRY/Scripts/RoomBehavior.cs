@@ -8,15 +8,15 @@ public class RoomBehavior : MonoBehaviour
     public EventController controller;
     void Awake()
     {
-        Debug.Log("Rooms is awake");
+        //Debug.Log("Rooms is awake");
         controller = GetComponentInParent<EventController>();
-        if(controller == null)
+        /*if(controller == null)
         {
             Debug.Log("Bruh");
         } else
         {
             Debug.Log("Controller found");
-        }
+        }*/
     }
 
     // Update is called once per frame

@@ -23,7 +23,7 @@ public class FlightControl_HM : MonoBehaviour
 
         bool shipIsMoving;
 
-        if (controller.currentRoom == "PilotRoom")
+        if (controller.currentRoom == "PilotRoom" && controller.pilotMode == true)
         {
             shipIsMoving = false;
             Joan.transform.SetParent(this.transform, true);
@@ -33,7 +33,7 @@ public class FlightControl_HM : MonoBehaviour
             float yInput = JoystickManager.Instance.yInput;
 
             // Apply input
-            vertical = -yInput;
+            vertical = yInput;
             horizontal = xInput;
 
             if (Mathf.Abs(horizontal) > 0 || Mathf.Abs(vertical) > 0)
@@ -57,11 +57,11 @@ public class FlightControl_HM : MonoBehaviour
             }*/
 
             // Tilt
-            float targetTiltX = -vertical * tiltAmount;
+            /*float targetTiltX = -vertical * tiltAmount;
             float targetTiltZ = -horizontal * tiltAmount;
 
             Quaternion targetRotation = Quaternion.Euler(targetTiltX, 0f, targetTiltZ);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * tiltSpeed);
+            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * tiltSpeed);*/
         }
         else
         {

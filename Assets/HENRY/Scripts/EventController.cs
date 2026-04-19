@@ -73,7 +73,7 @@ public class EventController : MonoBehaviour
             EventCaller();
         }
 
-        RoomConditionals(); 
+            RoomConditionals();
         //Debug.Log(currentRoom);
     }
 
@@ -215,26 +215,70 @@ public class EventController : MonoBehaviour
     }
 
     public bool pilotMode = false;
+    public bool turretMode = false;
+
+    bool doubleTapFlashed = false;
 
     public void RoomConditionals()
     {
         if(currentRoom == "PilotRoom")
         {
-            script.SetUIText("Hold Right Circle to enter Pilot Mode", true);
-            if(script.GetBState())
+            if (pilotMode == false)
             {
-                script.RealRoomModeBehavior(0);
-                script.SetUIText("You shouldn't see this", false);
+                script.SetUIText("Hold Right Circle to enter Pilot Mode", true);
+                if (script.GetBState())
+                {
+                    script.RealRoomModeBehavior(0);
+                    pilotMode = true;
+                    script.SetUIText("You shouldn't see this", false);
+                    script.DisableController();
+                }
+            } else if (pilotMode == true)
+            {
+                if (!doubleTapFlashed)
+                {
+                    script.SetUIText("Double Tap right circle to exit", true);
+                    FlashMode(3f);
+                    doubleTapFlashed = true;
+                }
+
+                if (script.GetBIsDoublePressedState())
+                {
+                    pilotMode = false;
+                    doubleTapFlashed = false;
+                    script.EnableController();
+                }
             }
         }
 
         if(currentRoom == "TurretRoom")
         {
-            script.SetUIText("Hold Left Circle to enter Turret Mode", true);
-            if (script.GetBState())
+            if (turretMode == false)
             {
-                script.RealRoomModeBehavior(1);
-                script.SetUIText("You shouldn't see this", false);
+                script.SetUIText("Hold Left Circle to enter Turret Mode", true);
+                if (script.GetBState())
+                {
+                    script.DisableController();
+                    script.RealRoomModeBehavior(1);
+                    turretMode = true;
+                    script.SetUIText("You shouldn't see this", false);
+                }
+            } else if (turretMode == true)
+            {
+                if (!doubleTapFlashed)
+                {
+                    script.SetUIText("Double Tap right circle to exit", true);
+                    FlashMode(3f);
+                    doubleTapFlashed = true;
+                }
+
+                if (script.GetBIsDoublePressedState())
+                {
+                    script.SetJoanTransform(1);
+                    script.EnableController();
+                    turretMode = false;
+                    doubleTapFlashed = false;
+                }
             }
         }
 
@@ -342,6 +386,8 @@ public class EventController : MonoBehaviour
             StartCoroutine(AmbushSequence());
         }
 
+        DestroyShipOpt();
+
         // This event only "completes" when all ships are destroyed (or whatever your win condition is)
         if (ambushStarted && AllShipsDestroyed() && shipCountReachedTwo)
         {
@@ -352,6 +398,40 @@ public class EventController : MonoBehaviour
         }
 
         return false;
+    }
+
+    public void DestroyShipOpt()
+    {
+        if (Input.GetKeyDown(KeyCode.Alpha0))
+        {
+            DestroyShipFromController(0);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha1))
+        {
+            DestroyShipFromController(1);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            DestroyShipFromController(2);
+        }
+        if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            DestroyShipFromController(3);
+        }
+    }
+
+    public void DestroyShipFromController(int index)
+    {
+        if(shipsAfoot[index])
+        {
+
+            GameObject cameraObj = GameObject.Find("CameraJoint (" + index + ")");
+            PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
+            PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
+            pirateGoonScript.getParentAndSend();
+
+            DestroyShip(index);
+        }
     }
 
     // A new helper function to check if the sea is clear
@@ -382,6 +462,7 @@ public class EventController : MonoBehaviour
         // Wave 1: Spawn 2 ships with a delay between them
         SpawnSingleShip();
         yield return new WaitForSeconds(3f);
+        SpawnSingleShip();
 
         /*SpawnSingleShip();*/
 
@@ -392,64 +473,67 @@ public class EventController : MonoBehaviour
     List<int> emptySlots = new List<int>();
     private void SpawnSingleShip()
     {
+        // Build a fresh list of available slots each call to avoid accumulation bugs
+        List<int> availableSlots = new List<int>();
         for (int i = 0; i < shipsAfoot.Length; i++)
         {
-            if (!shipsAfoot[i]) emptySlots.Add(i);
+            if (!shipsAfoot[i]) availableSlots.Add(i);
         }
 
-        if (emptySlots.Count > 0)
+        if (availableSlots.Count == 0)
         {
-            /*int chosenSlot = emptySlots[Random.Range(0, emptySlots.Count)];*/
-            int chosenSlot = 2;
-           
-            shipsAfoot[chosenSlot] = true;
-            emptySlots.Remove(chosenSlot);
-
-            //get the camera the ship is parented to
-            GameObject cameraObj = GameObject.Find("CameraJoint (" + chosenSlot + ")");
-            Debug.Log(cameraObj + " is active");
-            if(cameraObj != null)
-            {
-               // Debug.Log("found " + cameraObj.name);
-            } else
-            {
-                Debug.Log("Did not find camera join");
-            }
-            
-            //get the orbitScript
-            PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
-
-            //Get the specific pirate ship object
-            PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
-/*            if (pirateGoonScript != null)
-            {
-                Debug.Log("Pirate goon script FOUND on: " + pirateGoonScript.gameObject.name);
-                pirateGoonScript.gameObject.SetActive(true);
-            } else
-            {
-                Debug.Log("Pirate goon script NOT found on " + cameraObj.name);
-            }*/
-
-            if (script != null) {
-                //Debug.Log("found script" + script.name);
-            } else
-            {
-                Debug.Log("found object but not script");
-            }
-
-            Transform child = turretMonitor.transform.Find("Button " + chosenSlot);
-            if (child != null)
-            {
-               // Debug.Log("Found child: " + child.name);
-            } else
-            {
-                Debug.Log("Uh oh null child");
-            }
-            ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();
-
-            script.SpawnPirateShip();
-            StartCoroutine(PirateAttackRoutine(script, buttonScript, 5.0f, Random.Range(1, 4)));
+            Debug.Log("SpawnSingleShip: no available slots to spawn.");
+            return;
         }
+
+        int chosenSlot = availableSlots[Random.Range(0, availableSlots.Count)];
+
+        // Mark the slot occupied immediately
+        shipsAfoot[chosenSlot] = true;
+
+        //get the camera the ship is parented to
+        GameObject cameraObj = GameObject.Find("CameraJoint (" + chosenSlot + ")");
+        if (cameraObj == null)
+        {
+            Debug.LogWarning($"SpawnSingleShip: CameraJoint ({chosenSlot}) not found.");
+            // rollback occupancy so future spawns can try this slot again
+            shipsAfoot[chosenSlot] = false;
+            return;
+        }
+
+        //get the orbitScript
+        PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
+        if (script == null)
+        {
+            Debug.LogWarning($"SpawnSingleShip: PirateShip_HM not found under {cameraObj.name}.");
+            shipsAfoot[chosenSlot] = false;
+            return;
+        }
+
+        // Optionally enable pirate goon object if present
+        PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
+        if (pirateGoonScript != null)
+        {
+            pirateGoonScript.gameObject.SetActive(true);
+        }
+
+        // Find turret button and its script (guarded)
+        Transform child = turretMonitor.transform.Find("Button " + chosenSlot);
+        ButtonPress buttonScript = null;
+        if (child != null)
+        {
+            buttonScript = child.GetComponentInChildren<ButtonPress>();
+            if (buttonScript == null)
+                Debug.LogWarning($"SpawnSingleShip: ButtonPress not found for Button {chosenSlot}.");
+        }
+        else
+        {
+            Debug.LogWarning($"SpawnSingleShip: Button {chosenSlot} not found on turretMonitor.");
+        }
+
+        // Spawn and schedule attack
+        script.SpawnPirateShip();
+        StartCoroutine(PirateAttackRoutine(script, buttonScript, 5.0f, Random.Range(1, 4)));
     }
     private IEnumerator PirateAttackRoutine(PirateShip_HM script, ButtonPress buttonScript, float waitTime, int attackMode)
     {
@@ -509,6 +593,8 @@ public class EventController : MonoBehaviour
             StartCoroutine(AmbushSequence2());
         }
 
+        DestroyShipOpt();
+
         // This event only "completes" when all ships are destroyed (or whatever your win condition is)
         if (ambushStarted && GetRemainingShips() == 1 && shipsHasGoneUpTo4)
         {
@@ -524,7 +610,7 @@ public class EventController : MonoBehaviour
     {
         SpawnSingleShip();
         SpawnSingleShip();
-        yield return new WaitForSeconds(5f);
+        yield return new WaitForSeconds(0f);
         SpawnSingleShip();
         SpawnSingleShip();
         shipsHasGoneUpTo4 = true;
