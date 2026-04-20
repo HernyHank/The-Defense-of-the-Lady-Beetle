@@ -5,6 +5,7 @@ using System.Collections;
 public class BatterySnapZone : MonoBehaviour
 {
     public Transform snapPoint;
+    public EventController eventController;
 
     public enum SnapZoneType
     {
@@ -19,6 +20,11 @@ public class BatterySnapZone : MonoBehaviour
     public float ejectForce = 5f;
 
     private Interactable currentBattery;
+
+    public void Awake()
+    {
+        eventController = FindObjectOfType<EventController>();
+    }
 
     public bool IsBatteryInZone(GameObject obj)
     {
@@ -108,6 +114,7 @@ public class BatterySnapZone : MonoBehaviour
         {
             Debug.Log("Generator powered!");
             // TODO: Stop alarm here
+            eventController.goodBatteryInPlace = true;
         }
         else
         {
@@ -121,6 +128,8 @@ public class BatterySnapZone : MonoBehaviour
         if (battery.currentState == BatterySnap.BatteryState.Empty)
         {
             StartCoroutine(DisposeBattery(battery));
+            Debug.Log("batteryShotIntoSpace = true called");
+            eventController.batteryShotIntoSpace = true;
         }
         else
         {

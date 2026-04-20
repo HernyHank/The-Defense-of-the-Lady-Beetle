@@ -24,13 +24,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7100042987746071271}
   serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalRotation: {x: -0.0000002384185, y: 0.70722795, z: -0.00000008940694, w: 0.7069857}
   m_LocalPosition: {x: 0.0871, y: 0.0134, z: -0.0108}
   m_LocalScale: {x: 0.14279638, y: 0.14279643, z: 0.1427964}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 7741300749702788654}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 90.02, z: 0}
 --- !u!1001 &7846424459270590917
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -225,8 +225,8 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6928067472391122068}
   serializedVersion: 4
-  m_Mass: 1
-  m_Drag: 0
+  m_Mass: 117.77
+  m_Drag: 368.82
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
@@ -315,7 +315,7 @@ MonoBehaviour:
   shootPoint: {fileID: 2747761211368874215}
   shootForce: 30
   triggerAction:
-    actionPath: /actions/default/in/GrabGrip
+    actionPath: /actions/default/in/GrabPinch
     needsReinit: 0
 --- !u!4 &7741300749702788654 stripped
 Transform:

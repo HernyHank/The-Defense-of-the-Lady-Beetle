@@ -4,12 +4,22 @@ using UnityEngine;
 
 public class GrowingBlob_DW : MonoBehaviour
 {
+    public enum BlobType
+    {
+        FrontWing,
+        BackWing,
+        PowerBank
+    }
 
-    public Animator blobAnimator;   // Animator on the empty orbit object
+    public Animator blobAnimator;
+    public EventController eventController;
+    // Animator on the empty orbit object
     // Start is called before the first frame update
+    public BlobType blobType;
     void Start()
     {
-        
+        eventController = FindObjectOfType<EventController>();
+        Debug.Log("Blobbing found event controller: " + eventController.name);
     }
 
     // Update is called once per frame
@@ -29,6 +39,12 @@ public class GrowingBlob_DW : MonoBehaviour
 
             Destroy(collision.gameObject);
 
+            if (blobType == BlobType.FrontWing)
+                eventController.frontWingBlobbed = true;
+            else if (blobType == BlobType.BackWing)
+                eventController.backWingBlobbed = true;
+            else if (blobType == BlobType.PowerBank)
+                eventController.powerBankBlobbed = true;
         }
         else
         {

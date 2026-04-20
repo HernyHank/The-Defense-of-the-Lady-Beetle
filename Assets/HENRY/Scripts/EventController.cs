@@ -32,7 +32,8 @@ public class EventController : MonoBehaviour
     [Header("Breach")]
     public GameObject CameraParent;
     public float breachTimer = 80f;
-    public bool wingHoleBlobbed = false;
+    public bool frontWingBlobbed = false;
+    public bool backWingBlobbed = false;
     public bool powerBankBlobbed = false;
     public GameObject turretUIObject;
 
@@ -282,10 +283,11 @@ public class EventController : MonoBehaviour
             }
         }
 
-        if(currentRoom == "InBetweenRooms")
-        {
-            script.SetUIText("You shouldn't see this", false);
-        }
+    }
+
+    public void EventControllerSetText(string text, bool shouldShow)
+    {
+        script.SetUIText(text, shouldShow);
     }
 
     //---------------------------------------------//
@@ -297,13 +299,25 @@ public class EventController : MonoBehaviour
     //---------------------------------------------//
     //---------------------------------------------//
     //---------------------------------------------//
+    private bool wakeUpTimerSet = false;
     private bool TheWakeUp() {
 
         if (Input.GetKeyDown(KeyCode.L))
         {
             return true;
         }
-        
+
+        if (!wakeUpTimerSet)
+        {
+            SetTimer(3f); // Set a timer for 5 seconds
+            wakeUpTimerSet = true;
+        }
+
+        if (IsTimerFinished())
+        {
+            return true; // Timer finished, event is complete
+        }
+
         return false;    
     }
 
@@ -640,7 +654,7 @@ public class EventController : MonoBehaviour
             PlayerDeathSequence();
         }
 
-        if (wingHoleBlobbed && powerBankBlobbed)
+        if (frontWingBlobbed && backWingBlobbed && powerBankBlobbed)
         {
             turretCanShoot = true;
             return true;
@@ -659,19 +673,18 @@ public class EventController : MonoBehaviour
         return true;
     }
 
-    private bool Calibration() 
-    {
-        turretCanShoot = true;
-        turretUIObject.SetActive(false);
+    private bool Calibration()
+    { 
         if (goodBatteryInPlace)
         {
 
             TurretMonitorController turretScript = turretMonitor.GetComponent<TurretMonitorController>();
             turretScript.enabled = true;
-            
-            TextMeshProUGUI turretUI = turretMonitor.GetComponentInChildren<TextMeshProUGUI>();
-            turretUI.enabled = false;
-        }
+
+            turretUIObject.SetActive(false);
+        } 
+
+
         if(batteryShotIntoSpace && goodBatteryInPlace && AllShipsDestroyed())
         {
             return true;

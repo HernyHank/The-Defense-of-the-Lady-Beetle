@@ -41,7 +41,7 @@ public class RoomBehavior : MonoBehaviour
         {
             controller.SetCurrentRoom("InBetweenRooms");
             Debug.Log("Player exited");
-
+            controller.EventControllerSetText("you shouldn't see this", false);
         }
     }
 }

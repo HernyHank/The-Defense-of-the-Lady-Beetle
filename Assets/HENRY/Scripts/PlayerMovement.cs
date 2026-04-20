@@ -19,6 +19,8 @@ public class VRPlayerMovement : MonoBehaviour
     float verticalVelocity;
     public float gravity = -1f;
 
+    public GameObject floorColliders;
+
     public Animator animator;
     public TextMeshProUGUI UIText;
 
@@ -26,6 +28,7 @@ public class VRPlayerMovement : MonoBehaviour
     public bool isClimbing = false;
     public bool isPeeing = false;
     public bool shipIsShaking = false;
+    public bool isOutsideShip = false;
 
     private int rotationMode = 0;
 
@@ -60,16 +63,24 @@ public class VRPlayerMovement : MonoBehaviour
             //first Collider
             if (other.CompareTag("RotationToggler"))
             {
-                /*Debug.Log("First one a go");*/
-                UIText.SetText("Hold B to rotate");
-                UIText.gameObject.SetActive(true);
+                Debug.Log("RotationToggler Entered");
+                SetUIText("Hold B to rotate", true);
 
                 //bHeld
                 if (bIsHeld.GetState(rightHand) == true)
                 {
                     animator.SetBool("isOutsideShip", !animator.GetBool("isOutsideShip"));
+                    SetUIText("You shouldn't see this", false);
+
+                    isOutsideShip = !isOutsideShip;
+                    if (isOutsideShip)
+                    {
+                        floorColliders.SetActive(false);
+                    } else
+                    {
+                        floorColliders.SetActive(true);
+                    }
                     playerIsRotating = true;
-                    UIText.gameObject.SetActive(false);
                 }
             }
             //second Collider
@@ -94,10 +105,10 @@ public class VRPlayerMovement : MonoBehaviour
     {
         if (other.CompareTag("RotationToggler") || other.CompareTag("Rotation2ggler"))
         {
-            UIText.gameObject.SetActive(false);
+            SetUIText("You shouldn't see this", false);
         }
 
-       // eventController.SetCurrentRoom("InBetweenRooms");
+        // eventController.SetCurrentRoom("InBetweenRooms");
     }
 
 
