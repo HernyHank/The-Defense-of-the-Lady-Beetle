@@ -8,7 +8,8 @@ public class BatterySnap : MonoBehaviour
     public enum BatteryState
     {
         Full,
-        Empty
+        Empty,
+        Torpedo
     }
 
     public BatteryState currentState = BatteryState.Full;

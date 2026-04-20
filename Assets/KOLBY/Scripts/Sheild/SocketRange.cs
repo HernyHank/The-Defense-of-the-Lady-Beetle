@@ -6,11 +6,13 @@ public class BatterySnapZone : MonoBehaviour
 {
     public Transform snapPoint;
     public EventController eventController;
+    public Animator torpedoAnimator;
 
     public enum SnapZoneType
     {
         Generator,
-        Trash
+        Trash,
+        TorpedoBay
     }
 
     public SnapZoneType zoneType;
@@ -106,6 +108,10 @@ public class BatterySnapZone : MonoBehaviour
         {
             HandleTrash(battery);
         }
+        else if (zoneType == SnapZoneType.TorpedoBay)
+        {
+            HandleTorpedo(battery);
+        }
     }
 
     void HandleGenerator(BatterySnap battery)
@@ -134,6 +140,18 @@ public class BatterySnapZone : MonoBehaviour
         else
         {
             Debug.Log("Full battery inserted into trash - doing nothing.");
+        }
+    }
+
+    void HandleTorpedo(BatterySnap battery)
+    {
+        if (battery.currentState == BatterySnap.BatteryState.Torpedo)
+        {
+            torpedoAnimator.SetTrigger("PrepTorpedo");
+        }
+        else
+        {
+            Debug.Log("Torpedo is not a battery");
         }
     }
 

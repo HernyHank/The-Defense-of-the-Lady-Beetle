@@ -12,7 +12,7 @@ public class PirateDestroy_HM : MonoBehaviour
 
     private void Awake()
     {
-        //controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
+        controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
         orbitAnimator = this.gameObject.transform.parent.GetComponent<Animator>();
         bodyAnimator = this.gameObject.GetComponent<Animator>();
     }

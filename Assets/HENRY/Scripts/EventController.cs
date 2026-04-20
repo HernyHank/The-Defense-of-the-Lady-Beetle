@@ -43,7 +43,13 @@ public class EventController : MonoBehaviour
 
     [Header("AsteroidField")]
     public int bossFightAsteroidCount = 1100;
-    public float bossAsteroidTimer = 20f;
+    public float bossAsteroidTimer = 60f;
+
+    [Header("BossFight")]
+    public GameObject bossTorpedo;
+    public bool torpedoHit = false;
+    public bool torpedoIsLoaded = false;
+    public GameObject bossShip;
 
 
     void Start()
@@ -74,7 +80,7 @@ public class EventController : MonoBehaviour
             EventCaller();
         }
 
-            RoomConditionals();
+        RoomConditionals();
         //Debug.Log(currentRoom);
     }
 
@@ -729,9 +735,23 @@ public class EventController : MonoBehaviour
             asteroidsShouldBeSpawned = false;
         }
 
+        if (torpedoIsLoaded)
+        {
+            if (JoystickManager.Instance.button1)
+            {
+                TorpedoHoming torpedoScript = bossTorpedo.GetComponent<TorpedoHoming>();
+                torpedoScript.enabled = true;
+            }
+        }
+
 
         if (!bossFightStarted)
         {
+            TurretMonitorController turretScript = turretMonitor.GetComponent<TurretMonitorController>();
+            turretScript.enabled = true;
+            turretCanShoot = true;
+            turretUIObject.SetActive(false);
+            bossShip.SetActive(true);
             StartCoroutine(RealDealBossFight());
             bossFightStarted = true;
         }
@@ -772,6 +792,7 @@ public class EventController : MonoBehaviour
         SpawnSingleShip();
         SpawnSingleShip();
         yield return new WaitUntil(() => AllShipsDestroyed());
+        yield return new WaitUntil(() => torpedoHit);
 
         bossFightComplete = true;
     }
