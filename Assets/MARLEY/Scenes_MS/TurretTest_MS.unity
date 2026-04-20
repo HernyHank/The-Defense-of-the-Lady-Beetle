@@ -571,7 +571,7 @@ ParticleSystem:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 239267110}
   serializedVersion: 8
-  lengthInSec: 5
+  lengthInSec: 1
   simulationSpeed: 1
   stopAction: 0
   cullingMode: 0
@@ -580,7 +580,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -1194,7 +1194,7 @@ ParticleSystem:
   ShapeModule:
     serializedVersion: 6
     enabled: 1
-    type: 4
+    type: 13
     angle: 25
     length: 5
     boxThickness: {x: 0, y: 0, z: 0}
@@ -1203,7 +1203,7 @@ ParticleSystem:
     m_Position: {x: 0, y: 0, z: 0}
     m_Rotation: {x: 0, y: 0, z: 0}
     m_Scale: {x: 1, y: 1, z: 1}
-    placementMode: 0
+    placementMode: 1
     m_MeshMaterialIndex: 0
     m_MeshNormalOffset: 0
     m_MeshSpawn:
@@ -1263,7 +1263,7 @@ ParticleSystem:
           m_PostInfinity: 2
           m_RotationOrder: 4
     m_Mesh: {fileID: 0}
-    m_MeshRenderer: {fileID: 0}
+    m_MeshRenderer: {fileID: 566797783}
     m_SkinnedMeshRenderer: {fileID: 0}
     m_Sprite: {fileID: 0}
     m_SpriteRenderer: {fileID: 0}
@@ -5517,6 +5517,12 @@ Transform:
     type: 3}
   m_PrefabInstance: {fileID: 6220389903959872162}
   m_PrefabAsset: {fileID: 0}
+--- !u!23 &566797783 stripped
+MeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 491458161826663069, guid: c7bc84f727c81d24b9f8f54c72fec077,
+    type: 3}
+  m_PrefabInstance: {fileID: 6220389903959872162}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &616495353
 GameObject:
   m_ObjectHideFlags: 0
@@ -8902,6 +8908,11 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 926393133}
     m_Modifications:
+    - target: {fileID: 491458161826663069, guid: c7bc84f727c81d24b9f8f54c72fec077,
+        type: 3}
+      propertyPath: m_DynamicOccludee
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 491458161826663069, guid: c7bc84f727c81d24b9f8f54c72fec077,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
