@@ -33,18 +33,28 @@ public class GrowingBlob_DW : MonoBehaviour
         // Optional: ignore hitting the player
         if (collision.gameObject.CompareTag("BlobCollider"))
         {
+            blobAnimator = collision.gameObject.GetComponent<Animator>();
             if (blobAnimator != null)
-                blobAnimator.SetTrigger("BlobGrow");
+            {
+                if (blobType == BlobType.FrontWing)
+                {
+                    blobAnimator.SetTrigger("FrontWingGrow");
+                    eventController.frontWingBlobbed = true;
+                }
+                else if (blobType == BlobType.BackWing)
+                {
+                    blobAnimator.SetTrigger("BackWingGrow");
+                    eventController.backWingBlobbed = true;
+                }
+                else if (blobType == BlobType.PowerBank)
+                {
+                    blobAnimator.SetTrigger("PowerBankGrow");
+                    eventController.powerBankBlobbed = true;
+                }
+            }
             Debug.Log("hit blob collider");
 
             Destroy(collision.gameObject);
-
-            if (blobType == BlobType.FrontWing)
-                eventController.frontWingBlobbed = true;
-            else if (blobType == BlobType.BackWing)
-                eventController.backWingBlobbed = true;
-            else if (blobType == BlobType.PowerBank)
-                eventController.powerBankBlobbed = true;
         }
         else
         {
