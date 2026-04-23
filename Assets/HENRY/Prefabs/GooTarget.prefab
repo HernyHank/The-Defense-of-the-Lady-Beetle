@@ -278,4 +278,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d97df3654c3f32b429fd0d34ce1e235d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blobAnimator: {fileID: 3055059390131003268}
+  blobAnimator: {fileID: 0}
+  eventController: {fileID: 0}
+  blobType: 0

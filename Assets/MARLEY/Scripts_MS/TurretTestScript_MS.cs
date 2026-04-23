@@ -7,7 +7,7 @@ public class TurretTestScript_MS : MonoBehaviour
     private bool isColliding = false;
     private int pirateShotLayer;
 
-
+    public ParticleSystem particles; //assign in inspector
 
     private void OnTriggerEnter(Collider other)
     {
@@ -20,7 +20,14 @@ public class TurretTestScript_MS : MonoBehaviour
             if (Input.GetKey(KeyCode.K) && other.CompareTag("Gun"))
             {
                 Debug.Log("collPirate ship is destroyed!");
-                this.gameObject.SetActive(false);
+                
+                if (particles != null)
+                {
+                    particles.Play();
+                }
+
+                StartCoroutine(DisableAfterParticles());
+                //this.gameObject.SetActive(false);
             }
 
        
@@ -43,10 +50,21 @@ public class TurretTestScript_MS : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             Debug.Log("Pressed K. isColliding = " + isColliding);
-            
+        }
+    }
+
+    IEnumerator DisableAfterParticles()
+    {
+        if (particles != null)
+        {
+            yield return new WaitForSeconds(particles.main.duration);
+        }
+        else
+        {
+            yield return null;
         }
 
-        
-
+        this.gameObject.SetActive(false);
     }
+
 }
