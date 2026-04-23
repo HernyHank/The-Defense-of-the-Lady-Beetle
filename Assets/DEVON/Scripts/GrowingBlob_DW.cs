@@ -16,6 +16,7 @@ public class GrowingBlob_DW : MonoBehaviour
     // Animator on the empty orbit object
     // Start is called before the first frame update
     public BlobType blobType;
+    public Rigidbody rb;
     void Start()
     {
         eventController = FindObjectOfType<EventController>();
@@ -33,9 +34,11 @@ public class GrowingBlob_DW : MonoBehaviour
         // Optional: ignore hitting the player
         if (collision.gameObject.CompareTag("BlobCollider"))
         {
-            blobAnimator = collision.gameObject.GetComponent<Animator>();
+            blobAnimator = collision.gameObject.GetComponentInChildren<Animator>();
+            rb = collision.gameObject.GetComponent<Rigidbody>();
             if (blobAnimator != null)
             {
+                rb.isKinematic = true; // Make the blob stop moving
                 if (blobType == BlobType.FrontWing)
                 {
                     blobAnimator.SetTrigger("FrontWingGrow");
@@ -54,7 +57,7 @@ public class GrowingBlob_DW : MonoBehaviour
             }
             Debug.Log("hit blob collider");
 
-            Destroy(collision.gameObject);
+            //Destroy(collision.gameObject);
         }
         else
         {

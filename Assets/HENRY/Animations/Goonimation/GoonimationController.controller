@@ -26,7 +26,7 @@ AnimatorStateMachine:
     m_Position: {x: 910, y: -70, z: 0}
   - serializedVersion: 1
     m_State: {fileID: -8449603936427639935}
-    m_Position: {x: 688.29834, y: 306.29465, z: 0}
+    m_Position: {x: 690, y: 310, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 4026386406431530428}
     m_Position: {x: 960, y: 380, z: 0}
@@ -48,7 +48,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PowerBank_Grab
-  m_Speed: 1
+  m_Speed: 20
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 3268464541776932272}
@@ -291,7 +291,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: PowerBank_LOOP
-  m_Speed: 1
+  m_Speed: 10
   m_CycleOffset: 0
   m_Transitions: []
   m_StateMachineBehaviours: []
