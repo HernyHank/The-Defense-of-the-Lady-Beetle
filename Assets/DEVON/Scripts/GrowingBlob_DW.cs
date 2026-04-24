@@ -16,6 +16,7 @@ public class GrowingBlob_DW : MonoBehaviour
     // Animator on the empty orbit object
     // Start is called before the first frame update
     public BlobType blobType;
+    public Rigidbody rb;
     void Start()
     {
         eventController = FindObjectOfType<EventController>();
@@ -33,18 +34,30 @@ public class GrowingBlob_DW : MonoBehaviour
         // Optional: ignore hitting the player
         if (collision.gameObject.CompareTag("BlobCollider"))
         {
+            blobAnimator = collision.gameObject.GetComponentInChildren<Animator>();
+            rb = collision.gameObject.GetComponent<Rigidbody>();
             if (blobAnimator != null)
-                blobAnimator.SetTrigger("BlobGrow");
+            {
+                rb.isKinematic = true; // Make the blob stop moving
+                if (blobType == BlobType.FrontWing)
+                {
+                    blobAnimator.SetTrigger("FrontWingGrow");
+                    eventController.frontWingBlobbed = true;
+                }
+                else if (blobType == BlobType.BackWing)
+                {
+                    blobAnimator.SetTrigger("BackWingGrow");
+                    eventController.backWingBlobbed = true;
+                }
+                else if (blobType == BlobType.PowerBank)
+                {
+                    blobAnimator.SetTrigger("PowerBankGrow");
+                    eventController.powerBankBlobbed = true;
+                }
+            }
             Debug.Log("hit blob collider");
 
-            Destroy(collision.gameObject);
-
-            if (blobType == BlobType.FrontWing)
-                eventController.frontWingBlobbed = true;
-            else if (blobType == BlobType.BackWing)
-                eventController.backWingBlobbed = true;
-            else if (blobType == BlobType.PowerBank)
-                eventController.powerBankBlobbed = true;
+            //Destroy(collision.gameObject);
         }
         else
         {
