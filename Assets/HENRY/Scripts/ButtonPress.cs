@@ -33,8 +33,8 @@ public class ButtonPress : MonoBehaviour
     {
         /*Debug.Log($"[VR] {hand.name} started hovering over {gameObject.name}");*/
 
-        // Check the type: If it's NOT a Door, we call the parent controller
-        if (typeOfButton != ButtonType.Door)
+        // Check the type: If it's a Turret, we call the parent controller
+        if (typeOfButton == ButtonType.Turret)
         {
             TurretMonitorController Foo = this.GetComponentInParent<TurretMonitorController>();
             if (Foo != null)

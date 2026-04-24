@@ -40,7 +40,7 @@ public class TurretMonitorController : MonoBehaviour
 
     public void OnPress(int x)
     {
-        //Debug.Log(x + "was pressed");
+        Debug.Log(x + "was pressed");
         if(x == 1)
             SwitchToCam1();
         if(x == 2)
