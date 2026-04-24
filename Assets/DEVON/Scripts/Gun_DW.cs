@@ -7,11 +7,32 @@ public class Gun_DW : MonoBehaviour
     public Transform shootPoint;      // Where the laser comes out
     public float laserSpeed = 50f;    // Speed of laser
 
+    [Header("VFX")]
+    public GameObject particleObject; // Particle system GameObject to activate on Y
+
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Y))
         {
             Shoot();
+
+            if (particleObject != null)
+            {
+                // Ensure the GameObject is active
+                particleObject.SetActive(true);
+
+                // If it has a ParticleSystem, play it (handles prefab already active or activated here)
+                ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
+                if (ps != null)
+                {
+                    ps.Play();
+                }
+                else
+                {
+                    ParticleSystem psChild = particleObject.GetComponentInChildren<ParticleSystem>();
+                    if (psChild != null) psChild.Play();
+                }
+            }
         }
 
        // Debug.DrawRay(shootPoint.position, shootPoint.forward * 10f, Color.red, 2f);

@@ -878,7 +878,7 @@
     "m_ObjectId": "0e2d944eed6e413a9534f9b7014a3621",
     "m_Title": "Alpha FINAL",
     "m_Position": {
-        "x": 779.9999389648438,
+        "x": 780.0,
         "y": -276.0
     }
 }
@@ -1423,7 +1423,7 @@
     "m_ObjectId": "2fc7fcd3943e46b382b87685f2abee5b",
     "m_Title": "Fresnel + Texture 1 + Opacity",
     "m_Position": {
-        "x": 56.999996185302737,
+        "x": 57.0,
         "y": -277.0
     }
 }
@@ -2048,7 +2048,7 @@
     "m_ObjectId": "4bae9474942d4d23a293545280205d4e",
     "m_Title": "Base Color FINAL",
     "m_Position": {
-        "x": 652.9999389648438,
+        "x": 653.0,
         "y": -932.0
     }
 }
@@ -2684,7 +2684,7 @@
     "m_ObjectId": "78a0c0671d9b42959c816220978a41fc",
     "m_Title": "Texture 2 Opacity",
     "m_Position": {
-        "x": 1113.9998779296875,
+        "x": 1114.0,
         "y": -908.0
     }
 }
@@ -3192,7 +3192,7 @@
     "m_Title": "Texture 1 Opacity FULL",
     "m_Position": {
         "x": 538.0,
-        "y": 145.99996948242188
+        "y": 146.0
     }
 }
 

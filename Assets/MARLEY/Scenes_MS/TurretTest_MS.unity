@@ -4104,6 +4104,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3142206677969882362, guid: 3789b898799c76b488027f04fea77b76,
         type: 3}
+      propertyPath: lengthInSec
+      value: 0.3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3142206677969882362, guid: 3789b898799c76b488027f04fea77b76,
+        type: 3}
       propertyPath: ShapeModule.m_MeshRenderer
       value: 
       objectReference: {fileID: 566797783}
