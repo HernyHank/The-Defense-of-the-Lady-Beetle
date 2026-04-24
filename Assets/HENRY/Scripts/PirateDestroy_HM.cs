@@ -10,6 +10,9 @@ public class PirateDestroy_HM : MonoBehaviour
     Animator orbitAnimator;
     Animator bodyAnimator;
 
+    [Header("VFX")]
+    public GameObject explosionPrefab;
+
     private void Awake()
     {
         controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
@@ -23,6 +26,9 @@ public class PirateDestroy_HM : MonoBehaviour
         {
             Debug.Log("collPirate ship is destroyed!");
 
+            // Spawn explosion at this object's current position (last known coordinates)
+            SpawnExplosionAt(transform.position);
+
             orbitAnimator.Rebind();
             orbitAnimator.Update(0f);
             bodyAnimator.Rebind();
@@ -31,6 +37,53 @@ public class PirateDestroy_HM : MonoBehaviour
         }
 
         return;
+    }
+
+    private void SpawnExplosionAt(Vector3 position)
+    {
+        if (explosionPrefab == null)
+        {
+            Debug.LogWarning("PirateDestroy_HM: explosionPrefab is not assigned.");
+            return;
+        }
+
+        GameObject inst = Instantiate(explosionPrefab, position, Quaternion.identity);
+        StartCoroutine(AutoDestroyExplosion(inst));
+    }
+
+    private IEnumerator AutoDestroyExplosion(GameObject explosion)
+    {
+        if (explosion == null) yield break;
+
+        // Try to compute a safe lifetime from any child ParticleSystem(s)
+        float waitTime = 5f; // fallback
+
+        ParticleSystem ps = explosion.GetComponentInChildren<ParticleSystem>();
+        if (ps != null)
+        {
+            var main = ps.main;
+            float duration = main.duration;
+            float startLifetime = 0f;
+
+            // Handle MinMaxCurve safely
+            try
+            {
+                if (main.startLifetime.mode == ParticleSystemCurveMode.TwoConstants)
+                    startLifetime = main.startLifetime.constantMax;
+                else
+                    startLifetime = main.startLifetime.constant;
+            }
+            catch
+            {
+                // fall back to a small value if anything unexpected happens
+                startLifetime = 1f;
+            }
+
+            waitTime = duration + startLifetime + 0.5f;
+        }
+
+        yield return new WaitForSeconds(waitTime);
+        Destroy(explosion);
     }
 
     public void getParentAndSend()
