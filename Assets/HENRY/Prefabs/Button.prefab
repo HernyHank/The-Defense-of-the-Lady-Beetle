@@ -249,7 +249,7 @@ MonoBehaviour:
   normalMaterial: {fileID: 2100000, guid: 1c4e81671a6a6b340a98cc44f7114176, type: 2}
   warningMaterial: {fileID: 2100000, guid: 5c84b952902b8f743bd39380f8e69877, type: 2}
   inactiveMaterial: {fileID: 2100000, guid: 1c4e81671a6a6b340a98cc44f7114176, type: 2}
-  animator: {fileID: 908005535530339144}
+  animator: {fileID: 4648488807264047075}
   buttonNumber: 0
   typeOfButton: 0
 --- !u!114 &1381467925045500456
