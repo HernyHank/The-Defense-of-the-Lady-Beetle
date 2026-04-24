@@ -1,13 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using static UnityEngine.ParticleSystem;
+//using static UnityEngine.ParticleSystem;
 
 public class GunAppearanceScript_MS : MonoBehaviour
 {
     public float scaleTime = 1f; // time to fully grow/shrink
 
     private Vector3 targetScale;
+    private Vector3 shrinkTarget;
     private float fixedY;
     private bool isGrowing = false;
     private bool isShrinking = false;
