@@ -51,6 +51,9 @@ public class EventController : MonoBehaviour
     public bool torpedoIsLoaded = false;
     public GameObject bossShip;
 
+    [Header("ShipHealth")]
+    public int shipHealthMain = 100;
+
 
     void Start()
     {

@@ -2838,6 +2838,16 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 288655728}
     m_Modifications:
+    - target: {fileID: 1219843840255819309, guid: b6e583565a3a8964da091461d953de95,
+        type: 3}
+      propertyPath: gunType
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3139434388109234321, guid: b6e583565a3a8964da091461d953de95,
+        type: 3}
+      propertyPath: gunType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3290354693693126562, guid: b6e583565a3a8964da091461d953de95,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -2918,15 +2928,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: OrbitResst
       objectReference: {fileID: 0}
+    - target: {fileID: 6135391010461977965, guid: b6e583565a3a8964da091461d953de95,
+        type: 3}
+      propertyPath: gunType
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7149372199944777188, guid: b6e583565a3a8964da091461d953de95,
         type: 3}
       propertyPath: explosionPrefab
       value: 
       objectReference: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
         type: 3}
+    - target: {fileID: 8991852253178058390, guid: b6e583565a3a8964da091461d953de95,
+        type: 3}
+      propertyPath: gunType
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 738428328556038925, guid: b6e583565a3a8964da091461d953de95, type: 3}
+    - {fileID: 2526882905294625946, guid: b6e583565a3a8964da091461d953de95, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6e583565a3a8964da091461d953de95, type: 3}
@@ -8198,7 +8219,7 @@ ConfigurableJoint:
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
-  m_ConnectedAnchor: {x: -18.193, y: 3.5700002, z: 7.2909994}
+  m_ConnectedAnchor: {x: -0.07200099, y: -3.376, z: 14.799003}
   serializedVersion: 3
   m_SecondaryAxis: {x: 0, y: 1, z: 0}
   m_XMotion: 2
@@ -11286,6 +11307,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -535987413467698834, guid: 4ebdba779e08edc40984b9cd987fca2b,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 606832839490400114, guid: 4ebdba779e08edc40984b9cd987fca2b,
         type: 3}
       propertyPath: m_IsActive
@@ -13009,6 +13035,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 738428328556038925, guid: b6e583565a3a8964da091461d953de95, type: 3}
+    - {fileID: 2526882905294625946, guid: b6e583565a3a8964da091461d953de95, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6e583565a3a8964da091461d953de95, type: 3}
@@ -69662,6 +69689,7 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 738428328556038925, guid: b6e583565a3a8964da091461d953de95, type: 3}
+    - {fileID: 2526882905294625946, guid: b6e583565a3a8964da091461d953de95, type: 3}
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b6e583565a3a8964da091461d953de95, type: 3}

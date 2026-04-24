@@ -8,8 +8,12 @@ public class Gun_DW : MonoBehaviour
     public float laserSpeed = 50f;    // Speed of laser
 
     [Header("VFX")]
-    public GameObject particleObject; // Particle system GameObject to activate on Y
+    public GameObject particleObject;
+    
+    public enum GunType { Blob, Pirate }
+    public GunType gunType; // Example gun types
 
+    public bool pirateShoot = false;
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Y))
@@ -32,6 +36,31 @@ public class Gun_DW : MonoBehaviour
                     ParticleSystem psChild = particleObject.GetComponentInChildren<ParticleSystem>();
                     if (psChild != null) psChild.Play();
                 }
+            }
+        }
+
+        if(pirateShoot)
+        {
+            if (this.gunType == GunType.Pirate)
+            {
+                Shoot();
+                if (particleObject != null)
+                {
+                    // Ensure the GameObject is active
+                    particleObject.SetActive(true);
+                    // If it has a ParticleSystem, play it (handles prefab already active or activated here)
+                    ParticleSystem ps = particleObject.GetComponent<ParticleSystem>();
+                    if (ps != null)
+                    {
+                        ps.Play();
+                    }
+                    else
+                    {
+                        ParticleSystem psChild = particleObject.GetComponentInChildren<ParticleSystem>();
+                        if (psChild != null) psChild.Play();
+                    }
+                }
+                pirateShoot = false;
             }
         }
 
