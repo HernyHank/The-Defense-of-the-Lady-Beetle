@@ -13,7 +13,6 @@ public class EventController : MonoBehaviour
 
     [Header("Universals")]
     public VRPlayerMovement script;
-    public float beetleHealth = 100;
 
     [Header("Routine")]
     public pottyScript pottyScript;
@@ -161,11 +160,27 @@ public class EventController : MonoBehaviour
             }
         }
 
-        if(beetleHealth <= 0)
+        if(shipHealthMain <= 0)
         {
             PlayerDeathSequence();
         }
     }
+
+    public void RegenShip(int regenAmount)
+    {
+        shipHealthMain += regenAmount;
+        if(shipHealthMain > 100)
+        {
+            shipHealthMain = 100;
+        }
+        //Debug.Log("Ship regenerated " + regenAmount + " health. Current health: " + shipHealthMain);
+    }
+
+    public void DamageShip(int damageAmount)
+    {
+        shipHealthMain -= damageAmount;
+        //Debug.Log("Ship took " + damageAmount + " damage. Remaining health: " + shipHealthMain);
+    }   
 
     public IEnumerator FlashMode(float waitTime)
     {

@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerShip_Shake_HM : MonoBehaviour
 {
     public VRPlayerMovement playerScript;
+    public EventController controller;
 
     [Header("Shake Settings")]
     public float shakeDuration = 2f;
@@ -78,5 +79,6 @@ public class PlayerShip_Shake_HM : MonoBehaviour
         shakeDuration = duration;
         shakeIntensity = intensity;
         shakeTimer = duration;
+        controller.DamageShip(10);
     }
 }

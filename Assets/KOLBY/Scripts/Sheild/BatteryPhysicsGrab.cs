@@ -17,6 +17,9 @@ public class BatteryPhysicsGrab : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         interactable = GetComponent<Interactable>();
+
+        rb.useGravity = true;
+        rb.isKinematic = false;
     }
 
     private void FixedUpdate()

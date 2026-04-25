@@ -148,6 +148,7 @@ public class BatterySnapZone : MonoBehaviour
         if (battery.currentState == BatterySnap.BatteryState.Torpedo)
         {
             torpedoAnimator.SetTrigger("PrepTorpedo");
+            Debug.Log("torpedoTrigger set");
         }
         else
         {
