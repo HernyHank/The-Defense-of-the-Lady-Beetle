@@ -15,6 +15,9 @@ public class FlightControl_HM : MonoBehaviour
     private float horizontal;
     private float vertical;
 
+    // track whether Joan is parented to this ship to avoid repeated SetParent calls
+    private bool joanParentedToShip = false;
+
     void Update()
     {
         // Reset inputs
@@ -23,49 +26,65 @@ public class FlightControl_HM : MonoBehaviour
 
         bool shipIsMoving;
 
-        if (controller.currentRoom == "PilotRoom" && controller.pilotMode == true)
+        if (controller == null) return;
+
+        bool inPilotMode = controller.currentRoom == "PilotRoom" && controller.pilotMode == true;
+
+        // Parent/unparent Joan only when the mode actually changes
+        if (inPilotMode && !joanParentedToShip)
+        {
+            var cc = Joan.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = false; // disable before reparenting to avoid physics reconciliation jumps
+            Joan.transform.SetParent(this.transform, true);
+            joanParentedToShip = true;
+        }
+        else if (!inPilotMode && joanParentedToShip)
+        {
+            Joan.transform.SetParent(JoanPivot.transform, true);
+            var cc = Joan.GetComponent<CharacterController>();
+            if (cc != null) cc.enabled = true;
+            joanParentedToShip = false;
+        }
+
+        if (inPilotMode)
         {
             shipIsMoving = false;
-            Joan.transform.SetParent(this.transform, true);
 
-            // ? Get joystick input from manager
+            // Get joystick input from manager
             float xInput = JoystickManager.Instance.xInput;
             float yInput = JoystickManager.Instance.yInput;
 
-            // Apply input
+            // Apply input (NO deadzone here by request)
             vertical = yInput;
             horizontal = xInput;
 
-            if (Mathf.Abs(horizontal) > 0 || Mathf.Abs(vertical) > 0)
+            if (Mathf.Abs(horizontal) > 0f || Mathf.Abs(vertical) > 0f)
             {
                 shipIsMoving = true;
             }
 
-            // Toggle player controller
-            if (shipIsMoving)
-                Joan.GetComponent<CharacterController>().enabled = false;
-            else
-                Joan.GetComponent<CharacterController>().enabled = true;
-
-            // Movement
-            Vector3 move = new Vector3(horizontal, vertical, 0f) * moveSpeed * Time.deltaTime;
-            transform.position += move;
-
-            /*if (transform.position.magnitude > maxDistanceFromOrigin)
+            // Toggle player controller (keep it disabled while ship is moving)
+            var playerCC = Joan.GetComponent<CharacterController>();
+            if (playerCC != null)
             {
-                transform.position = transform.position.normalized * maxDistanceFromOrigin;
-            }*/
+                playerCC.enabled = !shipIsMoving;
+            }
 
-            // Tilt
-            /*float targetTiltX = -vertical * tiltAmount;
-            float targetTiltZ = -horizontal * tiltAmount;
+            // Movement: compute candidate position and clamp the candidate to avoid snapping the current position
+            Vector3 move = new Vector3(0f, vertical, -horizontal) * moveSpeed * Time.deltaTime;
+            Vector3 newPos = transform.position + move;
+            if (newPos.magnitude > maxDistanceFromOrigin)
+            {
+                newPos = newPos.normalized * maxDistanceFromOrigin;
+            }
+            transform.position = newPos;
+
+            // Tilt (use localRotation and Slerp for smoother, local-space rotation)
+            float targetTiltX = -horizontal * tiltAmount;
+            float targetTiltZ = vertical * tiltAmount;
 
             Quaternion targetRotation = Quaternion.Euler(targetTiltX, 0f, targetTiltZ);
-            transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * tiltSpeed);*/
-        }
-        else
-        {
-            Joan.transform.SetParent(JoanPivot.transform, true);
+            transform.localRotation = Quaternion.Slerp(transform.localRotation, targetRotation, Time.deltaTime * tiltSpeed);
         }
     }
 

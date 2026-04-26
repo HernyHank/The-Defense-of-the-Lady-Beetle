@@ -17,9 +17,6 @@ public class BatteryPhysicsGrab : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         interactable = GetComponent<Interactable>();
-
-        rb.useGravity = true;
-        rb.isKinematic = false;
     }
 
     private void FixedUpdate()
@@ -45,7 +42,7 @@ public class BatteryPhysicsGrab : MonoBehaviour
     {
         attachedHand = hand;
 
-        rb.isKinematic = false;
+        rb.isKinematic = true;
         rb.useGravity = false; // optional, keep it controlled by hand
     }
 

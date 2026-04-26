@@ -23,7 +23,7 @@ public class Asteroid : MonoBehaviour
         if (!hasHitPlayer)
         {
             // Move negatively on Z axis (toward player)
-            transform.Translate(Vector3.back * moveSpeed * Time.deltaTime, Space.World);
+            transform.Translate(Vector3.left * moveSpeed * Time.deltaTime, Space.World);
         }
     }
 

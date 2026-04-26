@@ -273,16 +273,30 @@ public class VRPlayerMovement : MonoBehaviour
     private Vector3 lastHandPosition;
     void Climb()
     {
-        Vector3 handDelta = activatedHand.transform.localPosition - lastHandPosition;
+        // Defensive: if no hand is active bail out and clear climbing state
+    if (activatedHand == null)
+    {
+        isClimbing = false;
+        return;
+    }
 
-        // Move the CharacterController in the opposite direction of the hand pull
-        // (If you pull the hand DOWN, the body goes UP)
+    // Use localPosition only if your hand and player share the same parent space.
+    // If positions are in world space, use activatedHand.transform.position instead.
+    Vector3 currentHandPos = activatedHand.transform.localPosition;
+
+    // First frame of climbing: lastHandPosition should have been set in climbingToggle,
+    // but protect against an uninitialized value here.
+    if (lastHandPosition == Vector3.zero)
+        lastHandPosition = currentHandPos;
+
+    Vector3 handDelta = currentHandPos - lastHandPosition;
+
+    // Avoid tiny floating noise moves
+    if (handDelta.sqrMagnitude > 1e-8f)
         controller.Move(transform.rotation * -handDelta);
 
-        // Store the current position for the next frame
-        lastHandPosition = activatedHand.transform.localPosition;
-
-    }
+    lastHandPosition = currentHandPos;
+}
 
     public void FinishRotation()
     {
@@ -405,6 +419,7 @@ public class VRPlayerMovement : MonoBehaviour
         }
     }
 }
+
 
 
 

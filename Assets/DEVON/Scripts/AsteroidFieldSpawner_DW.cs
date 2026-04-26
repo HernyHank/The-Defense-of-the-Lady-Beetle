@@ -28,11 +28,12 @@ public class AsteroidFieldSpawner : MonoBehaviour
         {
             GameObject prefab = asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)];
 
-            float x = Random.Range(-spawnWidth, spawnWidth);
+            
             float y = Random.Range(-spawnHeight, spawnHeight);
-
+            float z = Random.Range(-spawnWidth, spawnWidth);
             // Spawn somewhere between distance and distance+depth
-            float z = Random.Range(spawnDistance, spawnDistance + spawnDepth);
+
+            float x = Random.Range(spawnDistance, spawnDistance + spawnDepth);
 
             Vector3 spawnPos = new Vector3(x, y, z);
 

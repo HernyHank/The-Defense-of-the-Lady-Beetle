@@ -99,8 +99,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   moveSpeed: 10
-  driftForce: 2
+  driftForce: 0.5
   spinForce: 1
+  bounciness: 5
 --- !u!135 &3808310066679688532
 SphereCollider:
   m_ObjectHideFlags: 0

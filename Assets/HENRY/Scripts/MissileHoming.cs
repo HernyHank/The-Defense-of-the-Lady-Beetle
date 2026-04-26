@@ -17,8 +17,8 @@ public class TorpedoHoming : MonoBehaviour
     {
         controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
         rb = GetComponent<Rigidbody>();
-        rb.useGravity = false;
-        rb.isKinematic = false;
+/*        rb.useGravity = false;
+        rb.isKinematic = false;*/
         rb.collisionDetectionMode = CollisionDetectionMode.Continuous;
         SetTarget(myTarget);
         /*Destroy(gameObject, lifetime);*/

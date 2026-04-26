@@ -13,6 +13,9 @@ public class PirateDestroy_HM : MonoBehaviour
     [Header("VFX")]
     public GameObject explosionPrefab;
 
+    // Prevent multiple explosions from the same pirate instance
+    private bool hasBeenDestroyed = false;
+
     private void Awake()
     {
         controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
@@ -20,20 +23,33 @@ public class PirateDestroy_HM : MonoBehaviour
         bodyAnimator = this.gameObject.GetComponent<Animator>();
     }
 
+    int explosionCount = 0; // For debugging
+
     void OnTriggerStay(Collider other)
     {
-        if (JoystickManager.Instance.button2 && other.CompareTag("Gun") && controller.turretCanShoot)
+        // Guard: one-shot only
+        if (hasBeenDestroyed) return;
+
+        // Only trigger once when conditions met
+        if (other.CompareTag("Gun") && controller != null && controller.turretCanShoot && JoystickManager.Instance.button2)
         {
-            Debug.Log("collPirate ship is destroyed!");
+            hasBeenDestroyed = true;
+            explosionCount++;
+            
 
             // Spawn explosion at this object's current position (last known coordinates)
             SpawnExplosionAt(transform.position);
+            Debug.Log("collPirate ship is destroyed! Explosion count" + explosionCount);
 
             orbitAnimator.Rebind();
             orbitAnimator.Update(0f);
             bodyAnimator.Rebind();
             bodyAnimator.Update(0f);
+
             getParentAndSend();
+
+            // Hide/disable the ship
+            this.gameObject.SetActive(false);
         }
 
         return;
@@ -108,7 +124,7 @@ public class PirateDestroy_HM : MonoBehaviour
             {
                 if (int.TryParse(m.Groups[1].Value, out int index))
                 {
-                    Debug.Log("sending destroy ship of index " + index);
+                    //Debug.Log("sending destroy ship of index " + index);
                     controller?.DestroyShip(index);
                     return;
                 }

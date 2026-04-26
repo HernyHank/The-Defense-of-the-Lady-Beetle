@@ -541,6 +541,13 @@ public class EventController : MonoBehaviour
 
         //get the orbitScript
         PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
+        // Optionally enable pirate goon object if present
+        PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
+/*        if (pirateGoonScript != null)
+        {
+            pirateGoonScript.gameObject.SetActive(true);
+        }*/
+
         if (script == null)
         {
             Debug.LogWarning($"SpawnSingleShip: PirateShip_HM not found under {cameraObj.name}.");
@@ -548,12 +555,6 @@ public class EventController : MonoBehaviour
             return;
         }
 
-        // Optionally enable pirate goon object if present
-        PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
-        if (pirateGoonScript != null)
-        {
-            pirateGoonScript.gameObject.SetActive(true);
-        }
 
         // Find turret button and its script (guarded)
         Transform child = turretMonitor.transform.Find("Button " + chosenSlot);
@@ -583,7 +584,7 @@ public class EventController : MonoBehaviour
     public void DestroyShip(int index)
     {
         shipsAfoot[index] = false;
-        Debug.Log("Ship" + index + "destroyed");
+        //Debug.Log("Ship" + index + "destroyed");
 
         Transform child = turretMonitor.transform.Find("Button " + index);
         ButtonPress buttonScript = child.GetComponentInChildren<ButtonPress>();

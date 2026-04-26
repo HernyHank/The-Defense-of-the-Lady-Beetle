@@ -76,6 +76,7 @@ public class PirateShip_HM : MonoBehaviour
     public void SpawnPirateShip()
     {
         {
+            shipAnimator.gameObject.SetActive(true);
             if (orbitAnimator != null)
             {
                 orbitAnimator.SetTrigger("StartOrbit");
