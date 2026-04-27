@@ -32,6 +32,7 @@ public class RoomBehavior : MonoBehaviour
         {
             controller.SetCurrentRoom(this.gameObject.name);
             Debug.Log("Player enterd" + this.gameObject.name);
+            controller.RoomConditionals();
         }
     }
 
@@ -39,9 +40,13 @@ public class RoomBehavior : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            controller.SetCurrentRoom("InBetweenRooms");
+            if (controller.currentRoom != "Outside")
+            {
+                controller.SetCurrentRoom("InBetweenRooms");
+            }            
             Debug.Log("Player exited");
             controller.EventControllerSetText("you shouldn't see this", false);
+            controller.RoomConditionals();
         }
     }
 }

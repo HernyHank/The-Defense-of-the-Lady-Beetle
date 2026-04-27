@@ -12,8 +12,26 @@ public class DoorPresser : MonoBehaviour
     public SteamVR_Input_Sources handType;
     public SteamVR_Action_Boolean bIsHeld;
     public TextMeshProUGUI doorOption;
+    public EventController controller;
+    public int doorOpenCount = 0;
 
     // Update is called once per frame
+
+    public enum DoorType
+    {
+        Regular,
+        Airlock
+    }
+
+    public DoorType doorType = DoorType.Regular;
+
+    private void Start()
+    {
+        if(doorType == DoorType.Airlock)
+        {
+            controller = FindObjectOfType<EventController>();
+        }
+    }
     void Update()
     { //debug
 /*        if (bIsHeld.GetState(handType) == true)
@@ -59,21 +77,34 @@ public class DoorPresser : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            //Debug.Log("Player has exited the door trigger area.");
             animator.SetBool("playerHasExited", true);
+            /*if (doorType != DoorType.Airlock)
+            {
+                animator.SetBool("playerHasExited", true);
+            }*/
         }
     }
 
     public void buttonFinishedPressing()
     {
         animator.SetBool("buttonIsPressed", true);
+        if (doorType == DoorType.Airlock && controller.currentRoom == "Outside")
+        {
+            controller.outsideAirlockIsOpen = true;
+        }
     }
 
     public void doorFinishedOpening()
     {
-        animator.SetBool("doorIsOpen", true);
+        animator.SetBool("doorIsOpen", true);    
     }
     public void doorFinishedClosing()
     {
         animator.SetBool("buttonIsPressed", false);
+        if (doorType == DoorType.Airlock && controller.currentRoom == "Outside")
+        {
+            controller.outsideAirlockIsOpen = false;
+        }
     }
 }

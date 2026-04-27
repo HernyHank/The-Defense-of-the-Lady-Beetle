@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 using TMPro;
+using UnityEngine;
+using UnityEngine.UIElements;
+using Valve.VR;
 
 public class EventController : MonoBehaviour
 {
@@ -13,6 +15,7 @@ public class EventController : MonoBehaviour
 
     [Header("Universals")]
     public VRPlayerMovement script;
+    public Animator deathSequenceAnimator;
 
     [Header("Routine")]
     public pottyScript pottyScript;
@@ -35,6 +38,8 @@ public class EventController : MonoBehaviour
     public bool backWingBlobbed = false;
     public bool powerBankBlobbed = false;
     public GameObject turretUIObject;
+    public GameObject gooGun;
+    public Rigidbody gooGunRB;
 
     [Header("Calibration")]
     public bool batteryShotIntoSpace = false;
@@ -52,11 +57,16 @@ public class EventController : MonoBehaviour
 
     [Header("ShipHealth")]
     public int shipHealthMain = 100;
+    public GameObject particleParent;
 
 
     void Start()
     {
-
+        gooGunRB = gooGun.GetComponent<Rigidbody>();
+        if(gooGunRB == null)
+        {
+            Debug.Log("Couldn't find rigidbody on goo gun");
+        }
 
 
         eventNames = new string[]
@@ -81,8 +91,9 @@ public class EventController : MonoBehaviour
         {
             EventCaller();
         }
-
-        RoomConditionals();
+        //ContinuousRoomConditionals();
+        //RoomConditionals();
+        //HealthConditionals();
         //Debug.Log(currentRoom);
     }
 
@@ -160,7 +171,18 @@ public class EventController : MonoBehaviour
             }
         }
 
-        if(shipHealthMain <= 0)
+        if (Input.GetKeyDown(KeyCode.D))
+        {
+            DamageShip(10);
+            Debug.Log("Ship took 10 damage. Remaining health: " + shipHealthMain);
+        }
+
+        if (Input.GetKeyDown(KeyCode.B))
+        {
+            PlayerDeathSequence();
+        }
+
+        if (shipHealthMain <= 0)
         {
             PlayerDeathSequence();
         }
@@ -179,6 +201,7 @@ public class EventController : MonoBehaviour
     public void DamageShip(int damageAmount)
     {
         shipHealthMain -= damageAmount;
+        HealthConditionals();
         //Debug.Log("Ship took " + damageAmount + " damage. Remaining health: " + shipHealthMain);
     }   
 
@@ -213,24 +236,107 @@ public class EventController : MonoBehaviour
     bool isDeathTimerSet = false;
     public void PlayerDeathSequence()
     {
-        script.SetUIText("You have died", true);
-
-        //TODO: Disable player Controller, Teleport them to respawn point Depending on level, enable playerController, setUItext = false
-        if (!isDeathTimerSet) 
+        deathSequenceAnimator.SetTrigger("TriggerDeathSequence");
+        Debug.Log("PlayerDeathSequence triggered");
+        if (!isDeathTimerSet)
         {
-            SetTimer(4f);
+            SetTimer(0.5f);
             isDeathTimerSet = true;
-        } 
+            StartCoroutine(DeathCorourtine());
+            return;
+        }
+
+        /*if (IsTimerFinished())
+        {
+            // Diagnostics
+            bool compositorAvailable = false;
+            try
+            {
+                compositorAvailable = (OpenVR.Compositor != null);
+            }
+            catch
+            {
+                compositorAvailable = false;
+            }
+            Debug.Log($"PlayerDeathSequence: OpenVR.Compositor available = {compositorAvailable}");
+
+            if (compositorAvailable)
+            {
+                // compositor fade -> guaranteed to affect headset
+                SteamVR_Fade.View(Color.black, 1f);
+            }
+            else
+            {
+                // Fallback: overlay/renderer fade (requires SteamVR_Fade component on camera)
+                Debug.LogWarning("OpenVR compositor not available. Using SteamVR_Fade.Start fallback. Ensure SteamVR_Fade component is present on the SteamVR camera.");
+                SteamVR_Fade.Start(Color.black, 1f, true);
+            }
+
+            // Show death UI
+            script.SetUIText("You have died", true);
+
+            // other death handling...
+            currentEvent++;
+            currentEvent--;
+        }*/
+    }
+
+    IEnumerator DeathCorourtine()
+    {
+               yield return new WaitUntil(IsTimerFinished);
+        bool compositorAvailable = false;
+        try
+        {
+            compositorAvailable = (OpenVR.Compositor != null);
+        }
+        catch
+        {
+            compositorAvailable = false;
+        }
+        Debug.Log($"PlayerDeathSequence: OpenVR.Compositor available = {compositorAvailable}");
+
+        if (compositorAvailable)
+        {
+            // compositor fade -> guaranteed to affect headset
+            SteamVR_Fade.View(Color.black, 1f);
+        }
         else
         {
-            if(IsTimerFinished())
-            {
-                //teleportPlayer
-                script.SetUIText("You shouldn't see this", false);
-                currentEvent++;
-                currentEvent--;
-            }       
-        }       
+            // Fallback: overlay/renderer fade (requires SteamVR_Fade component on camera)
+            Debug.LogWarning("OpenVR compositor not available. Using SteamVR_Fade.Start fallback. Ensure SteamVR_Fade component is present on the SteamVR camera.");
+            SteamVR_Fade.Start(Color.black, 1f, true);
+        }
+
+        // Show death UI
+        script.SetUIText("You have died", true);
+
+        // other death handling...
+        currentEvent++;
+        currentEvent--;
+    }
+
+    public bool isGroup1Active = false;
+    public bool isGroup2Active = false;
+    public bool isGroup3Active = false; 
+    public void HealthConditionals()
+    {
+        if(shipHealthMain <= 75 && !isGroup1Active)
+        {
+            particleParent.transform.Find("Group1").gameObject.SetActive(true);
+            isGroup1Active = true;
+        }
+
+        if(shipHealthMain <= 50 && !isGroup2Active)
+        {
+            particleParent.transform.Find("Group2").gameObject.SetActive(true);
+            isGroup2Active = true;
+        }
+
+        if(shipHealthMain <= 25 && !isGroup3Active)
+        {
+            particleParent.transform.Find("Group3").gameObject.SetActive(true);
+            isGroup3Active = true;
+        }
     }
 
     public void SetCurrentRoom(string room)
@@ -242,8 +348,10 @@ public class EventController : MonoBehaviour
     public bool pilotMode = false;
     public bool turretMode = false;
 
+    bool modeFlashed = false;
     bool doubleTapFlashed = false;
 
+    public bool outsideAirlockIsOpen = true;
     public void RoomConditionals()
     {
         if(currentRoom == "PilotRoom")
@@ -307,7 +415,30 @@ public class EventController : MonoBehaviour
             }
         }
 
+        if (currentRoom != "Outside" && currentRoom != "Airlock")
+        {
+            gooGunRB.useGravity = true;
+            gooGunRB.drag = 0.5f;
+        }
+        else
+        {
+            gooGunRB.useGravity = false;
+            gooGunRB.drag = 300f;
+        }
+
     }
+
+/*    public void ContinuousRoomConditionals()
+    {
+        if (currentRoom != "Outside" && currentRoom != "Airlock")
+        {
+            gooGunRB.useGravity = true;
+        }
+        else
+        {
+            gooGunRB.useGravity = false;
+        }
+    }*/
 
     public void EventControllerSetText(string text, bool shouldShow)
     {

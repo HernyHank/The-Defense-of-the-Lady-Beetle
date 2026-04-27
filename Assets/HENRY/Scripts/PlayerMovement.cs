@@ -64,23 +64,27 @@ public class VRPlayerMovement : MonoBehaviour
             if (other.CompareTag("RotationToggler"))
             {
                 Debug.Log("RotationToggler Entered");
-                SetUIText("Hold B to rotate", true);
-
-                //bHeld
-                if (bIsHeld.GetState(rightHand) == true)
+                if (eventController.outsideAirlockIsOpen)
                 {
-                    animator.SetBool("isOutsideShip", !animator.GetBool("isOutsideShip"));
-                    SetUIText("You shouldn't see this", false);
+                    SetUIText("Hold B to rotate", true);
 
-                    isOutsideShip = !isOutsideShip;
-                    if (isOutsideShip)
+                    //bHeld
+                    if (bIsHeld.GetState(rightHand) == true)
                     {
-                        floorColliders.SetActive(false);
-                    } else
-                    {
-                        floorColliders.SetActive(true);
+                        animator.SetBool("isOutsideShip", !animator.GetBool("isOutsideShip"));
+                        SetUIText("You shouldn't see this", false);
+
+                        isOutsideShip = !isOutsideShip;
+                        if (isOutsideShip)
+                        {
+                            floorColliders.SetActive(false);
+                        }
+                        else
+                        {
+                            floorColliders.SetActive(true);
+                        }
+                        playerIsRotating = true;
                     }
-                    playerIsRotating = true;
                 }
             }
             //second Collider
