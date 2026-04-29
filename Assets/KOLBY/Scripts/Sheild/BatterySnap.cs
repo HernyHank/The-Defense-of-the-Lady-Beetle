@@ -23,7 +23,7 @@ public class BatterySnap : MonoBehaviour
         rb = GetComponent<Rigidbody>();
     }
 
-/*    private void OnDetachedFromHand(Hand hand)
+    private void OnDetachedFromHand(Hand hand)
     {
         if (currentZone != null)
         {
@@ -35,7 +35,7 @@ public class BatterySnap : MonoBehaviour
             rb.isKinematic = false;
             rb.useGravity = true;
         }
-    }*/
+    }
 
     // Called by SnapZone
     public void SetCurrentZone(BatterySnapZone zone)

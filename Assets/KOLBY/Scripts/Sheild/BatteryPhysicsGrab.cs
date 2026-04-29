@@ -51,14 +51,14 @@ public class BatteryPhysicsGrab : MonoBehaviour
     {
         attachedHand = null;
 
+        rb.isKinematic = false;
         if (snapZone != null && snapZone.IsBatteryInZone(gameObject))
         {
             BatterySnap battery = GetComponent<BatterySnap>();
             snapZone.TrySnap(battery);
         }
         else
-        {
-            rb.isKinematic = false;
+        {         
             rb.useGravity = true;
         }
     }

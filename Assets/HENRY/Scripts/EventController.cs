@@ -16,6 +16,8 @@ public class EventController : MonoBehaviour
     [Header("Universals")]
     public VRPlayerMovement script;
     public Animator deathSequenceAnimator;
+    private bool pilotPurgatoryRunning = false;
+    private bool turretPurgatoryRunning = false;
 
     [Header("Routine")]
     public pottyScript pottyScript;
@@ -91,6 +93,11 @@ public class EventController : MonoBehaviour
         {
             EventCaller();
         }
+
+/*        if (script.GetBState())
+        {
+            Debug.Log("B was held");
+        }*/
         //ContinuousRoomConditionals();
         //RoomConditionals();
         //HealthConditionals();
@@ -182,10 +189,6 @@ public class EventController : MonoBehaviour
             PlayerDeathSequence();
         }
 
-        if (shipHealthMain <= 0)
-        {
-            PlayerDeathSequence();
-        }
     }
 
     public void RegenShip(int regenAmount)
@@ -337,6 +340,11 @@ public class EventController : MonoBehaviour
             particleParent.transform.Find("Group3").gameObject.SetActive(true);
             isGroup3Active = true;
         }
+
+       /* if (shipHealthMain <= 0)
+        {
+            PlayerDeathSequence();
+        }*/
     }
 
     public void SetCurrentRoom(string room)
@@ -354,24 +362,21 @@ public class EventController : MonoBehaviour
     public bool outsideAirlockIsOpen = true;
     public void RoomConditionals()
     {
-        if(currentRoom == "PilotRoom")
+        // Pilot room entry: start a one-shot wait that either activates pilot mode on button press
+        if (currentRoom == "PilotRoom")
         {
-            if (pilotMode == false)
+            if (!pilotMode && !pilotPurgatoryRunning)
             {
                 script.SetUIText("Hold Right Circle to enter Pilot Mode", true);
-                if (script.GetBState())
-                {
-                    script.RealRoomModeBehavior(0);
-                    pilotMode = true;
-                    script.SetUIText("You shouldn't see this", false);
-                    script.DisableController();
-                }
-            } else if (pilotMode == true)
+                StartCoroutine(FlashMode(3f));
+                StartCoroutine(PilotTurretPurgatory("PilotRoom"));
+            }
+            else if (pilotMode)
             {
                 if (!doubleTapFlashed)
                 {
                     script.SetUIText("Double Tap right circle to exit", true);
-                    FlashMode(3f);
+                    StartCoroutine(FlashMode(3f));
                     doubleTapFlashed = true;
                 }
 
@@ -384,24 +389,21 @@ public class EventController : MonoBehaviour
             }
         }
 
-        if(currentRoom == "TurretRoom")
+        // Turret room entry: same pattern but for turret
+        if (currentRoom == "TurretRoom")
         {
-            if (turretMode == false)
+            if (!turretMode && !turretPurgatoryRunning)
             {
-                script.SetUIText("Hold Left Circle to enter Turret Mode", true);
-                if (script.GetBState())
-                {
-                    script.DisableController();
-                    script.RealRoomModeBehavior(1);
-                    turretMode = true;
-                    script.SetUIText("You shouldn't see this", false);
-                }
-            } else if (turretMode == true)
+                script.SetUIText("Hold Right Circle to enter Turret Mode", true);
+                StartCoroutine(FlashMode(3f));
+                StartCoroutine(PilotTurretPurgatory("TurretRoom"));
+            }
+            else if (turretMode)
             {
                 if (!doubleTapFlashed)
                 {
                     script.SetUIText("Double Tap right circle to exit", true);
-                    FlashMode(3f);
+                    StartCoroutine(FlashMode(3f));
                     doubleTapFlashed = true;
                 }
 
@@ -428,17 +430,96 @@ public class EventController : MonoBehaviour
 
     }
 
-/*    public void ContinuousRoomConditionals()
+    IEnumerator PilotTurretPurgatory(string room)
     {
-        if (currentRoom != "Outside" && currentRoom != "Airlock")
+        if (room == "PilotRoom")
+            pilotPurgatoryRunning = true;
+        else if (room == "TurretRoom")
+            turretPurgatoryRunning = true;
+
+        // Wait until B is pressed or player leaves the room
+        yield return new WaitUntil(() => script.GetBState() || currentRoom != room);
+
+        // If player is still in the room and pressed B, perform the appropriate enter behavior
+        if (currentRoom == room && script.GetBState())
         {
-            gooGunRB.useGravity = true;
+            if (room == "PilotRoom")
+            {
+                script.RealRoomModeBehavior(0);
+                pilotMode = true;
+                script.SetUIText("You shouldn't see this", false);
+                script.DisableController();
+                StartCoroutine(PilotModeConditionals());
+            }
+            else if (room == "TurretRoom")
+            {
+                script.DisableController();
+                script.RealRoomModeBehavior(1);
+                turretMode = true;
+                script.SetUIText("You shouldn't see this", false);
+                StartCoroutine(TurretModeConditionals());
+            }
         }
-        else
+
+        if (room == "PilotRoom")
+            pilotPurgatoryRunning = false;
+        else if (room == "TurretRoom")
+            turretPurgatoryRunning = false;
+    }
+
+    IEnumerator PilotModeConditionals()
+    {
+        if (!doubleTapFlashed)
         {
-            gooGunRB.useGravity = false;
+            script.SetUIText("Double Tap right circle to exit", true);
+            StartCoroutine(FlashMode(3f));
+            doubleTapFlashed = true;
         }
-    }*/
+
+        yield return new WaitUntil(() => script.GetBIsDoublePressedState());
+
+            pilotMode = false;
+            doubleTapFlashed = false;
+            script.EnableController();
+    }
+
+    IEnumerator TurretModeConditionals()
+    {
+        if (!doubleTapFlashed)
+        {
+            script.SetUIText("Double Tap right circle to exit", true);
+            StartCoroutine(FlashMode(3f));
+            doubleTapFlashed = true;
+        }
+
+        yield return new WaitUntil(() => script.GetBIsDoublePressedState());
+
+            script.SetJoanTransform(1);
+            script.EnableController();
+            turretMode = false;
+            doubleTapFlashed = false;
+
+    }
+
+    IEnumerator PilotTurretPurgatory()
+    {
+        // kept for compatibility if other code calls the parameterless overload
+        yield break;
+    }
+
+    IEnumerator PilotTurretPurgatory(bool dummy) { yield break; }
+
+    /*    public void ContinuousRoomConditionals()
+        {
+            if (currentRoom != "Outside" && currentRoom != "Airlock")
+            {
+                gooGunRB.useGravity = true;
+            }
+            else
+            {
+                gooGunRB.useGravity = false;
+            }
+        }*/
 
     public void EventControllerSetText(string text, bool shouldShow)
     {

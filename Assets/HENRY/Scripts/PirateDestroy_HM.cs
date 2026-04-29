@@ -28,12 +28,10 @@ public class PirateDestroy_HM : MonoBehaviour
     void OnTriggerStay(Collider other)
     {
         // Guard: one-shot only
-        if (hasBeenDestroyed) return;
 
         // Only trigger once when conditions met
         if (other.CompareTag("Gun") && controller != null && controller.turretCanShoot && JoystickManager.Instance.button2)
         {
-            hasBeenDestroyed = true;
             explosionCount++;
             
 
