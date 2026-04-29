@@ -175,6 +175,7 @@ public class BatterySnapZone : MonoBehaviour
         if (ejectDirection != null)
         {
             rb.AddForce(ejectDirection.forward * ejectForce, ForceMode.Impulse);
+            rb.detectCollisions = false;
         }
 
         yield return new WaitForSeconds(0.5f);

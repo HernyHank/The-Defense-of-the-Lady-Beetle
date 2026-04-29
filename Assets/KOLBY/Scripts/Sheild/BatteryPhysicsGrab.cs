@@ -19,7 +19,7 @@ public class BatteryPhysicsGrab : MonoBehaviour
         interactable = GetComponent<Interactable>();
     }
 
-    private void FixedUpdate()
+/*    private void FixedUpdate()
     {
         // Physics-based following
         if (attachedHand != null)
@@ -35,7 +35,7 @@ public class BatteryPhysicsGrab : MonoBehaviour
             if (angle > 180) angle -= 360;
             rb.angularVelocity = axis * angle * Mathf.Deg2Rad * followStrength * Time.fixedDeltaTime;
         }
-    }
+    }*/
 
     // Called by SteamVR when hand grabs object
     private void OnAttachedToHand(Hand hand)
@@ -50,8 +50,7 @@ public class BatteryPhysicsGrab : MonoBehaviour
     private void OnDetachedFromHand(Hand hand)
     {
         attachedHand = null;
-
-        rb.isKinematic = false;
+       
         if (snapZone != null && snapZone.IsBatteryInZone(gameObject))
         {
             BatterySnap battery = GetComponent<BatterySnap>();
@@ -60,6 +59,7 @@ public class BatteryPhysicsGrab : MonoBehaviour
         else
         {         
             rb.useGravity = true;
+            rb.isKinematic = false;
         }
     }
 }
