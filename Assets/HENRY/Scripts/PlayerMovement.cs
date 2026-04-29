@@ -66,7 +66,7 @@ public class VRPlayerMovement : MonoBehaviour
                 Debug.Log("RotationToggler Entered");
                 if (eventController.outsideAirlockIsOpen)
                 {
-                    SetUIText("Hold B to rotate", true);
+                    SetUIText("Hold Right Circle to rotate", true);
 
                     //bHeld
                     if (bIsHeld.GetState(rightHand) == true)
