@@ -50,7 +50,7 @@ public class TorpedoHoming : MonoBehaviour
     IEnumerator LaunchSequence()
     {
         // Launch forward for a short distance before homing
-        float launchTime = 0.33f; // time to reach 10 feet at 30 m/s
+        float launchTime = 1f; // time to reach 10 feet at 30 m/s
         float elapsed = 0f;
         while (elapsed < launchTime)
         {
