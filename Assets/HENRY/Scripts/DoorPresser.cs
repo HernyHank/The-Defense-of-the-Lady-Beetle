@@ -15,6 +15,8 @@ public class DoorPresser : MonoBehaviour
     public EventController controller;
     public int doorOpenCount = 0;
 
+    public Rigidbody gooGunRB;
+
     // Update is called once per frame
 
     public enum DoorType
@@ -92,12 +94,17 @@ public class DoorPresser : MonoBehaviour
         if (doorType == DoorType.Airlock && controller.currentRoom == "Outside")
         {
             controller.outsideAirlockIsOpen = true;
+        } else if (doorType == DoorType.Airlock && controller.currentRoom == "Airlock")
+        {
+            gooGunRB.useGravity = false;
+            gooGunRB.drag = 300f;
         }
     }
 
     public void doorFinishedOpening()
     {
-        animator.SetBool("doorIsOpen", true);    
+        animator.SetBool("doorIsOpen", true);  
+        
     }
     public void doorFinishedClosing()
     {
@@ -105,6 +112,11 @@ public class DoorPresser : MonoBehaviour
         if (doorType == DoorType.Airlock && controller.currentRoom == "Outside")
         {
             controller.outsideAirlockIsOpen = false;
+        }
+        else if (doorType == DoorType.Airlock && controller.currentRoom == "Airlock")
+        {
+            gooGunRB.useGravity = true;
+            gooGunRB.drag = 0.4f;
         }
     }
 }

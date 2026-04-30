@@ -4,11 +4,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UIElements;
 using Valve.VR;
+using UnityEngine.SceneManagement;
+
 
 public class EventController : MonoBehaviour
 {
     public string[] eventNames;
-    public int currentEvent;
     public int previousEvent;
 
     public string currentRoom = "bedroom";
@@ -18,6 +19,9 @@ public class EventController : MonoBehaviour
     public Animator deathSequenceAnimator;
     private bool pilotPurgatoryRunning = false;
     private bool turretPurgatoryRunning = false;
+    private bool deathSequenceReset = false;
+
+    public static int currentEvent;
 
     [Header("Routine")]
     public pottyScript pottyScript;
@@ -104,6 +108,12 @@ public class EventController : MonoBehaviour
         //Debug.Log(currentRoom);
     }
 
+/*    public void ResetLevel()
+    {
+        // Gets the index of the currently active scene and reloads it
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }*/
+
     private void EventCaller()
     {
         bool isCompleted = false;
@@ -144,6 +154,17 @@ public class EventController : MonoBehaviour
             currentEvent++;
         }
 
+        if (Input.GetKeyDown(KeyCode.N))
+        {
+            isCompleted = true;
+            currentEvent--;
+        }   
+/*
+        if (Input.GetKeyDown(KeyCode.Keypad3))
+        {
+            ResetLevel();   
+        }*/
+
         if (Input.GetKeyDown(KeyCode.Keypad7))
         {
             currentRoom = "PilotRoom";
@@ -153,6 +174,14 @@ public class EventController : MonoBehaviour
         {
             currentRoom = "TurretRoom";
         }
+
+        if (deathSequenceReset)
+        {
+            isCompleted = true;
+            currentEvent--;
+            deathSequenceReset = false;
+        }
+
         if (isCompleted)
         {
             currentEvent++; // Move to the next event index (e.g., from 0 to 1)
@@ -236,18 +265,26 @@ public class EventController : MonoBehaviour
         return false;
     }
 
-    bool isDeathTimerSet = false;
+    //bool isDeathTimerSet = false;
+
+    public bool explosionsAreInactive = true;
+    public bool playerDeathSequenceActive = false;
     public void PlayerDeathSequence()
     {
-        deathSequenceAnimator.SetTrigger("TriggerDeathSequence");
-        Debug.Log("PlayerDeathSequence triggered");
-        if (!isDeathTimerSet)
+        if (!playerDeathSequenceActive)
         {
-            SetTimer(0.5f);
-            isDeathTimerSet = true;
+            playerDeathSequenceActive = true;
+            deathSequenceAnimator.SetTrigger("TriggerDeathSequence");
+            explosionsAreInactive = false;
+            Debug.Log("PlayerDeathSequence triggered");
+            //if (!isDeathTimerSet)
+            //{
+            //SetTimer(0.5f);
+            //isDeathTimerSet = true;
             StartCoroutine(DeathCorourtine());
             return;
         }
+        //}
 
         /*if (IsTimerFinished())
         {
@@ -283,10 +320,9 @@ public class EventController : MonoBehaviour
             currentEvent--;
         }*/
     }
-
     IEnumerator DeathCorourtine()
     {
-               yield return new WaitUntil(IsTimerFinished);
+               //yield return new WaitUntil(IsTimerFinished);
         bool compositorAvailable = false;
         try
         {
@@ -297,6 +333,8 @@ public class EventController : MonoBehaviour
             compositorAvailable = false;
         }
         Debug.Log($"PlayerDeathSequence: OpenVR.Compositor available = {compositorAvailable}");
+
+        yield return new WaitForSeconds(3f);
 
         if (compositorAvailable)
         {
@@ -310,12 +348,49 @@ public class EventController : MonoBehaviour
             SteamVR_Fade.Start(Color.black, 1f, true);
         }
 
+        yield return new WaitForSeconds(1f);
+
+        for (int i = 0; i < 4; i++)
+        {
+            DestroyShipFromController(i);
+        }
+        asteroidSpawnScript.ClearField();
         // Show death UI
-        script.SetUIText("You have died", true);
 
         // other death handling...
-        currentEvent++;
-        currentEvent--;
+        shipHealthMain = 100;
+        deathSequenceAnimator.SetTrigger("TriggerDeath_Inactive");
+
+        //reset EVERYTHING
+        pilotPurgatoryRunning = false;
+        turretPurgatoryRunning = false;
+        deathSequenceReset = false;
+        frontWingBlobbed = false;
+        backWingBlobbed = false;
+        powerBankBlobbed = false;
+        batteryShotIntoSpace = false;
+        goodBatteryInPlace = true;
+        torpedoHit = false;
+        torpedoIsLoaded = false;
+
+    script.Respawn();
+
+        yield return new WaitForSeconds(1f);
+
+        yield return new WaitUntil(() => explosionsAreInactive);
+        if (compositorAvailable)
+        {
+            // compositor fade -> guaranteed to affect headset
+            SteamVR_Fade.View(Color.clear, 1);
+        }
+        else
+        {
+            // Fallback: overlay/renderer fade (requires SteamVR_Fade component on camera)
+            Debug.LogWarning("OpenVR compositor not available. Using SteamVR_Fade.Start fallback. Ensure SteamVR_Fade component is present on the SteamVR camera.");
+            SteamVR_Fade.Start(Color.clear, 1f, true);
+        }
+        deathSequenceReset = true;
+        playerDeathSequenceActive = false;
     }
 
     public bool isGroup1Active = false;
@@ -323,7 +398,24 @@ public class EventController : MonoBehaviour
     public bool isGroup3Active = false; 
     public void HealthConditionals()
     {
-        if(shipHealthMain <= 75 && !isGroup1Active)
+        if(shipHealthMain > 75)
+        {
+            particleParent.transform.Find("Group1").gameObject.SetActive(false);
+            isGroup1Active = false;
+        }
+         if(shipHealthMain > 50)
+        {
+            particleParent.transform.Find("Group2").gameObject.SetActive(false);
+            isGroup2Active = false;
+        }
+         if(shipHealthMain > 25)
+        {
+            particleParent.transform.Find("Group3").gameObject.SetActive(false);
+            isGroup3Active = false;
+        }
+
+
+        if (shipHealthMain <= 75 && !isGroup1Active)
         {
             particleParent.transform.Find("Group1").gameObject.SetActive(true);
             isGroup1Active = true;
@@ -341,10 +433,12 @@ public class EventController : MonoBehaviour
             isGroup3Active = true;
         }
 
-       /* if (shipHealthMain <= 0)
+        if (shipHealthMain <= 0)
         {
             PlayerDeathSequence();
-        }*/
+        } 
+
+
     }
 
     public void SetCurrentRoom(string room)
@@ -417,7 +511,7 @@ public class EventController : MonoBehaviour
             }
         }
 
-        if (currentRoom != "Outside" && currentRoom != "Airlock")
+/*        if (currentRoom != "Outside" && currentRoom != "Airlock")
         {
             gooGunRB.useGravity = true;
             gooGunRB.drag = 0.5f;
@@ -426,7 +520,7 @@ public class EventController : MonoBehaviour
         {
             gooGunRB.useGravity = false;
             gooGunRB.drag = 300f;
-        }
+        }*/
 
     }
 
@@ -639,7 +733,7 @@ public class EventController : MonoBehaviour
         DestroyShipOpt();
 
         // This event only "completes" when all ships are destroyed (or whatever your win condition is)
-        if (ambushStarted && AllShipsDestroyed() && shipCountReachedTwo)
+        if (ambushStarted && AllShipsDestroyed() && shipCountReachedTwo && !playerDeathSequenceActive)
         {
             ambushStarted = false;
             shipCountReachedTwo = false;

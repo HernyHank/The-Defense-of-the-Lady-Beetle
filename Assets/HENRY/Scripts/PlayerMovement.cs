@@ -19,6 +19,9 @@ public class VRPlayerMovement : MonoBehaviour
     float verticalVelocity;
     public float gravity = -1f;
 
+    public GameObject VRcamera;
+    public Transform respawnPoint;
+
     public GameObject floorColliders;
 
     public Animator animator;
@@ -42,17 +45,27 @@ public class VRPlayerMovement : MonoBehaviour
         animator = GetComponentInParent<Animator>();
     }
 
-/*    private void OnTriggerEnter(Collider other)
-    {
-        string tag = other.tag;
-        if(tag == "PilotRoom" ||
-            tag == "TurretRoom" ||
-            tag == "Pantry" ||
-            tag == "Airlock")
+    /*    private void OnTriggerEnter(Collider other)
         {
-            eventController.SetCurrentRoom(tag);
+            string tag = other.tag;
+            if(tag == "PilotRoom" ||
+                tag == "TurretRoom" ||
+                tag == "Pantry" ||
+                tag == "Airlock")
+            {
+                eventController.SetCurrentRoom(tag);
+            }
+        }*/
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("VoidoutZone"))
+        {
+            controller.enabled = false;
+            transform.position = respawnPoint.position;
+            transform.rotation = respawnPoint.rotation;
+            controller.enabled = true;
         }
-    }*/
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -63,7 +76,7 @@ public class VRPlayerMovement : MonoBehaviour
             //first Collider
             if (other.CompareTag("RotationToggler"))
             {
-                Debug.Log("RotationToggler Entered");
+                //Debug.Log("RotationToggler Entered");
                 if (eventController.outsideAirlockIsOpen)
                 {
                     SetUIText("Hold Right Circle to rotate", true);
@@ -129,6 +142,11 @@ public class VRPlayerMovement : MonoBehaviour
             Climb();
         }
 
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            Respawn();
+        }
+
         //Debug.Log(touchCount);
     }
 
@@ -166,86 +184,73 @@ public class VRPlayerMovement : MonoBehaviour
             if (rotationMode == 0)
             {
                 if(bIsHeld.GetState(leftHand) == true)
-            {
+                {
                 speed *= 1.4f;
-            }
+                }
                 direction = new Vector3(joystickValue.x, 0, joystickValue.y);
-                headRotation = new Vector3(0, GameObject.Find("VRCamera").transform.rotation.eulerAngles.y, 0);
-            //Gravity
-            if (controller.isGrounded)
-            {
+                headRotation = new Vector3(0, VRcamera.transform.rotation.eulerAngles.y, 0);
+                //Debug.Log("Direction is: " + direction);
+                //Debug.Log("head rotation is" + headRotation);
+                //Gravity
+                if (controller.isGrounded)
+                {
                 if (verticalVelocity < 0)
                     verticalVelocity = -2; // keeps player grounded
-            }
-            else
-            {
+                 }
+                else
+                 {
                 verticalVelocity += gravity * Time.deltaTime;
-            }
+                 }
 
             }
 
-            //shorthand quat exp. 
-            /*straight forward: -0.5, -0.5, 0.5, -0.5
-              straight left:     0.0, -0.0, 0.7, -0.7
-              straight back:    -0.5,  0.5,-0.5,  0.5
-              straight right:    0.7,  0.7, 0.0,  0.0
-              */
-            /*else if (rotationMode == 1)
-            {
-                direction = new Vector3(0, -joystickValue.x, joystickValue.y);
-                headRotation = new Vector3(GameObject.Find("VRCamera").transform.rotation.eulerAngles.x, 0, 0);
-                Quaternion quat = GameObject.Find("VRCamera").transform.rotation;
-                float x = quat.x;
-                float y = quat.y;
-                float z = quat.z;
-                float w = quat.w;
-                if (x > 0 && y > 0.5 && -0.5 < z && z < 0.5 && -0.5 < w && w < 0.5)
-                {
-                    Debug.Log("danger zone");
-                    headRotation.x = -headRotation.x;
-                }
-                
-            }*/
             else if (rotationMode == 1)
             {
-                // 1. Setup direction: mapping stick Left/Right to Global Vertical for your wall
-                direction = new Vector3(0, -joystickValue.x, joystickValue.y);
-
-                Transform camTransform = GameObject.Find("VRCamera").transform;
-                float pitch = camTransform.rotation.eulerAngles.x;
-
-                // 2. DETECT "DANGER ZONE"
-                // We compare the Head's Forward to the Body's Forward. 
-                // If Dot is negative, the head is looking "Backward" relative to the body.
-                float lookAlignment = Vector3.Dot(camTransform.forward, transform.forward);
-
-            if(Input.GetKeyDown(KeyCode.J))
-                Debug.Log(camTransform.forward + " " + transform.forward + " " + lookAlignment);
-
-                if (lookAlignment < 0)
+                if (bIsHeld.GetState(leftHand) == true)
                 {
-                    // We are in the "Back-facing" Euler flip zone.
-                    // We invert the pitch to compensate for the Euler flip.
-                    headRotation = new Vector3(-pitch, 0, 0);
-                    direction = new Vector3(0, joystickValue.x, -joystickValue.y);
+                    speed *= 1.4f;
+                }
 
-                    // Optional Debug to confirm it's working
-                    // Debug.Log("Detecting Backwards Look: Compensating Pitch");
-                }
-                else
+                //direction = new Vector3(joystickValue.x, 0, 0);
+
+                // use camera's local rotation (relative to its parent)
+                Transform camTransform = VRcamera?.transform;
+                /*float localYaw = 0f;
+                if (camTransform != null)
                 {
-                    // Normal front-facing range
-                    headRotation = new Vector3(pitch, 0, 0);
+                    localYaw = camTransform.localEulerAngles.y;
                 }
+
+                headRotation = new Vector3(0, 0, localYaw);
+                Debug.Log("Direction is: " + direction);
+                Debug.Log("head rotation is" + headRotation);*/
+
+                direction = camTransform.forward;
+
+                // 2. Kill the Y value so the player doesn't walk into the sky/floor
+                direction.z = 0;
+
+                // 3. Normalize it so looking down doesn't make you move slower
+                direction.Normalize();
+
+                // 4. Calculate movement relative to that forward vector
+                // If you push the stick forward, you move in 'direction'
+                // If you push the stick right, you move in 'camTransform.right' (also flattened)
+                Vector3 moveInput = (direction * joystickValue.y) + (camTransform.right * joystickValue.x);
+
+                controller.Move(moveInput * speed * Time.deltaTime);
+
             }
             else if (rotationMode == 2)
             {
                 direction = new Vector3(-joystickValue.x, 0, joystickValue.y);
-                headRotation = new Vector3(0, GameObject.Find("VRCamera").transform.rotation.eulerAngles.y, 0);
+                headRotation = new Vector3(0, VRcamera.transform.rotation.eulerAngles.y, 0);
 
             }
 
             direction = Quaternion.Euler(headRotation) * direction;
+
+            //Debug.Log("Direction after quaternized is: " + direction);
             // 2. Translate joystick Y to Forward and X to Strafe
 
             // 3. Move relative to where the player is looking
@@ -271,8 +276,32 @@ public class VRPlayerMovement : MonoBehaviour
             move.y = verticalVelocity;
         }
 
-        controller.Move(move * Time.deltaTime);
+        if(rotationMode == 0 || rotationMode == 2)
+            controller.Move(move * Time.deltaTime);
     }
+
+    //shorthand quat exp. 
+    /*straight forward: -0.5, -0.5, 0.5, -0.5
+      straight left:     0.0, -0.0, 0.7, -0.7
+      straight back:    -0.5,  0.5,-0.5,  0.5
+      straight right:    0.7,  0.7, 0.0,  0.0
+      */
+    /*else if (rotationMode == 1)
+    {
+        direction = new Vector3(0, -joystickValue.x, joystickValue.y);
+        headRotation = new Vector3(GameObject.Find("VRCamera").transform.rotation.eulerAngles.x, 0, 0);
+        Quaternion quat = GameObject.Find("VRCamera").transform.rotation;
+        float x = quat.x;
+        float y = quat.y;
+        float z = quat.z;
+        float w = quat.w;
+        if (x > 0 && y > 0.5 && -0.5 < z && z < 0.5 && -0.5 < w && w < 0.5)
+        {
+            Debug.Log("danger zone");
+            headRotation.x = -headRotation.x;
+        }
+
+    }*/
 
     private Vector3 lastHandPosition;
     void Climb()
@@ -421,6 +450,14 @@ public class VRPlayerMovement : MonoBehaviour
             euler.x = 0f;
             transform.eulerAngles = euler;
         }
+    }
+
+    public void Respawn()
+    {
+        controller.enabled = false;
+        transform.position = respawnPoint.position;
+        transform.rotation = respawnPoint.rotation;
+        controller.enabled = true;
     }
 }
 

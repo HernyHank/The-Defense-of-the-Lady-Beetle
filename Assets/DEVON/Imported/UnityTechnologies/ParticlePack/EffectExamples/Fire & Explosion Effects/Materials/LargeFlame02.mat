@@ -30,9 +30,7 @@ Material:
   - _FLIPBOOKBLENDING_ON
   - _SOFTPARTICLES_ON
   - _SURFACE_TYPE_TRANSPARENT
-  m_InvalidKeywords:
-  - _ALPHABLEND_ON
-  - _REQUIRE_UV2
+  m_InvalidKeywords: []
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -99,7 +97,8 @@ Material:
     m_Floats:
     - _AlphaClip: 0
     - _AlphaToMask: 0
-    - _Blend: 0
+    - _Blend: 2
+    - _BlendModePreserveSpecular: 1
     - _BlendOp: 0
     - _BumpScale: 1
     - _CameraFadingEnabled: 0
@@ -113,8 +112,8 @@ Material:
     - _DistortionEnabled: 0
     - _DistortionStrength: 1
     - _DistortionStrengthScaled: 0
-    - _DstBlend: 10
-    - _DstBlendAlpha: 10
+    - _DstBlend: 1
+    - _DstBlendAlpha: 1
     - _EmissionEnabled: 1
     - _FlipbookBlending: 1
     - _FlipbookMode: 1
@@ -127,6 +126,8 @@ Material:
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _QueueOffset: 0
+    - _ReceiveShadows: 1
+    - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SoftParticlesEnabled: 1
     - _SoftParticlesFarFadeDistance: 1
@@ -140,11 +141,11 @@ Material:
     - _flip: 0
     - _pow: 1
     m_Colors:
-    - _BaseColor: {r: 2.2323763, g: 0.9044972, b: 0, a: 1}
+    - _BaseColor: {r: 0, g: 0.7490196, b: 0.0782542, a: 1}
     - _BaseColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 2.2323763, g: 0.9044972, b: 0, a: 1}
+    - _Color: {r: 0, g: 0.7490196, b: 0.07825417, a: 1}
     - _ColorAddSubDiff: {r: 1, g: 0, b: 0, a: 0}
-    - _EmissionColor: {r: 1.7555581, g: 0.63789403, b: 0, a: 1}
+    - _EmissionColor: {r: 0, g: 1.7555581, b: 0.640988, a: 1}
     - _SoftParticleFadeParams: {r: 0, g: 1, b: 0, a: 0}
   m_BuildTextureStacks: []
