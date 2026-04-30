@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class AsteroidSignFlash : MonoBehaviour
 {
-    public TextMeshProUGUI textMeshPro;
+    public TextMeshPro textMeshPro;
 
     public KeyCode toggleKey = KeyCode.F;
 
@@ -18,7 +18,7 @@ public class AsteroidSignFlash : MonoBehaviour
     {
         if (textMeshPro == null)
         {
-            textMeshPro = GetComponent<TextMeshProUGUI>();
+            textMeshPro = GetComponent<TextMeshPro>();
         }
 
         StopFlashing();
