@@ -79,6 +79,6 @@ public class PlayerShip_Shake_HM : MonoBehaviour
         shakeDuration = duration;
         shakeIntensity = intensity;
         shakeTimer = duration;
-        controller.DamageShip(100);
+        controller.DamageShip(10f);
     }
 }

@@ -63,7 +63,7 @@ public class Gun_DW : MonoBehaviour
                 EventController controller = FindObjectOfType<EventController>();
                 if (controller != null)
                 {
-                    controller.DamageShip(1);
+                    controller.DamageShip(0.1f);
                 }
                 pirateShoot = false;
             }

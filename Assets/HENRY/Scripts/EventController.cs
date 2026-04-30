@@ -62,7 +62,7 @@ public class EventController : MonoBehaviour
     public GameObject bossShip;
 
     [Header("ShipHealth")]
-    public int shipHealthMain = 100;
+    public float shipHealthMain = 100f;
     public GameObject particleParent;
 
 
@@ -158,12 +158,19 @@ public class EventController : MonoBehaviour
         {
             isCompleted = true;
             currentEvent--;
-        }   
-/*
+        }
+
         if (Input.GetKeyDown(KeyCode.Keypad3))
         {
-            ResetLevel();   
-        }*/
+            bool p1isActive = particleParent .transform.Find("Group1").gameObject.activeSelf;
+            bool p2isActive = particleParent .transform.
+                Find("Group2").gameObject.activeSelf;
+            bool p3isActive = particleParent .transform.Find("Group3").gameObject.activeSelf;
+
+            particleParent.transform.Find("Group3").gameObject.SetActive(!p3isActive);
+            particleParent.transform.Find("Group2").gameObject.SetActive(!p2isActive);
+            particleParent.transform.Find("Group1").gameObject.SetActive(!p1isActive);
+        }
 
         if (Input.GetKeyDown(KeyCode.Keypad7))
         {
@@ -220,21 +227,22 @@ public class EventController : MonoBehaviour
 
     }
 
-    public void RegenShip(int regenAmount)
+    public void RegenShip(float regenAmount)
     {
         shipHealthMain += regenAmount;
         if(shipHealthMain > 100)
         {
             shipHealthMain = 100;
         }
+        HealthConditionals();
         //Debug.Log("Ship regenerated " + regenAmount + " health. Current health: " + shipHealthMain);
     }
 
-    public void DamageShip(int damageAmount)
+    public void DamageShip(float damageAmount)
     {
         shipHealthMain -= damageAmount;
         HealthConditionals();
-        //Debug.Log("Ship took " + damageAmount + " damage. Remaining health: " + shipHealthMain);
+        Debug.Log("Ship took " + damageAmount + " damage. Remaining health: " + shipHealthMain);
     }   
 
     public IEnumerator FlashMode(float waitTime)
@@ -358,7 +366,6 @@ public class EventController : MonoBehaviour
         // Show death UI
 
         // other death handling...
-        shipHealthMain = 100;
         deathSequenceAnimator.SetTrigger("TriggerDeath_Inactive");
 
         //reset EVERYTHING
@@ -372,8 +379,34 @@ public class EventController : MonoBehaviour
         goodBatteryInPlace = true;
         torpedoHit = false;
         torpedoIsLoaded = false;
+        pilotMode = false;
+        turretMode = false;
 
-    script.Respawn();
+        modeFlashed = false;
+        doubleTapFlashed = false;
+
+        outsideAirlockIsOpen = true;
+        calmFieldSpawned = false;
+        calmTimersBeenCalled = false;
+        playerWalkedInOnce = false;
+
+        ambushStarted = false; // Ad
+        shipCountReachedTwo = false;
+
+        steroidsSpawned = false;
+        evasiveTimerSet = false;
+
+        shipsHasGoneUpTo4 = false;
+
+        breachTimersBeenSet = false;
+        turretCanShoot = true;
+
+        bossFightStarted = false;
+        bossFightComplete = false;
+        asteroidsShouldBeSpawned = true;
+        RegenShip(1000);
+
+        script.Respawn();
 
         yield return new WaitForSeconds(1f);
 
@@ -393,29 +426,43 @@ public class EventController : MonoBehaviour
         playerDeathSequenceActive = false;
     }
 
-    public bool isGroup1Active = false;
+    /*public bool isGroup1Active = false;
     public bool isGroup2Active = false;
-    public bool isGroup3Active = false; 
+    public bool isGroup3Active = false; */
     public void HealthConditionals()
     {
         if(shipHealthMain > 75)
         {
             particleParent.transform.Find("Group1").gameObject.SetActive(false);
-            isGroup1Active = false;
+            particleParent.transform.Find("Group2").gameObject.SetActive(false);
+            particleParent.transform.Find("Group3").gameObject.SetActive(false);
+            //isGroup1Active = false;
+            return;
         }
          if(shipHealthMain > 50)
         {
+            particleParent.transform.Find("Group1").gameObject.SetActive(true);
             particleParent.transform.Find("Group2").gameObject.SetActive(false);
-            isGroup2Active = false;
+            particleParent.transform.Find("Group3").gameObject.SetActive(false);
+            //isGroup2Active = false;
+            return;
         }
          if(shipHealthMain > 25)
         {
+            particleParent.transform.Find("Group2").gameObject.SetActive(true);
             particleParent.transform.Find("Group3").gameObject.SetActive(false);
-            isGroup3Active = false;
+
+            //isGroup3Active = false;
+            return;
+        }
+         if(shipHealthMain > 0)
+        {
+            particleParent.transform.Find("Group3").gameObject.SetActive(true);
+            return;
         }
 
 
-        if (shipHealthMain <= 75 && !isGroup1Active)
+/*            if (shipHealthMain <= 75 && !isGroup1Active)
         {
             particleParent.transform.Find("Group1").gameObject.SetActive(true);
             isGroup1Active = true;
@@ -431,7 +478,7 @@ public class EventController : MonoBehaviour
         {
             particleParent.transform.Find("Group3").gameObject.SetActive(true);
             isGroup3Active = true;
-        }
+        }*/
 
         if (shipHealthMain <= 0)
         {
