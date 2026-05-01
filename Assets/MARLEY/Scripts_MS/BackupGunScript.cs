@@ -38,7 +38,7 @@ public class BackupGunScript : MonoBehaviour
         }
         else
         {
-           Debug.Log("Animator found on " + sibling.gameObject.name);
+          // Debug.Log("Animator found on " + sibling.gameObject.name);
         }   
     }
 

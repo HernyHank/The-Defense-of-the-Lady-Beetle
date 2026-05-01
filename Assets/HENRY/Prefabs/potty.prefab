@@ -7130,8 +7130,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb5bed2c1dca8f4aa04b0f7484dbda9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  peeLocation: {fileID: 0}
-  finishLocation: {fileID: 0}
   peeCounter: 0
   clip: {fileID: 8300000, guid: e256774685f1c8c49bd9ba37e6112add, type: 3}
   peeAudioSource: {fileID: 6709603862289887557}

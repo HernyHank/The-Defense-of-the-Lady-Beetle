@@ -21,6 +21,10 @@ public class EventController : MonoBehaviour
     private bool turretPurgatoryRunning = false;
     private bool deathSequenceReset = false;
 
+    [Header("Audio")]
+    public AudioManager audioManager;
+    public bool dialogueActive = false; 
+
     [Header("Damage Groups")]
     public GameObject group1;
     public GameObject group2;
@@ -78,6 +82,7 @@ public class EventController : MonoBehaviour
 
     void Start()
     {
+        /*audioManager.OnDialogueFinished += HandleDialogueEnd;*/
         gooGunRB = gooGun.GetComponent<Rigidbody>();
         if(gooGunRB == null)
         {
@@ -159,6 +164,9 @@ public class EventController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             isCompleted = true;
+            audioManager.StopAudio();
+            conversationHasBeenStarted = false;
+            dialogueActive = false;
         }
 
         if (Input.GetKeyDown(KeyCode.M))
@@ -171,6 +179,11 @@ public class EventController : MonoBehaviour
         {
             isCompleted = true;
             currentEvent--;
+        }
+
+        if (Input.GetKeyDown(KeyCode.K))
+        {
+            audioManager.StopEverything();
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad3))
@@ -696,6 +709,34 @@ public class EventController : MonoBehaviour
         script.SetUIText(text, shouldShow);
     }
 
+    public bool initialConversationStarted = false;
+    public int audioClipIndex = 0;
+    public bool allClipsPlayed = false;
+    public void PlayAudioClipList()
+    {
+        if(audioClipIndex >= audioClipList.Count)
+        {
+            Debug.Log("All audio clips in the list have been played.");
+            allClipsPlayed = true;
+            dialogueActive = false;
+            return;
+        }
+
+        if (dialogueActive == false && !allClipsPlayed)
+        {
+            Debug.Log("Attempting to play audio clip at index " + audioClipIndex);
+            AudioClip clipToPlay = audioClipList[audioClipIndex];
+            audioManager.PlayDialogueSequence(clipToPlay, 0.8f);
+            dialogueActive = true;
+            //audioClipList.RemoveAt(0); // Remove the clip that was just played
+        }
+    }
+
+    /*    void HandleDialogueEnd()
+        {
+            Debug.Log("The AudioManager told me the clip is done!");
+        }*/
+
     //---------------------------------------------//
     //---------------------------------------------//
     //---------------------------------------------//
@@ -705,7 +746,8 @@ public class EventController : MonoBehaviour
     //---------------------------------------------//
     //---------------------------------------------//
     //---------------------------------------------//
-    private bool wakeUpTimerSet = false;
+    private bool conversationHasBeenStarted = false;
+    private bool musicHasBeenInitiated = false;
     private bool TheWakeUp() {
 
         if (Input.GetKeyDown(KeyCode.L))
@@ -713,16 +755,50 @@ public class EventController : MonoBehaviour
             return true;
         }
 
-        if (!wakeUpTimerSet)
+        if (!musicHasBeenInitiated)
         {
-            SetTimer(3f); // Set a timer for 5 seconds
-            wakeUpTimerSet = true;
+            AudioClip musicClip = audioManager.FetchClip("Music/LadyBeetleOpener");
+            if (musicClip != null)
+            {
+                audioManager.PlayMusicClip(musicClip);
+                musicHasBeenInitiated = true;
+            }
+            else
+            {
+                Debug.Log("Failed to load music clip for The Wake-Up event.");
+            }
         }
 
+/*        if (!wakeUpTimerSet)
+        {
+            audioManager.Play(); // Set a timer for 5 seconds
+            wakeUpTimerSet = true;
+        }*/
+/*
         if (IsTimerFinished())
         {
             return true; // Timer finished, event is complete
+        }*/
+        if (!conversationHasBeenStarted)
+        {
+            AudioClip audioClip = audioManager.FetchClip("Dialogue/1. Wakeup/WakeUp");
+            if (audioClip != null)
+            {
+                audioManager.PlayDialogueSequence(audioClip, 0.8f);
+            } else
+            {
+                Debug.Log("Failed to load audio clip for The Wake-Up event.");
+            }
+                conversationHasBeenStarted = true;
         }
+
+        if (dialogueActive == false)
+        {
+            conversationHasBeenStarted = false;
+            musicHasBeenInitiated = false;
+            audioClipIndex = 0;// Reset for potential future use
+            return true;
+        }   
 
         return false;    
     }
@@ -731,13 +807,87 @@ public class EventController : MonoBehaviour
     //---------------------------------------------//
     //---------------------------------------------//
     //---------------------------------------------//
-
+    List<AudioClip> audioClipList = new List<AudioClip>();
+    bool audioClipsFetched = false;
     private bool Routine() 
     {
-        if(pottyScript != null)
+        if (audioClipsFetched == false)
+        {
+            audioClipList.Add(audioManager.FetchClip("Dialogue/2. Routine/Routine__Morning Whizzes_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/2. Routine/Routine__Broken door, missing Arms and Legs_"));
+            for (int i = 0; i < audioClipList.Count; i++)
+            {
+                if (audioClipList[i] == null)
+                {
+                    Debug.Log("Failed to load audio clip at index " + i + " for Routine event.");
+                }
+                else
+                {
+                    Debug.Log("Successfully loaded audio clip: " + audioClipList[i].name);
+                }
+            }
+            audioClipsFetched = true;
+        }
+        else
+        {
+            if(allClipsPlayed == false)
+                PlayAudioClipList();
+        }
+/*        if (!conversationHasBeenStarted)
+        {
+            AudioClip audioClip = audioManager.FetchClip("Dialogue/2. Routine/Routine__Morning Whizzes_");
+            if (audioClip != null)
+            {
+                audioManager.PlayDialogueSequence(audioClip);
+            }
+            else
+            {
+                Debug.Log("Failed to load audio clip for morning whizzes event.");
+            }
+            conversationHasBeenStarted = true;
+        }
+
+        if (dialogueActive == false)
+        {
+            AudioClip audioClip = audioManager.FetchClip("Dialogue/2. Routine/Routine__Broken door, missing Arms and Legs_");
+            if (audioClip != null)
+            {
+                audioManager.PlayDialogueSequence(audioClip);
+                Debug.Log("Playing audio clip " + audioClip.name);
+            }
+            else
+            {
+                Debug.Log("Failed to load audio clip for morning whizzes event.");
+            }
+            conversationHasBeenStarted = true; // Reset for potential future use
+        }*/
+        //////
+/*        if (!conversationHasBeenStarted)
+        {
+            AudioClip audioClip = audioManager.FetchClip("Dialogue/2. Routine/Routine__Broken door, missing Arms and Legs_");
+            if (audioClip != null)
+            {
+                audioManager.PlayDialogueSequence(audioClip);
+            }
+            else
+            {
+                Debug.Log("Failed to load audio clip for morning whizzes event.");
+            }
+            conversationHasBeenStarted = true;
+        }*/
+
+/*        if (dialogueActive == false)
+        {
+            conversationHasBeenStarted = false; // Reset for potential future use
+        }*/
+
+        if (pottyScript != null)
         {
             if (pottyScript.eventComplete)
             {
+                conversationHasBeenStarted = false; // Reset for potential future use
+                audioClipsFetched = false;
+                audioClipList.Clear();
                 return true;
             }
         }
@@ -760,7 +910,7 @@ public class EventController : MonoBehaviour
     {
         if (!calmFieldSpawned)
         {
-            asteroidSpawnScript.SpawnField(200, 20f);
+            asteroidSpawnScript.SpawnField(120, 30f);
             calmFieldSpawned = true;
         }
 
@@ -769,7 +919,7 @@ public class EventController : MonoBehaviour
             playerWalkedInOnce = true;
         } 
         
-        if(!calmTimersBeenCalled && playerWalkedInOnce)
+        if(playerWalkedInOnce)
         {
             SetTimer(5f);
             calmTimersBeenCalled = true;

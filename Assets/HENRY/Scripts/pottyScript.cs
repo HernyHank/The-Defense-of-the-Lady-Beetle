@@ -10,6 +10,7 @@ public class pottyScript : MonoBehaviour
     private bool isPeeing;
     private bool isJustAfterFinishing = false;
     public int peeCounter = 0;
+    public AudioManager audioManager;
 
     public AudioClip clip;
     public AudioSource peeAudioSource;
@@ -58,7 +59,11 @@ public class pottyScript : MonoBehaviour
                 peeAudioSource.clip = clip;
                 peeAudioSource.volume = 0;
                 peeAudioSource.Play();
-
+                //peeAudioSource.PlayOneShot()
+                audioManager.StopAudio();
+                AudioClip yesss = audioManager.FetchClip("Dialogue/2. Routine/Routine__OHHHHH YEAH_");
+                audioManager.PlayOneShot(yesss);
+                audioManager.SetVolume(0.8f);
                 StartCoroutine(PottyTimer(5));
                 StartCoroutine(FadeAudio(peeAudioSource, 0.5f, 1f));
             }
