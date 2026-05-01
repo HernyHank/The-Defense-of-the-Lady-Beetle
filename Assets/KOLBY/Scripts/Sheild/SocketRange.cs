@@ -7,6 +7,7 @@ public class BatterySnapZone : MonoBehaviour
     public Transform snapPoint;
     public EventController eventController;
     public Animator torpedoAnimator;
+    public AudioManager audioManager;
 
     public enum SnapZoneType
     {
@@ -26,6 +27,7 @@ public class BatterySnapZone : MonoBehaviour
     public void Awake()
     {
         eventController = FindObjectOfType<EventController>();
+        audioManager = FindObjectOfType<AudioManager>();
     }
 
     public bool IsBatteryInZone(GameObject obj)
@@ -148,6 +150,8 @@ public class BatterySnapZone : MonoBehaviour
         if (battery.currentState == BatterySnap.BatteryState.Torpedo)
         {
             torpedoAnimator.SetTrigger("PrepTorpedo");
+            AudioClip clip = audioManager.FetchClip("SFX/Torpedo/TorpedoDropOffSFX");
+            audioManager.PlaySFXOneShot(clip, 0.8f);  
             Debug.Log("torpedoTrigger set");
         }
         else

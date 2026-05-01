@@ -26,7 +26,10 @@ public class GrowingBlob_DW : MonoBehaviour
     {
         eventController = FindObjectOfType<EventController>();
         if (eventController != null)
-            Debug.Log("Blobbing found event controller: " + eventController.name);
+        {
+
+        }
+            //Debug.Log("Blobbing found event controller: " + eventController.name);
         else
             Debug.LogWarning("GrowingBlob_DW: EventController not found in scene.");
     }
