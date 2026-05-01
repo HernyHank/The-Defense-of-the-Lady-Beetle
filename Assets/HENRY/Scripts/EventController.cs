@@ -21,6 +21,16 @@ public class EventController : MonoBehaviour
     private bool turretPurgatoryRunning = false;
     private bool deathSequenceReset = false;
 
+    [Header("Damage Groups")]
+    public GameObject group1;
+    public GameObject group2;
+    public GameObject group3;
+
+    [Header("Lights")]
+    // Drag your "Light Parent" object here in the inspector
+    public GameObject lightParent;
+    private RedLightFlash_MS[] allLights;
+
     public static int currentEvent;
 
     [Header("Routine")]
@@ -85,7 +95,10 @@ public class EventController : MonoBehaviour
         currentEvent = 0;
         previousEvent = 0;
         Debug.Log("Current Event: " + eventNames[currentEvent]);
-
+        if (lightParent != null)
+        {
+            allLights = lightParent.GetComponentsInChildren<RedLightFlash_MS>();
+        }
         script.SetUIText(eventNames[currentEvent], true); // Show "The Wake-up" immediately
         StartCoroutine(FlashMode(4f));
     }
@@ -426,40 +439,64 @@ public class EventController : MonoBehaviour
         playerDeathSequenceActive = false;
     }
 
-    /*public bool isGroup1Active = false;
-    public bool isGroup2Active = false;
-    public bool isGroup3Active = false; */
     public void HealthConditionals()
     {
-        if(shipHealthMain > 75)
+        // 1. Healthy State
+        if (shipHealthMain > 75)
         {
-            particleParent.transform.Find("Group1").gameObject.SetActive(false);
-            particleParent.transform.Find("Group2").gameObject.SetActive(false);
-            particleParent.transform.Find("Group3").gameObject.SetActive(false);
-            //isGroup1Active = false;
+            SetVisuals(false, false, false);
+            UpdateLights(isRed: false);
             return;
         }
-         if(shipHealthMain > 50)
-        {
-            particleParent.transform.Find("Group1").gameObject.SetActive(true);
-            particleParent.transform.Find("Group2").gameObject.SetActive(false);
-            particleParent.transform.Find("Group3").gameObject.SetActive(false);
-            //isGroup2Active = false;
-            return;
-        }
-         if(shipHealthMain > 25)
-        {
-            particleParent.transform.Find("Group2").gameObject.SetActive(true);
-            particleParent.transform.Find("Group3").gameObject.SetActive(false);
 
-            //isGroup3Active = false;
-            return;
-        }
-         if(shipHealthMain > 0)
+        // 2. Minor Damage
+        if (shipHealthMain >= 50)
         {
-            particleParent.transform.Find("Group3").gameObject.SetActive(true);
+            SetVisuals(true, false, false);
+            UpdateLights(isRed: false);
             return;
         }
+
+        // 3. Major Damage
+        if (shipHealthMain > 25)
+        {
+            SetVisuals(true, true, false);
+            UpdateLights(isRed: false);
+            return;
+        }
+
+        // 4. Critical State
+        if (shipHealthMain > 0)
+        {
+            SetVisuals(true, true, true);
+            UpdateLights(isRed: true);
+            return;
+        }
+
+        if (shipHealthMain <= 0)
+        {
+            PlayerDeathSequence();
+        }
+    }
+
+    // Helper method to toggle particles/groups
+    private void SetVisuals(bool g1, bool g2, bool g3)
+    {
+        if (group1) group1.SetActive(g1);
+        if (group2) group2.SetActive(g2);
+        if (group3) group3.SetActive(g3);
+    }
+
+    // Helper method to update all lights at once
+    private void UpdateLights(bool isRed)
+    {
+        foreach (RedLightFlash_MS light in allLights)
+        {
+            if (isRed) light.SetRedFlashing();
+            else light.SetWhiteSolid();
+        }
+    }
+
 
 
 /*            if (shipHealthMain <= 75 && !isGroup1Active)
@@ -479,14 +516,6 @@ public class EventController : MonoBehaviour
             particleParent.transform.Find("Group3").gameObject.SetActive(true);
             isGroup3Active = true;
         }*/
-
-        if (shipHealthMain <= 0)
-        {
-            PlayerDeathSequence();
-        } 
-
-
-    }
 
     public void SetCurrentRoom(string room)
     {

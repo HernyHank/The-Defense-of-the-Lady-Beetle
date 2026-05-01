@@ -5,7 +5,7 @@ using UnityEngine;
 public class RedLightFlash_MS : MonoBehaviour
 {
     public Light pointLight;
-
+    public EventController controller;
     public KeyCode toggleKey = KeyCode.F;
 
     public float flashSpeed = 0.5f; // time between on/off
@@ -15,6 +15,7 @@ public class RedLightFlash_MS : MonoBehaviour
 
     void Start()
     {
+        controller = FindObjectOfType<EventController>();
         if (pointLight == null)
         {
             pointLight = GetComponent<Light>();
@@ -45,7 +46,7 @@ public class RedLightFlash_MS : MonoBehaviour
         }
     }
 
-    void SetWhiteSolid()
+    public void SetWhiteSolid()
     {
         if (flashCoroutine != null)
         {
@@ -53,11 +54,12 @@ public class RedLightFlash_MS : MonoBehaviour
         }
 
         pointLight.color = Color.white;
-        pointLight.enabled = true;
+        pointLight.enabled = false;
     }
 
-    void SetRedFlashing()
+    public void SetRedFlashing()
     {
+        pointLight.enabled = true;
         pointLight.color = Color.red;
 
         if (flashCoroutine != null)
