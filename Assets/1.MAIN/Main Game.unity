@@ -25404,6 +25404,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1986508701}
   eventController: {fileID: 0}
   torpedoAnimator: {fileID: 0}
+  audioManager: {fileID: 0}
   zoneType: 0
   doorAnimator: {fileID: 0}
   ejectDirection: {fileID: 0}
@@ -29473,6 +29474,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1885303385}
   eventController: {fileID: 0}
   torpedoAnimator: {fileID: 0}
+  audioManager: {fileID: 0}
   zoneType: 1
   doorAnimator: {fileID: 95853555}
   ejectDirection: {fileID: 370102287}
@@ -30656,6 +30658,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1986508701}
   eventController: {fileID: 0}
   torpedoAnimator: {fileID: 0}
+  audioManager: {fileID: 0}
   zoneType: 0
   doorAnimator: {fileID: 0}
   ejectDirection: {fileID: 0}
@@ -39650,6 +39653,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8686844787826553719, guid: 4ebdba779e08edc40984b9cd987fca2b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1ff38f9bfb0673d4887bd8b92cfda546, type: 2}
     - target: {fileID: -8679921383154817045, guid: 4ebdba779e08edc40984b9cd987fca2b,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -40345,6 +40353,11 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3757424136071835834, guid: 4ebdba779e08edc40984b9cd987fca2b,
+        type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 1ff38f9bfb0673d4887bd8b92cfda546, type: 2}
     - target: {fileID: 3781074527071307270, guid: 4ebdba779e08edc40984b9cd987fca2b,
         type: 3}
       propertyPath: m_IsActive
@@ -47063,6 +47076,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1885303385}
   eventController: {fileID: 0}
   torpedoAnimator: {fileID: 0}
+  audioManager: {fileID: 0}
   zoneType: 1
   doorAnimator: {fileID: 95853555}
   ejectDirection: {fileID: 370102287}
@@ -53989,14 +54003,16 @@ MonoBehaviour:
   gooGunRB: {fileID: 0}
   batteryShotIntoSpace: 0
   goodBatteryInPlace: 0
-  bossFightAsteroidCount: 1100
-  bossAsteroidTimer: 20
+  bossFightAsteroidCount: 937
+  bossAsteroidTimer: 40.5
   bossTorpedo: {fileID: 1750115751}
   torpedoHit: 0
-  torpedoIsLoaded: 0
+  torpedoIsLoaded: 1
   bossShip: {fileID: 1459020037}
   shipHealthMain: 100
   particleParent: {fileID: 1659392426}
+  regenIncrement: 10
+  regenFrequency: 3000
   explosionsAreInactive: 1
   playerDeathSequenceActive: 0
   pilotMode: 0
@@ -139356,6 +139372,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1561494944}
   eventController: {fileID: 0}
   torpedoAnimator: {fileID: 1604847309}
+  audioManager: {fileID: 0}
   zoneType: 2
   doorAnimator: {fileID: 0}
   ejectDirection: {fileID: 0}
@@ -144874,6 +144891,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1986508701}
   eventController: {fileID: 0}
   torpedoAnimator: {fileID: 0}
+  audioManager: {fileID: 0}
   zoneType: 0
   doorAnimator: {fileID: 0}
   ejectDirection: {fileID: 0}
@@ -150622,6 +150640,7 @@ MonoBehaviour:
   snapPoint: {fileID: 1561494944}
   eventController: {fileID: 0}
   torpedoAnimator: {fileID: 2109976809}
+  audioManager: {fileID: 0}
   zoneType: 2
   doorAnimator: {fileID: 0}
   ejectDirection: {fileID: 0}

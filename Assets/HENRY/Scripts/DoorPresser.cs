@@ -17,6 +17,8 @@ public class DoorPresser : MonoBehaviour
 
     public Rigidbody gooGunRB;
 
+    public AudioManager audioManager;
+
     // Update is called once per frame
 
     public enum DoorType
@@ -33,6 +35,7 @@ public class DoorPresser : MonoBehaviour
         {
             controller = FindObjectOfType<EventController>();
         }
+        audioManager = FindObjectOfType<AudioManager>();
     }
     void Update()
     { //debug
@@ -81,6 +84,7 @@ public class DoorPresser : MonoBehaviour
         {
             //Debug.Log("Player has exited the door trigger area.");
             animator.SetBool("playerHasExited", true);
+            
             /*if (doorType != DoorType.Airlock)
             {
                 animator.SetBool("playerHasExited", true);
@@ -99,6 +103,9 @@ public class DoorPresser : MonoBehaviour
             gooGunRB.useGravity = false;
             gooGunRB.drag = 300f;
         }
+        AudioClip clip = audioManager.FetchClip("SFX/Machinery/DoorOpenAndCloseSFX");
+        audioManager.PlaySFXOneShot(clip, 0.5f);
+
     }
 
     public void doorFinishedOpening()

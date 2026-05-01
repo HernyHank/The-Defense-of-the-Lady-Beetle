@@ -108,6 +108,9 @@ public class EventController : MonoBehaviour
         StartCoroutine(FlashMode(4f));
     }
 
+    int regenCounter = 0;
+    public int regenIncrement = 10;
+    public int regenFrequency = 3000; // Regenerate every 3000 frames (adjust as needed)
     private void Update()
     {
         // Only run if we haven't finished all events
@@ -116,10 +119,14 @@ public class EventController : MonoBehaviour
             EventCaller();
         }
 
-/*        if (script.GetBState())
+        if(regenCounter % regenFrequency == 0)
         {
-            Debug.Log("B was held");
-        }*/
+            RegenShip(regenIncrement);
+        } 
+        /*        if (script.GetBState())
+                {
+                    Debug.Log("B was held");
+                }*/
         //ContinuousRoomConditionals();
         //RoomConditionals();
         //HealthConditionals();
