@@ -7,9 +7,7 @@ public class AsteroidSignFlash : MonoBehaviour
 {
     public TextMeshPro textMeshPro;
 
-    public KeyCode toggleKey = KeyCode.F;
-
-    public float flashSpeed = 0.5f; // time between on/off
+    public float flashSpeed = 0.5f;
 
     private bool isFlashing = false;
     private Coroutine flashCoroutine;
@@ -24,15 +22,32 @@ public class AsteroidSignFlash : MonoBehaviour
         StopFlashing();
     }
 
-    void Update()
+    /* void Update()
+     {
+         if (OnTriggerStay()) //edit here
+         {
+             ToggleSignFlash();
+         }
+     }*/
+
+    void OnTriggerEnter(Collider other)
     {
-        if (Input.GetKeyDown(toggleKey))
+        // Check if the object is on the "Asteroid" layer
+        if (other.gameObject.layer == LayerMask.NameToLayer("Asteroid"))
         {
-            ToggleSignFlash();
+            StartFlashing();
         }
     }
 
-    void ToggleSignFlash()
+    void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.layer == LayerMask.NameToLayer("Asteroid"))
+        {
+            StopFlashing();
+        }
+    }
+
+    /*void ToggleSignFlash()
     {
         isFlashing = !isFlashing;
 
@@ -44,20 +59,24 @@ public class AsteroidSignFlash : MonoBehaviour
         {
             StopFlashing();
         }
-    }
+    }*/
 
     void StopFlashing()
     {
+
         if (flashCoroutine != null)
         {
             StopCoroutine(flashCoroutine);
         }
 
-        textMeshPro.enabled = false; //Change to reference the TMP
+        isFlashing = false;
+        textMeshPro.enabled = false;
     }
 
     void StartFlashing()
     {
+        if (isFlashing) return;
+        isFlashing = true;
 
         if (flashCoroutine != null)
         {
