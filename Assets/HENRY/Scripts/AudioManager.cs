@@ -11,10 +11,12 @@ public class AudioManager : MonoBehaviour
     private AudioSource audioSource;
     public AudioSource musicSource;
 
+    private Coroutine dialogueCoroutine;
+
     void Awake() => audioSource = GetComponent<AudioSource>();
 
-    //private bool _wasPlayingLastFrame;
-/*    private void Update()*//*
+/*    //private bool _wasPlayingLastFrame;
+*//*    private void Update()*//*//*
     {
 *//*        if (!audioSource.isPlaying && _wasPlayingLastFrame)
         {
@@ -38,10 +40,24 @@ public class AudioManager : MonoBehaviour
 
     public void PlayDialogueSequence(AudioClip clip, float volume)
     {
+        if (clip == null)
+        {
+            Debug.LogWarning("PlayDialogueSequence called with null clip.");
+            return;
+        }
+
         eventController.dialogueActive = true;
         audioSource.Stop();
         audioSource.volume = volume;
-        StartCoroutine(PlayAndWait(clip));
+
+        // stop any existing dialogue coroutine instance
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+            dialogueCoroutine = null;
+        }
+
+        dialogueCoroutine = StartCoroutine(PlayAndWait(clip));
         //Debug.Log("Coroutine started");
 
         // Strategy A: Wait for the literal duration of the clip
@@ -58,16 +74,25 @@ public class AudioManager : MonoBehaviour
 
         eventController.audioClipIndex++;
         eventController.dialogueActive = false;
+
+        // clear handle
+        dialogueCoroutine = null;
     }
 
-    public AudioClip FetchClip(string path)
+    public AudioClip FetchClip(String path)
     {
         AudioClip myClip = Resources.Load<AudioClip>(path);
         return myClip;
     }
 
-    public void StopAudio()
+    public void StopDialogue()
     {
+        if (dialogueCoroutine != null)
+        {
+            StopCoroutine(dialogueCoroutine);
+            dialogueCoroutine = null;
+        }
+
         audioSource.Stop();
     }
 
@@ -79,9 +104,15 @@ public class AudioManager : MonoBehaviour
     public void PlayMusicClip(AudioClip clip)
     {
         StopMusic();
+        if (clip == null)
+        {
+            Debug.LogWarning("PlayMusicClip called with null clip.");
+            return;
+        }
+
         musicSource.clip = clip;
         musicSource.Play();
-        FadeAudio(musicSource, 1f, 0.3f); // Example: Fade in over 2 seconds to full volume
+        StartCoroutine(FadeAudio(musicSource, 1f, 0.3f)); // Fade in
     }
 
     public IEnumerator FadeAudio(AudioSource source, float duration, float targetVolume)
@@ -105,12 +136,12 @@ public class AudioManager : MonoBehaviour
 
     public void StopMusic()
     {
-        FadeAudio(musicSource, 1f, 0f); // Example: Fade out over 2 seconds
+        StartCoroutine(FadeAudio(musicSource, 1f, 0f)); // Fade out
     }   
 
     public void StopEverything()
     {
-        StopAudio();
+        StopDialogue();
         StopMusic();
     }
 

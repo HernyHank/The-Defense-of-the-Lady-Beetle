@@ -35,7 +35,7 @@ public class EventController : MonoBehaviour
     public GameObject lightParent;
     private RedLightFlash_MS[] allLights;
 
-    public static int currentEvent;
+    public int currentEvent;
 
     [Header("Routine")]
     public pottyScript pottyScript;
@@ -171,9 +171,11 @@ public class EventController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.L))
         {
             isCompleted = true;
-            audioManager.StopAudio();
+            audioManager.StopDialogue();
             conversationHasBeenStarted = false;
             dialogueActive = false;
+            audioClipList.Clear();
+            ResetDialogue();
         }
 
         if (Input.GetKeyDown(KeyCode.M))
@@ -319,47 +321,13 @@ public class EventController : MonoBehaviour
             explosionsAreInactive = false;
             Debug.Log("PlayerDeathSequence triggered");
             //if (!isDeathTimerSet)
-            //{
+            //{ 
             //SetTimer(0.5f);
             //isDeathTimerSet = true;
             StartCoroutine(DeathCorourtine());
             return;
         }
         //}
-
-        /*if (IsTimerFinished())
-        {
-            // Diagnostics
-            bool compositorAvailable = false;
-            try
-            {
-                compositorAvailable = (OpenVR.Compositor != null);
-            }
-            catch
-            {
-                compositorAvailable = false;
-            }
-            Debug.Log($"PlayerDeathSequence: OpenVR.Compositor available = {compositorAvailable}");
-
-            if (compositorAvailable)
-            {
-                // compositor fade -> guaranteed to affect headset
-                SteamVR_Fade.View(Color.black, 1f);
-            }
-            else
-            {
-                // Fallback: overlay/renderer fade (requires SteamVR_Fade component on camera)
-                Debug.LogWarning("OpenVR compositor not available. Using SteamVR_Fade.Start fallback. Ensure SteamVR_Fade component is present on the SteamVR camera.");
-                SteamVR_Fade.Start(Color.black, 1f, true);
-            }
-
-            // Show death UI
-            script.SetUIText("You have died", true);
-
-            // other death handling...
-            currentEvent++;
-            currentEvent--;
-        }*/
     }
     IEnumerator DeathCorourtine()
     {
@@ -606,18 +574,6 @@ public class EventController : MonoBehaviour
                 }
             }
         }
-
-/*        if (currentRoom != "Outside" && currentRoom != "Airlock")
-        {
-            gooGunRB.useGravity = true;
-            gooGunRB.drag = 0.5f;
-        }
-        else
-        {
-            gooGunRB.useGravity = false;
-            gooGunRB.drag = 300f;
-        }*/
-
     }
 
     IEnumerator PilotTurretPurgatory(string room)
@@ -699,18 +655,6 @@ public class EventController : MonoBehaviour
 
     IEnumerator PilotTurretPurgatory(bool dummy) { yield break; }
 
-    /*    public void ContinuousRoomConditionals()
-        {
-            if (currentRoom != "Outside" && currentRoom != "Airlock")
-            {
-                gooGunRB.useGravity = true;
-            }
-            else
-            {
-                gooGunRB.useGravity = false;
-            }
-        }*/
-
     public void EventControllerSetText(string text, bool shouldShow)
     {
         script.SetUIText(text, shouldShow);
@@ -721,22 +665,52 @@ public class EventController : MonoBehaviour
     public bool allClipsPlayed = false;
     public void PlayAudioClipList()
     {
-        if(audioClipIndex >= audioClipList.Count)
+        // Fixed: use logical check, guard bounds and nulls
+        if (!dialogueActive && !allClipsPlayed)
+        {
+            if (audioClipIndex < 0) audioClipIndex = 0;
+
+            if (audioClipIndex >= audioClipList.Count)
+            {
+                Debug.Log("All audio clips in the list have been played.");
+                allClipsPlayed = true;
+                dialogueActive = false;
+                return;
+            }
+
+            Debug.Log("Attempting to play audio clip at index " + audioClipIndex);
+            AudioClip clipToPlay = audioClipList[audioClipIndex];
+
+            if (clipToPlay == null)
+            {
+                Debug.LogWarning($"PlayAudioClipList: clip at index {audioClipIndex} is null. Skipping.");
+                audioClipIndex++;
+                return;
+            }
+
+            audioManager.PlayDialogueSequence(clipToPlay, 0.8f);
+            dialogueActive = true;
+        }
+
+        // check again after potential play
+        if (audioClipIndex >= audioClipList.Count)
         {
             Debug.Log("All audio clips in the list have been played.");
             allClipsPlayed = true;
             dialogueActive = false;
             return;
         }
+    }
 
-        if (dialogueActive == false && !allClipsPlayed)
-        {
-            Debug.Log("Attempting to play audio clip at index " + audioClipIndex);
-            AudioClip clipToPlay = audioClipList[audioClipIndex];
-            audioManager.PlayDialogueSequence(clipToPlay, 0.8f);
-            dialogueActive = true;
-            //audioClipList.RemoveAt(0); // Remove the clip that was just played
-        }
+    private void ResetDialogue()
+    {
+        audioManager.StopDialogue();
+        dialogueActive = false;
+        conversationHasBeenStarted = false; // Reset for potential future use
+        audioClipsFetched = false;
+        audioClipList.Clear();
+        allClipsPlayed = false;
+        audioClipIndex = 0;
     }
 
     /*    void HandleDialogueEnd()
@@ -776,16 +750,6 @@ public class EventController : MonoBehaviour
             }
         }
 
-/*        if (!wakeUpTimerSet)
-        {
-            audioManager.Play(); // Set a timer for 5 seconds
-            wakeUpTimerSet = true;
-        }*/
-/*
-        if (IsTimerFinished())
-        {
-            return true; // Timer finished, event is complete
-        }*/
         if (!conversationHasBeenStarted)
         {
             AudioClip audioClip = audioManager.FetchClip("Dialogue/1. Wakeup/WakeUp");
@@ -840,61 +804,12 @@ public class EventController : MonoBehaviour
             if(allClipsPlayed == false)
                 PlayAudioClipList();
         }
-/*        if (!conversationHasBeenStarted)
-        {
-            AudioClip audioClip = audioManager.FetchClip("Dialogue/2. Routine/Routine__Morning Whizzes_");
-            if (audioClip != null)
-            {
-                audioManager.PlayDialogueSequence(audioClip);
-            }
-            else
-            {
-                Debug.Log("Failed to load audio clip for morning whizzes event.");
-            }
-            conversationHasBeenStarted = true;
-        }
-
-        if (dialogueActive == false)
-        {
-            AudioClip audioClip = audioManager.FetchClip("Dialogue/2. Routine/Routine__Broken door, missing Arms and Legs_");
-            if (audioClip != null)
-            {
-                audioManager.PlayDialogueSequence(audioClip);
-                Debug.Log("Playing audio clip " + audioClip.name);
-            }
-            else
-            {
-                Debug.Log("Failed to load audio clip for morning whizzes event.");
-            }
-            conversationHasBeenStarted = true; // Reset for potential future use
-        }*/
-        //////
-/*        if (!conversationHasBeenStarted)
-        {
-            AudioClip audioClip = audioManager.FetchClip("Dialogue/2. Routine/Routine__Broken door, missing Arms and Legs_");
-            if (audioClip != null)
-            {
-                audioManager.PlayDialogueSequence(audioClip);
-            }
-            else
-            {
-                Debug.Log("Failed to load audio clip for morning whizzes event.");
-            }
-            conversationHasBeenStarted = true;
-        }*/
-
-/*        if (dialogueActive == false)
-        {
-            conversationHasBeenStarted = false; // Reset for potential future use
-        }*/
 
         if (pottyScript != null)
         {
             if (pottyScript.eventComplete)
             {
-                conversationHasBeenStarted = false; // Reset for potential future use
-                audioClipsFetched = false;
-                audioClipList.Clear();
+                ResetDialogue();
                 return true;
             }
         }
@@ -928,18 +843,43 @@ public class EventController : MonoBehaviour
         
         if(playerWalkedInOnce)
         {
-            SetTimer(5f);
-            calmTimersBeenCalled = true;
+           /* SetTimer(5f);
+            calmTimersBeenCalled = true;*/
+            if (audioClipsFetched == false)
+            {
+                audioClipList.Add(audioManager.FetchClip("Dialogue/3. The Calm/The Calm__You_d think someone who trained in the Polywoggle Arts_"));
+                for (int i = 0; i < audioClipList.Count; i++)
+                {
+                    if (audioClipList[i] == null)
+                    {
+                        Debug.Log("Failed to load audio clip at index " + i + " for Routine event.");
+                    }
+                    else
+                    {
+                        Debug.Log("Successfully loaded audio clip: " + audioClipList[i].name);
+                    }
+                }
+                audioClipsFetched = true;
+            }
+
+            if (allClipsPlayed == false)
+                   PlayAudioClipList();
+            
+            if(allClipsPlayed)
+            {
+                ResetDialogue();
+                return true;
+            }
         }
 
-        if (calmTimersBeenCalled)
+        /*if (calmTimersBeenCalled)
         {
             bool timerState = IsTimerFinished();
             if(timerState == true)
             {
                 return true;
             }
-        }
+        }*/
 
 
         return false;

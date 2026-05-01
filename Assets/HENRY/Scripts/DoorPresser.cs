@@ -94,6 +94,10 @@ public class DoorPresser : MonoBehaviour
 
     public void buttonFinishedPressing()
     {
+        if(doorType == DoorType.Airlock && controller.currentEvent < 6)
+        {
+            return;
+        }
         animator.SetBool("buttonIsPressed", true);
         if (doorType == DoorType.Airlock && controller.currentRoom == "Outside")
         {

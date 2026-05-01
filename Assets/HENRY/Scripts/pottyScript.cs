@@ -60,7 +60,7 @@ public class pottyScript : MonoBehaviour
                 peeAudioSource.volume = 0;
                 peeAudioSource.Play();
                 //peeAudioSource.PlayOneShot()
-                audioManager.StopAudio();
+                audioManager.StopDialogue();
                 AudioClip yesss = audioManager.FetchClip("Dialogue/2. Routine/Routine__OHHHHH YEAH_");
                 audioManager.PlayOneShot(yesss);
                 audioManager.SetVolume(0.8f);
