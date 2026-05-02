@@ -27,7 +27,7 @@ public class asteroidMonitor : MonoBehaviour
             Destroy(gameObject);
         }*/
 
-        if(Input.GetKeyDown(KeyCode.O))
+/*        if(Input.GetKeyDown(KeyCode.O))
         {
             StartCoroutine(FlashRoutine());
         }
@@ -36,9 +36,20 @@ public class asteroidMonitor : MonoBehaviour
         {
             StopCoroutine(FlashRoutine());
             myRenderer.material = normalMaterial;
-        }
+        }*/
 
 
+    }
+
+    public void QueFlash()
+    {
+        StartCoroutine(FlashRoutine());
+    }
+
+    public void QuitFlash()
+    {
+        StopCoroutine(FlashRoutine());
+        myRenderer.material = normalMaterial;
     }
 
     IEnumerator FlashRoutine()

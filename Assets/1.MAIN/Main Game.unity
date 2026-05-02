@@ -32866,7 +32866,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 12.287
+      value: 3.19
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalPosition.y
@@ -32874,11 +32874,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 2.922
+      value: 4.368
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9656338
+      value: 0.88907784
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalRotation.x
@@ -32886,7 +32886,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.2599066
+      value: -0.45775604
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalRotation.z
@@ -32898,7 +32898,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
-      value: 30.129
+      value: -54.485
       objectReference: {fileID: 0}
     - target: {fileID: 447954, guid: d1d5a6fe8050ac2499685e4730a7c2a0, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
@@ -59468,9 +59468,39 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 1016794426}
     m_Modifications:
+    - target: {fileID: 358643046916848631, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 552614058232765375, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 651710149068220634, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 745968683905960082, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 899658564169125208, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 920968662916267451, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: typeOfButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1093630130599619856, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1123243912893193715, guid: 4fb95163fac965d4da622a6e0ec0521f,
@@ -59618,6 +59648,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: TurretMonitor
       objectReference: {fileID: 0}
+    - target: {fileID: 2373599852140770511, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: typeOfButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2431457206805871619, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517271466572487755, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2960146148914231135, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: typeOfButton
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 3340369761062531648, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: cam1RT
@@ -59723,9 +59773,29 @@ PrefabInstance:
       propertyPath: typeOfButton
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 4781267768471775164, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4956140171854402197, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: typeOfButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4980521144632973129, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5128779653598855742, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5457884411209458732, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5512466448570878415, guid: 4fb95163fac965d4da622a6e0ec0521f,
@@ -59738,6 +59808,11 @@ PrefabInstance:
       propertyPath: m_SelectedEditorRenderState
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 5546861166483690713, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5558438622516744453, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: typeOfButton
@@ -59748,6 +59823,11 @@ PrefabInstance:
       propertyPath: m_Mesh
       value: 
       objectReference: {fileID: 1755939789}
+    - target: {fileID: 5677104726647374254, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6094992294229980195, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: m_LocalScale.x
@@ -59893,9 +59973,29 @@ PrefabInstance:
       propertyPath: m_Enabled
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 7136902949590561013, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7420306207903091053, guid: 4fb95163fac965d4da622a6e0ec0521f,
         type: 3}
       propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7561815738324491233, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: typeOfButton
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7705494220408664933, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7755646214749010857, guid: 4fb95163fac965d4da622a6e0ec0521f,
+        type: 3}
+      propertyPath: typeOfButton
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8185852680752764173, guid: 4fb95163fac965d4da622a6e0ec0521f,
@@ -153656,6 +153756,11 @@ PrefabInstance:
       propertyPath: m_Name
       value: largeScreen
       objectReference: {fileID: 0}
+    - target: {fileID: 7923540553650971005, guid: 0f164a279ba0337479183b05aa98ab5b,
+        type: 3}
+      propertyPath: monitor
+      value: 
+      objectReference: {fileID: 612514450}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:

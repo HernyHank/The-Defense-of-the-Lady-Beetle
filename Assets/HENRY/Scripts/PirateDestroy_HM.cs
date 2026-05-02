@@ -10,17 +10,38 @@ public class PirateDestroy_HM : MonoBehaviour
     Animator orbitAnimator;
     Animator bodyAnimator;
 
+    AudioManager audioManager;
+
     [Header("VFX")]
     public GameObject explosionPrefab;
 
     // Prevent multiple explosions from the same pirate instance
     private bool hasBeenDestroyed = false;
 
+    List<AudioClip> kackleIntimidationSounds = new List<AudioClip>();
+
     private void Awake()
     {
         controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
         orbitAnimator = this.gameObject.transform.parent.GetComponent<Animator>();
         bodyAnimator = this.gameObject.GetComponent<Animator>();
+        audioManager = FindObjectOfType<AudioManager>();
+
+        for (int i = 1; i < 9; i++)
+        {
+            //Debug.Log("For loop entered");
+            AudioClip clip = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_KackleIntimidation/Ambush_KackleIntimidation0" + i);
+
+            if (clip != null)
+            {
+                Debug.Log(" Successfully loaded clip: " + clip.name);
+            }
+            else
+            {
+                Debug.LogWarning(" Failed to load clip: Dialogue/4. Ambush/Ambush_KackleIntimidation/Ambush_KackleIntimidation0" + i);
+            }
+            kackleIntimidationSounds.Add(clip);
+        }
     }
 
     int explosionCount = 0; // For debugging
@@ -51,6 +72,12 @@ public class PirateDestroy_HM : MonoBehaviour
         }
 
         return;
+    }
+
+    public void PlayKackleIntimidation()
+    {
+        AudioClip clip = kackleIntimidationSounds[Random.Range(0, kackleIntimidationSounds.Count)];
+        audioManager.PlaySFXOneShot(clip, 0.8f);
     }
 
     private void SpawnExplosionAt(Vector3 position)

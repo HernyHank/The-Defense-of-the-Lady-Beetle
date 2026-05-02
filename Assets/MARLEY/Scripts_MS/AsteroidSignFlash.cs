@@ -6,6 +6,7 @@ using UnityEngine;
 public class AsteroidSignFlash : MonoBehaviour
 {
     public TextMeshPro textMeshPro;
+    public asteroidMonitor monitor;
 
     public float flashSpeed = 0.5f;
 
@@ -35,6 +36,7 @@ public class AsteroidSignFlash : MonoBehaviour
         // Check if the object is on the "Asteroid" layer
         if (other.gameObject.layer == LayerMask.NameToLayer("Asteroid"))
         {
+            monitor.QueFlash();
             StartFlashing();
         }
     }
@@ -44,6 +46,7 @@ public class AsteroidSignFlash : MonoBehaviour
         if (other.gameObject.layer == LayerMask.NameToLayer("Asteroid"))
         {
             StopFlashing();
+            monitor.QuitFlash();
         }
     }
 

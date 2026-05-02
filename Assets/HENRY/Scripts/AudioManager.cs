@@ -103,16 +103,16 @@ public class AudioManager : MonoBehaviour
 
     public void PlayMusicClip(AudioClip clip)
     {
-        StopMusic();
+        //StopMusic();
         if (clip == null)
         {
             Debug.LogWarning("PlayMusicClip called with null clip.");
             return;
         }
-
+        
         musicSource.clip = clip;
         musicSource.Play();
-        StartCoroutine(FadeAudio(musicSource, 1f, 0.3f)); // Fade in
+        //StartCoroutine(FadeAudio(musicSource, 1f, 0.3f)); // Fade in
     }
 
     public IEnumerator FadeAudio(AudioSource source, float duration, float targetVolume)
