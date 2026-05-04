@@ -18,10 +18,14 @@ public class BackupGunScript : MonoBehaviour
     public bool isFiring { get; private set; }
     public float cooldown = 0.5f;
     private float lastShotTime;
+    public AudioManager audioManager;
 
     Animator turretAnimator;
     void Start()
     {
+
+        audioManager = FindObjectOfType<AudioManager>();
+
         fixedY = transform.localScale.y;
 
         //Target = full size on X/Z, original Y
@@ -80,6 +84,14 @@ public class BackupGunScript : MonoBehaviour
 
     void Fire()
     {
+        AudioClip clip = audioManager.FetchClip("SFX/TurretGun/TurretGunSFX_01");
+        AudioClip clip1 = audioManager.FetchClip("SFX/Machinery/SteamSFX_01");
+        AudioClip clip2 = audioManager.FetchClip("SFX/Machinery/GearSFX_01");
+        AudioClip clip3 = audioManager.FetchClip("SFX/ExplosionsFire/ExplosionSFX_01");
+        audioManager.PlaySFXOneShot(clip, 0.1f);
+        audioManager.PlaySFXOneShot(clip1, 0.1f);
+        audioManager.PlaySFXOneShot(clip2, 0.2f);
+        audioManager.PlaySFXOneShot(clip3, 0.2f);
         lastShotTime = Time.time;
         isFiring = true;
         blastIsAfoot = true;

@@ -8,7 +8,8 @@ public class GrowingBlob_DW : MonoBehaviour
     {
         FrontWing,
         BackWing,
-        PowerBank
+        PowerBank,
+        RandomPatchUpSpot
     }
 
     public Animator blobAnimator;
@@ -40,13 +41,16 @@ public class GrowingBlob_DW : MonoBehaviour
 
     }
 
+    bool hasBeenFilled = false;
     void OnCollisionEnter(Collision collision)
     {
         // Optional: ignore hitting the player
-        if (collision.gameObject.CompareTag("BlobCollider"))
+        if (collision.gameObject.CompareTag("BlobCollider") && !hasBeenFilled)
         {
             blobAnimator = collision.gameObject.GetComponentInChildren<Animator>();
             rb = collision.gameObject.GetComponent<Rigidbody>();
+
+            hasBeenFilled = true;
 
             // start the snap coroutine and pass the collided object references
             StartCoroutine(snapToBlobPoint(collision.gameObject, rb, blobAnimator));
@@ -143,6 +147,10 @@ public class GrowingBlob_DW : MonoBehaviour
             case BlobType.PowerBank:
                 blobAnim.SetTrigger("PowerBankGrow");
                 if (eventController != null) eventController.powerBankBlobbed = true;
+                break;
+            case BlobType.RandomPatchUpSpot:
+                blobAnim.SetTrigger("PowerBankGrow");
+                if (eventController != null) eventController.RegenShip(10f);
                 break;
         }
     }

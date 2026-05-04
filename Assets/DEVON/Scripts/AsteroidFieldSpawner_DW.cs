@@ -22,6 +22,13 @@ public class AsteroidFieldSpawner : MonoBehaviour
         //SpawnField(asteroidCount);
     }
 
+    private void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Keypad8))
+        {
+            ClearField();
+        }
+    }
     public void SpawnField(int numberOfAsteroids, float asteroidDuration)
     {
         for (int i = 0; i < numberOfAsteroids; i++)

@@ -9,11 +9,19 @@ public class Gun_DW : MonoBehaviour
 
     [Header("VFX")]
     public GameObject particleObject;
-    
+
+    public EventController eventController;
+
     public enum GunType { Blob, Pirate }
     public GunType gunType; // Example gun types
 
     public bool pirateShoot = false;
+
+    private void Start()
+    {
+        PirateDestroy_HM pirateScript = GetComponentInParent<PirateDestroy_HM>();
+        eventController = pirateScript.controller;
+    }
     void Update()
     {
         if (Input.GetKeyDown(KeyCode.Y))

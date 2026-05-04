@@ -32,6 +32,9 @@ public class EventController : MonoBehaviour
     public GameObject group2;
     public GameObject group3;
 
+    [Header("Pirate Ships")]
+    public float pirateConversationDelay = 42f;
+
     [Header("Lights")]
     // Drag your "Light Parent" object here in the inspector
     public GameObject lightParent;
@@ -177,6 +180,7 @@ public class EventController : MonoBehaviour
             conversationHasBeenStarted = false;
             dialogueActive = false;
             audioClipList.Clear();
+            //audioManager.StopMusic();
             ResetDialogue();
         }
 
@@ -218,6 +222,8 @@ public class EventController : MonoBehaviour
         {
             currentRoom = "TurretRoom";
         }
+
+        //INPUT key down keypad 8 clears asteroid field, on AsteroidField Script
 
         if (deathSequenceReset)
         {
@@ -691,17 +697,23 @@ public class EventController : MonoBehaviour
             }
 
             audioManager.PlayDialogueSequence(clipToPlay, 0.8f);
+
+            if (dialogueActive)
+            {
+                audioClipIndex++;
+            }
             dialogueActive = true;
+
         }
 
         // check again after potential play
-        if (audioClipIndex >= audioClipList.Count)
+/*        if (audioClipIndex >= audioClipList.Count)
         {
             Debug.Log("All audio clips in the list have been played.");
             allClipsPlayed = true;
             dialogueActive = false;
             return;
-        }
+        }*/
     }
 
     private void ResetDialogue()
@@ -733,6 +745,7 @@ public class EventController : MonoBehaviour
     private bool musicHasBeenInitiated = false;
     private bool TheWakeUp() {
 
+        script.DisableController();
         if (Input.GetKeyDown(KeyCode.L))
         {
             return true;
@@ -780,10 +793,11 @@ public class EventController : MonoBehaviour
     //---------------------------------------------//
     //---------------------------------------------//
     //---------------------------------------------//
-    List<AudioClip> audioClipList = new List<AudioClip>();
+    public List<AudioClip> audioClipList = new List<AudioClip>();
     bool audioClipsFetched = false;
     private bool Routine() 
     {
+        script.EnableController();  
         if (audioClipsFetched == false)
         {
             audioClipList.Add(audioManager.FetchClip("Dialogue/2. Routine/Routine__Morning Whizzes_"));
@@ -811,7 +825,8 @@ public class EventController : MonoBehaviour
         {
             if (pottyScript.eventComplete)
             {
-                ResetDialogue();
+                /*ResetDialogue();*/
+                allClipsPlayed = false;
                 return true;
             }
         }
@@ -954,6 +969,7 @@ public class EventController : MonoBehaviour
             ambushStarted = false;
             shipCountReachedTwo = false;
             emptySlots.Clear();
+           //audioManager.StopMusic();
             ResetDialogue();
             return true;
         }
@@ -1095,7 +1111,7 @@ public class EventController : MonoBehaviour
 
         // Spawn and schedule attack
         script.SpawnPirateShip();
-        StartCoroutine(PirateAttackRoutine(script, buttonScript, 42f, Random.Range(1, 4)));
+        StartCoroutine(PirateAttackRoutine(script, buttonScript, pirateConversationDelay, Random.Range(1, 4)));
     }
     private IEnumerator PirateAttackRoutine(PirateShip_HM script, ButtonPress buttonScript, float waitTime, int attackMode)
     {
@@ -1122,34 +1138,65 @@ public class EventController : MonoBehaviour
     public bool steroidsSpawned = false;
     bool evasiveTimerSet = false;
     bool evasiveMusicInitiated = false;
+    bool evasiveCoroutineStarted = false;
 
     private bool Evasive() 
     {
-        if (!evasiveMusicInitiated)
+        if(evasiveCoroutineStarted == false)
         {
-            AudioClip musicClip = audioManager.FetchClip("Music/Pilot Mode");
-            if (musicClip != null)
+            StartCoroutine(EvasiveCoroutine());
+            evasiveCoroutineStarted = true;
+        }
+        /*        if (!evasiveMusicInitiated)
+                {
+                    AudioClip musicClip = audioManager.FetchClip("Music/Pilot Mode");
+                    if (musicClip != null)
+                    {
+                        audioManager.PlayMusicClip(musicClip);
+                        evasiveMusicInitiated = true;
+                    }
+                    else
+                    {
+                        Debug.Log("Failed to load music clip for The Wake-Up event.");
+                    }
+                }*/
+
+        if (audioClipsFetched == false)
+        {
+            audioClipList.Add(audioManager.FetchClip("Dialogue/4. Ambush/Ambush__That_s the last of them_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/4. Ambush/Ambush__You got them just in the nick of time_"));
+            //dialogueTime = audioManager.FetchClip("Dialogue/4. Ambush/Ambush__And we_re about to BLOW your(shoe)s off!!_").length;
+
+
+            for (int i = 0; i < audioClipList.Count; i++)
             {
-                audioManager.PlayMusicClip(musicClip);
-                evasiveMusicInitiated = true;
+                if (audioClipList[i] == null)
+                {
+                    Debug.Log("Failed to load audio clip at index " + i + " for Routine event.");
+                }
+                else
+                {
+                    Debug.Log("Successfully loaded audio clip: " + audioClipList[i].name);
+                }
             }
-            else
-            {
-                Debug.Log("Failed to load music clip for The Wake-Up event.");
-            }
+            audioClipsFetched = true;
         }
 
-        if (!steroidsSpawned)
-        {
-            asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
-            steroidsSpawned = true;
-        }
+        if (allClipsPlayed == false)
+            PlayAudioClipList();
+
+        /*        if (!steroidsSpawned)
+                {
+                    asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
+                    steroidsSpawned = true;
+                }*/
 
         if (!evasiveTimerSet)
         {
             SetTimer(evasiveTimer);
             evasiveTimerSet = true;
-        } else if(evasiveTimerSet)
+        }
+        else if (evasiveTimerSet)
         {
             bool timerDone = IsTimerFinished();
             if (timerDone)
@@ -1158,13 +1205,38 @@ public class EventController : MonoBehaviour
                 return true;
             }
         }
-        
+
         return false;
+    }
+
+    IEnumerator EvasiveCoroutine()
+    {
+        yield return new WaitForSeconds(7f);
+        //load music
+        AudioClip musicClip = audioManager.FetchClip("Music/Pilot Mode");
+        if (musicClip != null)
+        {
+            audioManager.PlayMusicClip(musicClip);
+            evasiveMusicInitiated = true;
+        }
+        else
+        {
+            Debug.Log("Failed to load music clip for The Wake-Up event.");
+        }
+
+        //Delay asteroid spawn
+        yield return new WaitForSeconds(10f);
+        if (!steroidsSpawned)
+        {
+            asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
+            steroidsSpawned = true;
+        }
     }
 
     bool shipsHasGoneUpTo4 = false;
     private bool Retaliation() 
     {
+        pirateConversationDelay = 1f;
         if (!ambushStarted)
         {
             ambushStarted = true;
@@ -1178,7 +1250,7 @@ public class EventController : MonoBehaviour
         {
             ambushStarted = false;
             turretCanShoot = false;
-            ResetDialogue();
+            //ResetDialogue();
             return true;
         }
 
@@ -1294,6 +1366,7 @@ public class EventController : MonoBehaviour
     bool bossMusicInit = false;
     private bool BossFight() 
     {
+        pirateConversationDelay = 50f;
         if (audioClipsFetched == false)
         {
             audioClipList.Add(audioManager.FetchClip("Dialogue/10. BOSSFIGHT/BOSSFIGHT__It_s me, the big Boss Man_"));

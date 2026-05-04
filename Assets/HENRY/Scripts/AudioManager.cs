@@ -45,7 +45,9 @@ public class AudioManager : MonoBehaviour
             Debug.LogWarning("PlayDialogueSequence called with null clip.");
             return;
         }
-
+        //eventController.audioClipIndex++;
+        Debug.Log("Audioclip index after increment: " + eventController.audioClipIndex);
+        Debug.Log("AudioCLip list count: " + eventController.audioClipList.Count);
         eventController.dialogueActive = true;
         audioSource.Stop();
         audioSource.volume = volume;
@@ -72,7 +74,6 @@ public class AudioManager : MonoBehaviour
         yield return new WaitForSeconds(clip.length);
         //Debug.Log("Dialogue finished, sending message to event controller");
 
-        eventController.audioClipIndex++;
         eventController.dialogueActive = false;
 
         // clear handle
@@ -148,6 +149,16 @@ public class AudioManager : MonoBehaviour
     public void PlaySFXOneShot(AudioClip clip, float volume)
     {
         audioSource.PlayOneShot(clip, volume);
+    }
+
+    public void PlaySoundFromSource(AudioSource source, AudioClip clip, float volume)
+    {
+        if (clip == null)
+        {
+            Debug.LogWarning("PlaySoundFromSource called with null clip.");
+            return;
+        }
+        source.PlayOneShot(clip, volume);
     }
 
 }

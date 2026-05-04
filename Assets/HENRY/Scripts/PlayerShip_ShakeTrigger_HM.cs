@@ -39,7 +39,7 @@ public class PlayerShip_ShakeTrigger_HM : MonoBehaviour
 
             if (shake != null)
             {
-                shake.TriggerShake(2f, 14f);
+                shake.TriggerShake(2f, 14f, 0);
             }
 
             // Start cooldown
