@@ -59,6 +59,7 @@ public class TorpedoHoming : MonoBehaviour
             yield return new WaitForFixedUpdate();
         }
         launchedTenFeet = true;
+        rb.detectCollisions = true; // Enable collisions after launch phase
     }
 
     public void SetTarget(Transform t)

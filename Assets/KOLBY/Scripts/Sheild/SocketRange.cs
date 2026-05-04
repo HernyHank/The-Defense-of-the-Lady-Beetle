@@ -76,6 +76,7 @@ public class BatterySnapZone : MonoBehaviour
         rb.velocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
         rb.isKinematic = true;
+        rb.detectCollisions = false;
 
         float t = 0f;
         float speed = 1f;

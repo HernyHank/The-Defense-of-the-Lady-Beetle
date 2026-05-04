@@ -5,10 +5,21 @@ using UnityEngine;
 public class torpedoIsPrepped : StateMachineBehaviour
 {
 
+    //public Transform targetParent;
     override public void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
         EventController controller = GameObject.Find("EmptyEventController").GetComponent<EventController>();
-        controller.torpedoIsLoaded = true;
+        animator.enabled = false;
+        //animator.transform.SetParent(targetParent);
+        ReParent parentScript = animator.gameObject.GetComponent<ReParent>();
+        if(parentScript != null)
+        {
+            parentScript.ReParentTorpedo();
+        } else
+        {
+            Debug.LogError("ReParent script not found on the torpedo object."); 
+        }
+            controller.torpedoIsLoaded = true;
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

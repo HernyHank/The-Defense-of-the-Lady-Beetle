@@ -31,9 +31,18 @@ public class AsteroidSignFlash : MonoBehaviour
          }
      }*/
 
-    void OnTriggerEnter(Collider other)
+/*    void OnTriggerEnter(Collider other)
     {
         // Check if the object is on the "Asteroid" layer
+        if (other.gameObject.layer == LayerMask.NameToLayer("Asteroid"))
+        {
+            monitor.QueFlash();
+            StartFlashing();
+        }
+    }*/
+
+    private void OnTriggerStay(Collider other)
+    {
         if (other.gameObject.layer == LayerMask.NameToLayer("Asteroid"))
         {
             monitor.QueFlash();
