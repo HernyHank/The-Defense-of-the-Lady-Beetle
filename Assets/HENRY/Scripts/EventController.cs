@@ -1548,6 +1548,7 @@ public class EventController : MonoBehaviour
     }
 
     AudioClip cucarachaClip;
+    bool steroidCoroutineInitialized = false;
     private bool AsteroidField() 
     {
         if (!steroidsSpawned)
@@ -1556,12 +1557,17 @@ public class EventController : MonoBehaviour
             steroidsSpawned = true;
         }
 
+        if (steroidCoroutineInitialized == false)
+        {
+            StartCoroutine(AsteroidCoroutine());    
+            steroidCoroutineInitialized = true;
+        }
+
         if (audioClipsFetched == false)
         {
             audioClipList.Add(audioManager.FetchClip("Dialogue/9. Asteroid Field/AsteroidField__The Asteroids are back and they brought their friends_"));
 
             //forLaterInCoroutine
-            pirateBooty = audioManager.FetchClip("Dialogue/8. Calibration/Breach__Don_t Call us Pirate Booty_");
             cucarachaClip = audioManager.FetchClip("Dialogue/9. Asteroid Field/AsteroidField__I can fly this thing better than the 3 cucarachas ever could_");
 
 
@@ -1590,10 +1596,20 @@ public class EventController : MonoBehaviour
         return false;
     }
 
+    IEnumerator AsteroidCoroutine()
+    {
+        yield return new WaitForSeconds(10f);
+
+        yield return new WaitUntil(() => currentRoom == "Pilot Room");
+        audioManager.Play(cucarachaClip, true);
+
+    }
+
     bool bossFightStarted = false;
     bool bossFightComplete = false;
     bool asteroidsShouldBeSpawned = true;
     bool bossMusicInit = false;
+    AudioClip AAAAAAAAHHHHHHHHH;
     private bool BossFight() 
     {
         pirateConversationDelay = 50f;
@@ -1601,7 +1617,9 @@ public class EventController : MonoBehaviour
         {
             audioClipList.Add(audioManager.FetchClip("Dialogue/10. BOSSFIGHT/BOSSFIGHT__It_s me, the big Boss Man_"));
             audioClipList.Add(audioManager.FetchClip("Dialogue/10. BOSSFIGHT/BOSSFIGHT__Eat my blasts_"));
-            audioClipList.Add(audioManager.FetchClip("BOSSFIGHT__The Pollywoggle Clan will not forget this_"));
+
+            //later
+            AAAAAAAAHHHHHHHHH = audioManager.FetchClip("Dialogue/10. BOSSFIGHT/BOSSFIGHT__The Pollywoggle Clan will not forget this_");
             checkAudioClipList();   
             audioClipsFetched = true;
         }
@@ -1652,7 +1670,7 @@ public class EventController : MonoBehaviour
 
         if (bossFightComplete)
         {
-            ResetDialogue();
+           /* ResetDialogue();
             if (audioClipsFetched == false)
             {
                 audioClipList.Add(audioManager.FetchClip("BOSSFIGHT__The Pollywoggle Clan will not forget this_"));
@@ -1673,7 +1691,7 @@ public class EventController : MonoBehaviour
             }
 
             if (allClipsPlayed == false)
-                PlayAudioClipList();
+                PlayAudioClipList();*/
             return true;
         }
 
@@ -1696,6 +1714,7 @@ public class EventController : MonoBehaviour
 
     IEnumerator RealDealBossFight()
     {
+        pirateConversationDelay = 40f;
         yield return new WaitForSeconds(5f);
         SpawnSingleShip();
         SpawnSingleShip();
@@ -1709,6 +1728,7 @@ public class EventController : MonoBehaviour
         SpawnSingleShip();
         yield return new WaitUntil(() => AllShipsDestroyed());
         yield return new WaitUntil(() => torpedoHit);
+        audioManager.Play(AAAAAAAAHHHHHHHHH, true);
 
         bossFightComplete = true;
     }
