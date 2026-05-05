@@ -21,11 +21,14 @@ public class HelmetSnap_DW : MonoBehaviour
     private bool isWorn = false;
     private bool wasHeld = false;
 
+    EventController eventController;
+
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         interactable = GetComponent<Interactable>();
         renderers = GetComponentsInChildren<MeshRenderer>(true);
+        eventController = FindObjectOfType<EventController>();
     }
 
     void Update()
@@ -46,7 +49,7 @@ public class HelmetSnap_DW : MonoBehaviour
         }
 
         // 🔥 GRABBED WHILE WORN → REMOVE
-        if (isWorn && isHeld)
+        if (isWorn && isHeld && eventController.currentRoom != "Outside")
         {
             Remove();
         }
@@ -58,6 +61,7 @@ public class HelmetSnap_DW : MonoBehaviour
     {
         isWorn = true;
 
+        eventController.helmetIsOn = true;
         rb.isKinematic = true;
         rb.useGravity = false;
         rb.velocity = Vector3.zero;
@@ -91,6 +95,12 @@ public class HelmetSnap_DW : MonoBehaviour
     void SetVisible(bool visible)
     {
         foreach (var r in renderers)
-            r.enabled = visible;
+        {
+            TrashChute_DW trash = r.GetComponent<TrashChute_DW>();
+            if (trash != null)
+            {
+                r.enabled = visible;
+            }
+        }
     }
 }
