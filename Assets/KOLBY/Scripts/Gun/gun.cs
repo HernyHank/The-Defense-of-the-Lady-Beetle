@@ -15,11 +15,19 @@ public class PaintGun : MonoBehaviour
     private Hand hand; // the hand holding the gun
     private int lifetime = 10;
 
-/*    private void Awake()
+    AudioManager audioManager;
+    AudioClip gooShoot;
+
+    /*    private void Awake()
+        {
+            rb = GetComponent<Rigidbody>();
+            rb.detectCollisions = false; // disable collisions while attached to hand
+        }*/
+    private void Start()
     {
-        rb = GetComponent<Rigidbody>();
-        rb.detectCollisions = false; // disable collisions while attached to hand
-    }*/
+        audioManager = FindObjectOfType<AudioManager>();
+        gooShoot = audioManager.FetchClip("SFX/Goo/GooGunShotSFX_01");
+    }
 
     private void Update()
     {
@@ -34,7 +42,8 @@ public class PaintGun : MonoBehaviour
         GameObject paint = Instantiate(paintPrefab, shootPoint.position, shootPoint.rotation);
         Rigidbody rb = paint.GetComponent<Rigidbody>();
         rb.AddForce(shootPoint.forward * shootForce, ForceMode.Impulse);
-        StartCoroutine(DestroyPaint(paint));
+        audioManager.PlaySFXOneShotOverAudio(gooShoot, 0.4f);
+        //StartCoroutine(DestroyPaint(paint));
     }
 
     IEnumerator DestroyPaint(GameObject paint)

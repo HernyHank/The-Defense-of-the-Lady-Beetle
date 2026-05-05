@@ -152,7 +152,7 @@ public class BatterySnapZone : MonoBehaviour
         {
             torpedoAnimator.SetTrigger("PrepTorpedo");
             AudioClip clip = audioManager.FetchClip("SFX/Torpedo/TorpedoDropOffSFX");
-            audioManager.PlaySFXOneShot(clip, 0.5f);  
+            audioManager.PlaySFXOneShotOverAudio(clip, 0.5f);  
             Debug.Log("torpedoTrigger set");
         }
         else

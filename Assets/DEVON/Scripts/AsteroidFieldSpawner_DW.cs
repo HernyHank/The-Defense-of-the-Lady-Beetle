@@ -40,6 +40,33 @@ public class AsteroidFieldSpawner : MonoBehaviour
             float z = Random.Range(-spawnWidth, spawnWidth);
             // Spawn somewhere between distance and distance+depth
 
+            float x = Random.Range(spawnDepth, spawnDepth + spawnDistance);
+
+            Vector3 spawnPos = new Vector3(x, y, z);
+
+            Quaternion rot = Random.rotation;
+
+            GameObject asteroid = Instantiate(prefab, spawnPos, rot);
+
+            asteroid.transform.parent = transform;
+
+            // Optional: scale variation
+            asteroid.transform.localScale *= Random.Range(0.7f, 1.6f);
+        }
+        StartCoroutine(KeepAsteroids(asteroidDuration));
+    }
+
+    public void SpawnField(int numberOfAsteroids, float asteroidDuration, float spawnDistance)
+    {
+        for (int i = 0; i < numberOfAsteroids; i++)
+        {
+            GameObject prefab = asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)];
+
+
+            float y = Random.Range(-spawnHeight, spawnHeight);
+            float z = Random.Range(-spawnWidth, spawnWidth);
+            // Spawn somewhere between distance and distance+depth
+
             float x = Random.Range(spawnDistance, spawnDistance + spawnDepth);
 
             Vector3 spawnPos = new Vector3(x, y, z);
@@ -52,6 +79,33 @@ public class AsteroidFieldSpawner : MonoBehaviour
 
             // Optional: scale variation
             asteroid.transform.localScale *= Random.Range(0.7f, 1.6f);
+        }
+        StartCoroutine(KeepAsteroids(asteroidDuration));
+    }
+
+    public void SpawnField(int numberOfAsteroids, float asteroidDuration, float spawnDistance, float spawnWidth, float spawnHeight, float size)
+    {
+        for (int i = 0; i < numberOfAsteroids; i++)
+        {
+            GameObject prefab = asteroidPrefabs[Random.Range(0, asteroidPrefabs.Length)];
+
+
+            float y = Random.Range(-spawnHeight, spawnHeight);
+            float z = Random.Range(-spawnWidth, spawnWidth);
+            // Spawn somewhere between distance and distance+depth
+
+            float x = Random.Range(spawnDistance, spawnDistance + spawnDepth);
+
+            Vector3 spawnPos = new Vector3(x, y, z);
+
+            Quaternion rot = Random.rotation;
+
+            GameObject asteroid = Instantiate(prefab, spawnPos, rot);
+
+            asteroid.transform.parent = transform;
+
+            // Optional: scale variation
+            asteroid.transform.localScale *= Random.Range(size, size + 0.9f);
         }
         StartCoroutine(KeepAsteroids(asteroidDuration));
     }

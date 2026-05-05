@@ -117,7 +117,7 @@ public class PlayerShip_Shake_HM : MonoBehaviour
         shakeDuration = duration;
         shakeIntensity = intensity;
         shakeTimer = duration;
-        controller.DamageShip(10f);
+        //controller.DamageShip(10f);
 
         StartCoroutine(TriggerJoanFrustrationNoise(mode));
     }

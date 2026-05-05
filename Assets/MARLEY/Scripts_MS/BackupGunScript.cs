@@ -43,7 +43,19 @@ public class BackupGunScript : MonoBehaviour
         else
         {
           // Debug.Log("Animator found on " + sibling.gameObject.name);
-        }   
+        }
+        clip = audioManager.FetchClip("SFX/TurretGun/TurretGunSFX_01");
+        clip1 = audioManager.FetchClip("SFX/Machinery/SteamSFX_01");
+        clip2 = audioManager.FetchClip("SFX/Machinery/GearSFX_01");
+        clip3 = audioManager.FetchClip("SFX/ExplosionsFire/ExplosionSFX_01");
+        AudioClip[] clipArray = { clip, clip1, clip2, clip3 };
+        for(int i = 0; i < clipArray.Length; i++)
+        {
+            if (clipArray[i] == null)
+            {
+                Debug.Log("We got a nully in the backup script for this clip: " + clipArray[i].name);
+            }
+        }
     }
 
     bool blastIsAfoot = false;
@@ -82,16 +94,16 @@ public class BackupGunScript : MonoBehaviour
             }
     }
 
+    AudioClip clip;
+    AudioClip clip1;
+    AudioClip clip2;
+    AudioClip clip3;
     void Fire()
     {
-        AudioClip clip = audioManager.FetchClip("SFX/TurretGun/TurretGunSFX_01");
-        AudioClip clip1 = audioManager.FetchClip("SFX/Machinery/SteamSFX_01");
-        AudioClip clip2 = audioManager.FetchClip("SFX/Machinery/GearSFX_01");
-        AudioClip clip3 = audioManager.FetchClip("SFX/ExplosionsFire/ExplosionSFX_01");
-        audioManager.PlaySFXOneShot(clip, 0.1f);
-        audioManager.PlaySFXOneShot(clip1, 0.1f);
-        audioManager.PlaySFXOneShot(clip2, 0.2f);
-        audioManager.PlaySFXOneShot(clip3, 0.2f);
+        audioManager.PlaySFXOneShotOverAudio(clip, 0.2f);
+        audioManager.PlaySFXOneShotOverAudio(clip1, 0.2f);
+        audioManager.PlaySFXOneShotOverAudio(clip2, 0.2f);
+        audioManager.PlaySFXOneShotOverAudio(clip3, 0.2f);
         lastShotTime = Time.time;
         isFiring = true;
         blastIsAfoot = true;

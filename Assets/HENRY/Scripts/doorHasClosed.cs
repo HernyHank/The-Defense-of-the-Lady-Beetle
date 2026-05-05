@@ -9,7 +9,7 @@ public class doorHasClosed : StateMachineBehaviour
     {
         DoorPresser script = animator.GetComponent<DoorPresser>();
         AudioClip clip = script.audioManager.FetchClip("SFX/Machinery/DoorOpenAndCloseSFX");
-        script.audioManager.PlaySFXOneShot(clip, 0.5f); 
+        script.audioManager.PlaySFXOneShotOverAudio(clip, 0.5f); 
     }
 
     // OnStateUpdate is called on each Update frame between OnStateEnter and OnStateExit callbacks

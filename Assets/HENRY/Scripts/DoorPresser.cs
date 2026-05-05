@@ -108,7 +108,7 @@ public class DoorPresser : MonoBehaviour
             gooGunRB.drag = 300f;
         }
         AudioClip clip = audioManager.FetchClip("SFX/Machinery/DoorOpenAndCloseSFX");
-        audioManager.PlaySFXOneShot(clip, 0.5f);
+        audioManager.PlaySFXOneShotOverAudio(clip, 0.5f);
 
     }
 

@@ -83,9 +83,9 @@ public class JoystickManager : MonoBehaviour
     }
     void OnGUI()
     {
-        /*GUI.Label(new Rect(10, 60, 300, 20), $"X: {xInput:F2}");
+        GUI.Label(new Rect(10, 60, 300, 20), $"X: {xInput:F2}");
         GUI.Label(new Rect(10, 75, 300, 20), $"Y: {yInput:F2}");
         GUI.Label(new Rect(10, 90, 300, 20), $"Button1: {button1}");
-        GUI.Label(new Rect(10, 105, 300, 20), $"Button2: {button2}");*/
+        GUI.Label(new Rect(10, 105, 300, 20), $"Button2: {button2}");
     }
 }

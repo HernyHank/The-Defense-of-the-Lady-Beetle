@@ -23,8 +23,11 @@ public class GrowingBlob_DW : MonoBehaviour
     public BlobType blobType;
     public Rigidbody rb;
 
+    AudioSource gooAudio;
+
     void Start()
     {
+        gooAudio = GetComponent<AudioSource>();
         eventController = FindObjectOfType<EventController>();
         if (eventController != null)
         {
@@ -134,6 +137,8 @@ public class GrowingBlob_DW : MonoBehaviour
 
     private void TriggerBlobAnimationAndFlag(Animator blobAnim)
     {
+        gooAudio.Play();
+        eventController.RegenShip(25f);
         switch (blobType)
         {
             case BlobType.FrontWing:

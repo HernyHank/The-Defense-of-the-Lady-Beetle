@@ -74,8 +74,9 @@ public class EventController : MonoBehaviour
     public bool goodBatteryInPlace = true;
 
     [Header("AsteroidField")]
-    public int bossFightAsteroidCount = 1100;
+    public int bossFightAsteroidCount = 700;
     public float bossAsteroidTimer = 60f;
+    public float wideAsteroidFieldTimer = 60f;
 
     [Header("BossFight")]
     public GameObject bossTorpedo;
@@ -116,9 +117,9 @@ public class EventController : MonoBehaviour
         StartCoroutine(FlashMode(4f));
     }
 
-    int regenCounter = 0;
-    public int regenIncrement = 10;
-    public int regenFrequency = 3000; // Regenerate every 3000 frames (adjust as needed)
+    float timer = 0f;
+    public float regenDelay = 24;
+    public float regenIncrement = 3;
     private void Update()
     {
         // Only run if we haven't finished all events
@@ -127,10 +128,13 @@ public class EventController : MonoBehaviour
             EventCaller();
         }
 
-        if(regenCounter % regenFrequency == 0)
+        timer += Time.deltaTime; // Adds the time passed since the last frame
+
+        if (timer >= regenDelay)
         {
             RegenShip(regenIncrement);
-        } 
+            timer = 0f; // Reset the clock
+        }
         /*        if (script.GetBState())
                 {
                     Debug.Log("B was held");
@@ -269,13 +273,13 @@ public class EventController : MonoBehaviour
             }
         }
 
-        if (Input.GetKeyDown(KeyCode.D))
+/*        if (Input.GetKeyDown(KeyCode.D))
         {
             DamageShip(10);
             Debug.Log("Ship took 10 damage. Remaining health: " + shipHealthMain);
         }
 
-/*        if (Input.GetKeyDown(KeyCode.B))
+        if (Input.GetKeyDown(KeyCode.B))
         {
             Debug.Log("Death sequence triggered by key press");
             PlayerDeathSequence();
@@ -380,11 +384,11 @@ public class EventController : MonoBehaviour
 
         yield return new WaitForSeconds(1f);
 
-        for (int i = 0; i < 4; i++)
+/*        for (int i = 0; i < 4; i++)
         {
             DestroyShipFromController(i);
         }
-        asteroidSpawnScript.ClearField();
+        asteroidSpawnScript.ClearField();*/
         // Show death UI
 
         // other death handling...
@@ -426,14 +430,13 @@ public class EventController : MonoBehaviour
         bossFightStarted = false;
         bossFightComplete = false;
         asteroidsShouldBeSpawned = true;
-        StopAllCoroutines();
         RegenShip(1000);
 
         script.Respawn();
-
+        Debug.Log("Death, respawn happened");
         yield return new WaitForSeconds(1f);
 
-        yield return new WaitUntil(() => explosionsAreInactive);
+        Debug.Log("Death, explosions inactive");
         if (compositorAvailable)
         {
             // compositor fade -> guaranteed to affect headset
@@ -442,11 +445,13 @@ public class EventController : MonoBehaviour
         else
         {
             // Fallback: overlay/renderer fade (requires SteamVR_Fade component on camera)
-            Debug.LogWarning("OpenVR compositor not available. Using SteamVR_Fade.Start fallback. Ensure SteamVR_Fade component is present on the SteamVR camera.");
+            Debug.LogWarning("Death, OpenVR compositor not available. Using SteamVR_Fade.Start fallback. Ensure SteamVR_Fade component is present on the SteamVR camera.");
             SteamVR_Fade.Start(Color.clear, 1f, true);
+
+            deathSequenceReset = true;
+            playerDeathSequenceActive = false;
+            Debug.Log("GOt all the way through death sequence");
         }
-        deathSequenceReset = true;
-        playerDeathSequenceActive = false;
     }
 
     public void DestroyAllShips()
@@ -493,7 +498,7 @@ public class EventController : MonoBehaviour
 
         if (shipHealthMain <= 0)
         {
-            Debug.Log("Death sequence triggered by key press");
+            Debug.Log("Death sequence triggered by zero health health");
             PlayerDeathSequence();
         }
     }
@@ -894,6 +899,7 @@ public class EventController : MonoBehaviour
         return false;
     }
 
+
     //---------------------------------------------//
     //---------------------------------------------//
     //---------------------------------------------//
@@ -902,12 +908,15 @@ public class EventController : MonoBehaviour
     bool calmFieldSpawned = false;
     bool calmTimersBeenCalled = false;
     bool playerWalkedInOnce = false;
+    bool calmRoutineOver = false;
     private bool TheCalm() 
     {
-        if (!calmFieldSpawned)
+        if (!calmFieldSpawned && currentRoom != "Pilot Room")
         {
-            asteroidSpawnScript.SpawnField(120, 30f);
+            asteroidSpawnScript.SpawnField(60, 60f);
             calmFieldSpawned = true;
+
+            StartCoroutine(CalmCoroutine());
         }
 
         if (currentRoom == "PilotRoom")
@@ -917,9 +926,11 @@ public class EventController : MonoBehaviour
         
         if(playerWalkedInOnce)
         {
+
            /* SetTimer(5f);
+            * 
             calmTimersBeenCalled = true;*/
-            if (audioClipsFetched == false)
+            /*if (audioClipsFetched == false)
             {
                 audioClipList.Add(audioManager.FetchClip("Dialogue/3. The Calm/The Calm__You_d think someone who trained in the Polywoggle Arts_"));
                 for (int i = 0; i < audioClipList.Count; i++)
@@ -937,9 +948,9 @@ public class EventController : MonoBehaviour
             }
 
             if (allClipsPlayed == false)
-                   PlayAudioClipList();
+                   PlayAudioClipList();*/
             
-            if(allClipsPlayed)
+            if(calmRoutineOver)
             {
                 ResetDialogue();
                 return true;
@@ -957,6 +968,16 @@ public class EventController : MonoBehaviour
 
 
         return false;
+    }
+
+    IEnumerator CalmCoroutine()
+    {
+        AudioClip polly = audioManager.FetchClip("Dialogue/3. The Calm/The Calm__You_d think someone who trained in the Polywoggle Arts_");
+        yield return new WaitUntil(() => playerWalkedInOnce);
+        audioManager.Play(polly, true);
+        yield return new WaitForSeconds(polly.length + 1f);
+        calmRoutineOver = true;
+        yield break;
     }
 
     //---------------------------------------------//
@@ -1200,7 +1221,13 @@ public class EventController : MonoBehaviour
 
     private bool Evasive() 
     {
-        if(evasiveCoroutineStarted == false)
+        if (!steroidsSpawned)
+        {
+            asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer, 420);
+            steroidsSpawned = true;
+        }
+
+        if (evasiveCoroutineStarted == false)
         {
             StartCoroutine(EvasiveCoroutine());
             evasiveCoroutineStarted = true;
@@ -1281,14 +1308,6 @@ public class EventController : MonoBehaviour
         {
             Debug.Log("Failed to load music clip for The Wake-Up event.");
         }
-
-        //Delay asteroid spawn
-        yield return new WaitForSeconds(10f);
-        if (!steroidsSpawned)
-        {
-            asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
-            steroidsSpawned = true;
-        }
     }
 
     bool shipsHasGoneUpTo4 = false;
@@ -1296,8 +1315,6 @@ public class EventController : MonoBehaviour
     AudioClip thatsWhatSheSaidClip;
     private bool Retaliation() 
     {
-        pirateConversationDelay = 1f;
-
         DestroyShipOpt();
 
         if (audioClipsFetched == false)
@@ -1330,7 +1347,7 @@ public class EventController : MonoBehaviour
         {
             ambushStarted = false;
             turretCanShoot = false;
-            //ResetDialogue();
+            ResetDialogue();
             return true;
         }
 
@@ -1340,13 +1357,12 @@ public class EventController : MonoBehaviour
     IEnumerator AmbushSequence2(float clipListLength)
     {
         audioManager.StopMusic();
-        pirateConversationDelay = 40f;
         Debug.Log("AmbushCoroutine is starting");
         yield return new WaitForSeconds(clipListLength - 25);
         audioManager.PlayMusicClip(audioManager.FetchClip("Music/Ambushes"));
         Debug.Log("Tried to play that's what she said");
 
-
+        pirateConversationDelay = 25;
         SpawnSingleShip();
         SpawnSingleShip();
         yield return new WaitForSeconds(3f);
@@ -1549,16 +1565,21 @@ public class EventController : MonoBehaviour
 
     AudioClip cucarachaClip;
     bool steroidCoroutineInitialized = false;
+    bool evasiveTimewideAsteroidFieldTimerrSet = false;
     private bool AsteroidField() 
     {
         if (!steroidsSpawned)
         {
-            asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
+            asteroidSpawnScript.SpawnField(bossFightAsteroidCount * 5 / 3, 80f, 300f, 220, 200, 1.2f);
             steroidsSpawned = true;
         }
 
         if (steroidCoroutineInitialized == false)
         {
+            TurretMonitorController turretScript = turretMonitor.GetComponent<TurretMonitorController>();
+            turretScript.enabled = true;
+
+            turretUIObject.SetActive(false);
             StartCoroutine(AsteroidCoroutine());    
             steroidCoroutineInitialized = true;
         }
@@ -1578,12 +1599,12 @@ public class EventController : MonoBehaviour
         if (allClipsPlayed == false)
             PlayAudioClipList();
 
-        if (!evasiveTimerSet)
+        if (!evasiveTimewideAsteroidFieldTimerrSet)
         {
-            SetTimer(evasiveTimer);
-            evasiveTimerSet = true;
+            SetTimer(wideAsteroidFieldTimer);
+            evasiveTimewideAsteroidFieldTimerrSet = true;
         }
-        else if (evasiveTimerSet)
+        else if (evasiveTimewideAsteroidFieldTimerrSet)
         {
             bool timerDone = IsTimerFinished();
             if (timerDone)
@@ -1598,7 +1619,6 @@ public class EventController : MonoBehaviour
 
     IEnumerator AsteroidCoroutine()
     {
-        yield return new WaitForSeconds(10f);
 
         yield return new WaitUntil(() => currentRoom == "Pilot Room");
         audioManager.Play(cucarachaClip, true);
@@ -1700,15 +1720,14 @@ public class EventController : MonoBehaviour
 
     IEnumerator BossFightAsteroidSpawner()
     {
-        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
         yield return new WaitForSeconds(bossAsteroidTimer);
-        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2, 370f);
         yield return new WaitForSeconds(bossAsteroidTimer);
-        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2, 370f);
         yield return new WaitForSeconds(bossAsteroidTimer);
-        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2, 370f);
         yield return new WaitForSeconds(bossAsteroidTimer);
-        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2);
+        asteroidSpawnScript.SpawnField(bossFightAsteroidCount, bossAsteroidTimer * 2, 370f);
         yield return new WaitForSeconds(bossAsteroidTimer);
     }
 
@@ -1720,6 +1739,7 @@ public class EventController : MonoBehaviour
         SpawnSingleShip();
         SpawnSingleShip();
         SpawnSingleShip();
+        pirateConversationDelay = 1f;
         yield return new WaitUntil(() => GetRemainingShips() == 2);
         SpawnSingleShip();
         SpawnSingleShip();
@@ -1733,14 +1753,44 @@ public class EventController : MonoBehaviour
         bossFightComplete = true;
     }
 
+    bool konkMusicHasBeenInitiated = false;
     private bool Conclusion() 
     {
         script.SetUIText("You have won the game", true);
 
 
+        if (!konkMusicHasBeenInitiated)
+        {
+            AudioClip musicClip = audioManager.FetchClip("Music/LadyBeetleOpener");
+            if (musicClip != null)
+            {
+                audioManager.PlayMusicClip(musicClip);
+                konkMusicHasBeenInitiated = true;
+                StartCoroutine(ConclusionFadeToBlack(musicClip));
+            }
+            else
+            {
+                Debug.Log("Failed to load music clip for The Wake-Up event.");
+            }
+        }
 
+        if (konkDone)
+        {
+            return true;
+        }
 
-        return true;
+        return false;
     }
+
+    bool konkDone = false;
+
+    IEnumerator ConclusionFadeToBlack(AudioClip musicClip) 
+    { 
+        yield return new WaitForSeconds(musicClip.length);
+        SteamVR_Fade.View(Color.black, 1f);
+        yield return new WaitForSeconds(1f);
+        konkDone = true;
+    }
+
 
 }

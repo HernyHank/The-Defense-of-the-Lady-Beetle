@@ -68,10 +68,9 @@ public class Gun_DW : MonoBehaviour
                         if (psChild != null) psChild.Play();
                     }
                 }
-                EventController controller = FindObjectOfType<EventController>();
-                if (controller != null)
+                if (eventController != null)
                 {
-                    controller.DamageShip(0.1f);
+                    eventController.DamageShip(0.11f);
                 }
                 pirateShoot = false;
             }

@@ -101,6 +101,9 @@ MonoBehaviour:
   moveSpeed: 4
   driftForce: 2
   spinForce: 1
+  bounciness: 5
+  explosionPrefab: {fileID: 1121192042590650, guid: e1b08032bec16ba4eb1ae23cbd572664,
+    type: 3}
 --- !u!135 &2826018999269272291
 SphereCollider:
   m_ObjectHideFlags: 0

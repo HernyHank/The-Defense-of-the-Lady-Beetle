@@ -151,8 +151,8 @@ public class AudioManager : MonoBehaviour
         
         musicSource.clip = clip;
         musicSource.Play();
-        musicSource.volume = 0.5f; // Start silent for fade-in
-        FadeAudio(musicSource, 1f, 0.5f); // Fade in to target volume
+        musicSource.volume = 0.2f; // Start silent for fade-in
+        FadeAudio(musicSource, 1f, 0.2f); // Fade in to target volume
         Debug.Log("Music source play attempted");
         //StartCoroutine(FadeAudio(musicSource, 1f, 0.3f)); // Fade in
     }
@@ -190,6 +190,11 @@ public class AudioManager : MonoBehaviour
     public void PlaySFXOneShot(AudioClip clip, float volume)
     {
         if(!audioSource.isPlaying)
+        audioSource.PlayOneShot(clip, volume);
+    }
+
+    public void PlaySFXOneShotOverAudio(AudioClip clip, float volume)
+    {
         audioSource.PlayOneShot(clip, volume);
     }
 

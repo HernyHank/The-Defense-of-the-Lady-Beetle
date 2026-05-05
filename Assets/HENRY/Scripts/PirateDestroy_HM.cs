@@ -25,6 +25,15 @@ public class PirateDestroy_HM : MonoBehaviour
 
     List<AudioClip> kackleIntimidationSounds = new List<AudioClip>();
 
+    AudioClip joanHitsTarget;
+    AudioClip joanHitsTarget1;
+    AudioClip joanHitsTarget2;
+    AudioClip joanHitsTarget3;
+    AudioClip joanHitsTarget4;
+    AudioClip joanHitsTarget5;
+    AudioClip joanHitsTarget6;
+    AudioClip joanHitsTarget7;
+
     private void Awake()
     {
         playerShakeScript = FindObjectOfType<PlayerShip_Shake_HM>();
@@ -49,6 +58,18 @@ public class PirateDestroy_HM : MonoBehaviour
             }
             kackleIntimidationSounds.Add(clip);
         }
+    }
+
+    private void Start()
+    {
+        joanHitsTarget = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget02");
+        joanHitsTarget1 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget03");
+        joanHitsTarget2 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget04");
+        joanHitsTarget3 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget05");
+        joanHitsTarget4 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget08");
+        joanHitsTarget5 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget09");
+        joanHitsTarget6 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget10");
+        joanHitsTarget7 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget12");
     }
 
     private void Update()
@@ -121,8 +142,8 @@ public class PirateDestroy_HM : MonoBehaviour
         audioManager.PlaySoundFromSource(audioSource, chosenClip, 0.8f);
         audioManager.PlaySoundFromSource(audioSource, sploder, 0.5f);
 
-        audioManager.PlaySFXOneShot(sploder, 0.8f);
-        audioManager.PlaySFXOneShot(chosenClip, 0.8f);
+        audioManager.PlaySFXOneShotOverAudio(sploder, 0.8f);
+        audioManager.PlaySFXOneShotOverAudio(chosenClip, 0.8f);
         GameObject inst = Instantiate(explosionPrefab, position, Quaternion.identity);
         StartCoroutine(AutoDestroyExplosion(inst));
         StartCoroutine(DelayedJoanReaction());
@@ -162,17 +183,8 @@ public class PirateDestroy_HM : MonoBehaviour
         yield return new WaitForSeconds(waitTime);
         Destroy(explosion);
     }
-
     private IEnumerator DelayedJoanReaction()
     {
-        AudioClip joanHitsTarget = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget02");
-        AudioClip joanHitsTarget1 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget03");
-        AudioClip joanHitsTarget2 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget04");
-        AudioClip joanHitsTarget3 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget05");
-        AudioClip joanHitsTarget4 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget08");
-        AudioClip joanHitsTarget5 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget09");
-        AudioClip joanHitsTarget6 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget10");
-        AudioClip joanHitsTarget7 = audioManager.FetchClip("Dialogue/4. Ambush/Ambush_JoanHitsTarget/Ambush_JoanHitsTarget12");
         AudioClip[] clipArray = new AudioClip[] { joanHitsTarget, joanHitsTarget1, joanHitsTarget2, joanHitsTarget3, joanHitsTarget4, joanHitsTarget5, joanHitsTarget6, joanHitsTarget7 };
         yield return new WaitForSeconds(0.5f); // Delay before Joan reacts
 

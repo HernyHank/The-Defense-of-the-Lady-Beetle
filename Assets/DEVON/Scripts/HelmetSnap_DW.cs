@@ -18,6 +18,9 @@ public class HelmetSnap_DW : MonoBehaviour
     private Interactable interactable;
     private MeshRenderer[] renderers;
 
+    // cached renderers that belong to the tintObject (if any)
+    private MeshRenderer[] tintRenderers;
+
     private bool isWorn = false;
     private bool wasHeld = false;
 
@@ -29,6 +32,14 @@ public class HelmetSnap_DW : MonoBehaviour
         interactable = GetComponent<Interactable>();
         renderers = GetComponentsInChildren<MeshRenderer>(true);
         eventController = FindObjectOfType<EventController>();
+
+        // Cache tint renderers if tintObject assigned
+        if (tintObject != null)
+        {
+            tintRenderers = tintObject.GetComponentsInChildren<MeshRenderer>(true);
+            // Ensure tintObject is initially disabled (or whatever default you want)
+            // tintObject.SetActive(false);
+        }
     }
 
     void Update()
@@ -71,10 +82,22 @@ public class HelmetSnap_DW : MonoBehaviour
         transform.localPosition = wornLocalPosition;
         transform.localRotation = Quaternion.Euler(wornLocalEuler);
 
+        // Hide helmet meshes but do not disable tint renderers
         SetVisible(false);
 
         if (tintObject != null)
+        {
             tintObject.SetActive(true);
+
+            // Make sure tint renderers are enabled (some shaders respond to GameObject active only)
+            if (tintRenderers != null)
+            {
+                foreach (var r in tintRenderers)
+                {
+                    if (r != null) r.enabled = true;
+                }
+            }
+        }
     }
 
     void Remove()
@@ -89,18 +112,36 @@ public class HelmetSnap_DW : MonoBehaviour
         SetVisible(true);
 
         if (tintObject != null)
+        {
+            // disable tint object and its renderers
+            if (tintRenderers != null)
+            {
+                foreach (var r in tintRenderers)
+                {
+                    if (r != null) r.enabled = false;
+                }
+            }
+
             tintObject.SetActive(false);
+        }
     }
 
     void SetVisible(bool visible)
     {
+        // More robust: skip any renderer that belongs to tintObject (or its children)
         foreach (var r in renderers)
         {
-            TrashChute_DW trash = r.GetComponent<TrashChute_DW>();
-            if (trash != null)
+            if (r == null) continue;
+
+            // If we have a tintObject reference, skip renderers that are part of it
+            if (tintObject != null && r.transform.IsChildOf(tintObject.transform))
             {
-                r.enabled = visible;
+                // leave tint renderer alone here (Equip/Remove handles it explicitly)
+                continue;
             }
+
+            // Otherwise toggle visibility on the helmet meshes
+            r.enabled = visible;
         }
     }
 }
