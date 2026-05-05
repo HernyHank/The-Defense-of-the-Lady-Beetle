@@ -94,7 +94,7 @@ public class DoorPresser : MonoBehaviour
 
     public void buttonFinishedPressing()
     {
-        if(doorType == DoorType.Airlock && controller.currentEvent < 6)
+        if(doorType == DoorType.Airlock && !controller.historyLessonGiven)
         {
             return;
         }

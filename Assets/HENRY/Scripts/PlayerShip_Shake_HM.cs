@@ -137,12 +137,12 @@ public class PlayerShip_Shake_HM : MonoBehaviour
             if (mode == 0)
             {
                 AudioClip chosenClip = steroidClipArray[Random.Range(0, steroidClipArray.Length)];
-                audioManager.Play(chosenClip);
+                audioManager.Play(chosenClip, false);
             }
             if (mode == 1)
             {
                 AudioClip chosenClip = pirateClipArray[Random.Range(0, pirateClipArray.Length)];
-                audioManager.Play(chosenClip);
+                audioManager.Play(chosenClip, false);
             }// Exit if the ship is no longer shaking
         }
         setShipToIsShaking();

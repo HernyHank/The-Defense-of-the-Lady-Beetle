@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Runtime.Remoting.Lifetime;
 using UnityEngine;
 using Valve.VR;
 using Valve.VR.InteractionSystem;
@@ -11,6 +13,7 @@ public class PaintGun : MonoBehaviour
 /*    public Rigidbody rb;*/
 
     private Hand hand; // the hand holding the gun
+    private int lifetime = 10;
 
 /*    private void Awake()
     {
@@ -31,6 +34,13 @@ public class PaintGun : MonoBehaviour
         GameObject paint = Instantiate(paintPrefab, shootPoint.position, shootPoint.rotation);
         Rigidbody rb = paint.GetComponent<Rigidbody>();
         rb.AddForce(shootPoint.forward * shootForce, ForceMode.Impulse);
+        StartCoroutine(DestroyPaint(paint));
+    }
+
+    IEnumerator DestroyPaint(GameObject paint)
+    {
+        yield return new WaitForSeconds(lifetime);
+        Destroy(paint);
     }
 
     // Called automatically by SteamVR

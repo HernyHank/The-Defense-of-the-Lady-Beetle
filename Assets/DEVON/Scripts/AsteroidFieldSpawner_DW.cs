@@ -24,7 +24,7 @@ public class AsteroidFieldSpawner : MonoBehaviour
 
     private void Update()
     {
-        if(Input.GetKeyDown(KeyCode.Keypad8))
+        if(Input.GetKeyDown(KeyCode.Keypad8) || Input.GetKeyDown(KeyCode.L))
         {
             ClearField();
         }

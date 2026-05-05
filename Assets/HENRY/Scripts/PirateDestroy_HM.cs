@@ -41,7 +41,7 @@ public class PirateDestroy_HM : MonoBehaviour
 
             if (clip != null)
             {
-                Debug.Log(" Successfully loaded clip: " + clip.name);
+                //Debug.Log(" Successfully loaded clip: " + clip.name);
             }
             else
             {

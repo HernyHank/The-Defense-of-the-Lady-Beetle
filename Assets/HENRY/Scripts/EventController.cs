@@ -1,6 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using TMPro;
+using Unity.Burst.Intrinsics;
 using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -53,7 +55,7 @@ public class EventController : MonoBehaviour
 
     [Header("Evasive")]
     public AsteroidFieldSpawner asteroidSpawnScript;
-    public float evasiveTimer = 40f;
+    public float evasiveTimer = 60f;
     public int evasiveAsteroidCount = 800;
 
     [Header("Breach")]
@@ -62,6 +64,7 @@ public class EventController : MonoBehaviour
     public bool frontWingBlobbed = false;
     public bool backWingBlobbed = false;
     public bool powerBankBlobbed = false;
+    public bool historyLessonGiven = false;
     public GameObject turretUIObject;
     public GameObject gooGun;
     public Rigidbody gooGunRB;
@@ -181,7 +184,11 @@ public class EventController : MonoBehaviour
             dialogueActive = false;
             audioClipList.Clear();
             //audioManager.StopMusic();
+            ambushStarted = false;
+            shipCountReachedTwo = false;
             ResetDialogue();
+            DestroyAllShips();
+            StopAllCoroutines();
         }
 
         if (Input.GetKeyDown(KeyCode.M))
@@ -199,6 +206,11 @@ public class EventController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.K))
         {
             audioManager.StopEverything();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Z))
+        {
+            DestroyAllShips();
         }
 
         if (Input.GetKeyDown(KeyCode.Keypad3))
@@ -263,10 +275,11 @@ public class EventController : MonoBehaviour
             Debug.Log("Ship took 10 damage. Remaining health: " + shipHealthMain);
         }
 
-        if (Input.GetKeyDown(KeyCode.B))
+/*        if (Input.GetKeyDown(KeyCode.B))
         {
+            Debug.Log("Death sequence triggered by key press");
             PlayerDeathSequence();
-        }
+        }*/
 
     }
 
@@ -335,7 +348,7 @@ public class EventController : MonoBehaviour
             StartCoroutine(DeathCorourtine());
             return;
         }
-        //}
+        
     }
     IEnumerator DeathCorourtine()
     {
@@ -413,6 +426,7 @@ public class EventController : MonoBehaviour
         bossFightStarted = false;
         bossFightComplete = false;
         asteroidsShouldBeSpawned = true;
+        StopAllCoroutines();
         RegenShip(1000);
 
         script.Respawn();
@@ -423,7 +437,7 @@ public class EventController : MonoBehaviour
         if (compositorAvailable)
         {
             // compositor fade -> guaranteed to affect headset
-            SteamVR_Fade.View(Color.clear, 1);
+            SteamVR_Fade.View(Color.clear, 1f);
         }
         else
         {
@@ -433,6 +447,14 @@ public class EventController : MonoBehaviour
         }
         deathSequenceReset = true;
         playerDeathSequenceActive = false;
+    }
+
+    public void DestroyAllShips()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            DestroyShipFromController(i);
+        }
     }
 
     public void HealthConditionals()
@@ -471,6 +493,7 @@ public class EventController : MonoBehaviour
 
         if (shipHealthMain <= 0)
         {
+            Debug.Log("Death sequence triggered by key press");
             PlayerDeathSequence();
         }
     }
@@ -698,11 +721,12 @@ public class EventController : MonoBehaviour
 
             audioManager.PlayDialogueSequence(clipToPlay, 0.8f);
 
+            dialogueActive = true;
             if (dialogueActive)
             {
                 audioClipIndex++;
             }
-            dialogueActive = true;
+
 
         }
 
@@ -714,6 +738,39 @@ public class EventController : MonoBehaviour
             dialogueActive = false;
             return;
         }*/
+    }
+
+    float clipListLength = 0;
+    public float GetTotalClipListLength()
+    {
+        for (int i = 0; i < audioClipList.Count; i++)
+        {
+            if (audioClipList[i] == null)
+            {
+                Debug.Log("Failed to load audio clip at index " + i + " for Routine event.");
+            }
+            else
+            {
+                clipListLength += audioClipList[i].length;
+            }
+        }
+
+        return clipListLength;
+    }
+
+    void checkAudioClipList()
+    {
+        for (int i = 0; i < audioClipList.Count; i++)
+        {
+            if (audioClipList[i] == null)
+            {
+                Debug.Log("Failed to load audio clip at index " + i + " for Routine event.");
+            }
+            else
+            {
+                Debug.Log("Successfully loaded audio clip: " + audioClipList[i].name);
+            }
+        }
     }
 
     private void ResetDialogue()
@@ -991,7 +1048,7 @@ public class EventController : MonoBehaviour
         {
             DestroyShipFromController(2);
         }
-        if (Input.GetKeyDown(KeyCode.Alpha3))
+        if (Input.GetKeyDown(KeyCode.Alpha4))
         {
             DestroyShipFromController(3);
         }
@@ -1006,6 +1063,7 @@ public class EventController : MonoBehaviour
             PirateShip_HM script = cameraObj.GetComponentInChildren<PirateShip_HM>();
             PirateDestroy_HM pirateGoonScript = script.gameObject.GetComponentInChildren<PirateDestroy_HM>();
             pirateGoonScript.getParentAndSend();
+            pirateGoonScript.gameObject.SetActive(false);
 
             DestroyShip(index);
         }
@@ -1234,16 +1292,38 @@ public class EventController : MonoBehaviour
     }
 
     bool shipsHasGoneUpTo4 = false;
+
+    AudioClip thatsWhatSheSaidClip;
     private bool Retaliation() 
     {
         pirateConversationDelay = 1f;
+
+        DestroyShipOpt();
+
+        if (audioClipsFetched == false)
+        {
+            audioClipList.Add(audioManager.FetchClip("Dialogue/5. Evasive/Evasive__We_re in the clear and I gotta go poop_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/5. Evasive/Evasive__I don_t have any bowels or an anus. You sold those for parts_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/6. Retaliation/Retaliation__Kackle pirates are back and we brought friends_"));
+/*            audioClipList.Add(audioManager.FetchClip("Dialogue/6. Retaliation/Retaliation_KackleIntimidation05"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/6. Retaliation/Retaliation_KackleIntimidation05"));*/
+
+            //for after initial dialogue
+            thatsWhatSheSaidClip = audioManager.FetchClip("Dialogue/6. Retaliation/Retaliation__That_s what she said_");
+            //dialogueTime = audioManager.FetchClip("Dialogue/4. Ambush/Ambush__And we_re about to BLOW your(shoe)s off!!_").length;
+            checkAudioClipList();
+            audioClipsFetched = true;
+        }
+
+        if (allClipsPlayed == false)
+            PlayAudioClipList();
+
         if (!ambushStarted)
         {
             ambushStarted = true;
-            StartCoroutine(AmbushSequence2());
+            StartCoroutine(AmbushSequence2(GetTotalClipListLength()));
+            Debug.Log("ClipListLength: " + GetTotalClipListLength());
         }
-
-        DestroyShipOpt();
 
         // This event only "completes" when all ships are destroyed (or whatever your win condition is)
         if (ambushStarted && GetRemainingShips() == 1 && shipsHasGoneUpTo4)
@@ -1257,21 +1337,79 @@ public class EventController : MonoBehaviour
         return false;
     }
 
-    IEnumerator AmbushSequence2()
+    IEnumerator AmbushSequence2(float clipListLength)
     {
+        audioManager.StopMusic();
+        pirateConversationDelay = 40f;
+        Debug.Log("AmbushCoroutine is starting");
+        yield return new WaitForSeconds(clipListLength - 25);
+        audioManager.PlayMusicClip(audioManager.FetchClip("Music/Ambushes"));
+        Debug.Log("Tried to play that's what she said");
+
+
         SpawnSingleShip();
         SpawnSingleShip();
-        yield return new WaitForSeconds(0f);
+        yield return new WaitForSeconds(3f);
         SpawnSingleShip();
         SpawnSingleShip();
         shipsHasGoneUpTo4 = true;
+
+        yield return new WaitForSeconds(30f);
+
+        audioManager.Play(thatsWhatSheSaidClip, true);
+
+        /*        if (audioClipsFetched == false)
+                {
+                    audioClipList.Add(audioManager.FetchClip("Dialogue/6. Retaliation/Retaliation__That_s what she said_"));
+                    checkAudioClipList();
+                    audioClipsFetched = true;
+
+                    if (allClipsPlayed == false)
+                        PlayAudioClipList();
+                }*/
     }
 
     bool breachTimersBeenSet = false;
     public bool turretCanShoot = true;
+    bool breachCoroutineStarted = false;
+    public bool helmetIsOn = false;
+    AudioClip helmetClip;
+    AudioClip gooGunPickup;
+    AudioClip rotatorClip;
+    AudioClip historyLesson;
+    AudioClip playerIsRotatingClip;
+    AudioClip blobMakesUncomfortable;
+    AudioClip powerBankNeedsIt;
     private bool TheBreach() 
     {
+        if (breachCoroutineStarted == false)
+        {
+            StartCoroutine(BreachCoroutine());
+            breachCoroutineStarted = true;
+        }
 
+        if (audioClipsFetched == false)
+        {
+            audioClipList.Add(audioManager.FetchClip("Dialogue/6. Retaliation/Retaliation__THE WING HAS BEEN HIT_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/7. The Breach/Breach__Time to goo the wings_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/7. The Breach/Breach__Pirate Sherk Don_t Play Nice_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/7. The Breach/Breach__I love Spacewalks cause it_s when you Leave_"));
+
+            //forLaterInCoroutine
+            helmetClip = audioManager.FetchClip("Dialogue/7. The Breach/Breach__Gotta Put this helmet on_");
+            gooGunPickup = audioManager.FetchClip("Dialogue/7. The Breach/Breach__Reverand_s Place_");
+            historyLesson = audioManager.FetchClip("Dialogue/7. The Breach/Breach__This Goo makes me feel weird (Designed in 2120)_");
+            rotatorClip = audioManager.FetchClip("Dialogue/7. The Breach/Breach__Time to Rotate_");
+            playerIsRotatingClip = audioManager.FetchClip("Dialogue/7. The Breach/Breach_ROTATING");
+            blobMakesUncomfortable = audioManager.FetchClip("Dialogue/7. The Breach/Breach__I will never get over how uncomfortable that makes me_");
+            powerBankNeedsIt = audioManager.FetchClip("Dialogue/7. The Breach/Breach__Our Power bank got fried during the attack_");
+
+            checkAudioClipList();
+            audioClipsFetched = true;
+        }
+
+        if (allClipsPlayed == false)
+            PlayAudioClipList();
         /*TurretMonitorController turretScript = turretMonitor.GetComponent<TurretMonitorController>();
         turretScript.enabled = false;*/
 
@@ -1290,6 +1428,7 @@ public class EventController : MonoBehaviour
         if (IsTimerFinished())
         {
             PlayerDeathSequence();
+            Debug.Log("Death sequence triggered cause of timer");
         }
 
         if (frontWingBlobbed && backWingBlobbed && powerBankBlobbed)
@@ -1302,6 +1441,47 @@ public class EventController : MonoBehaviour
         return false;
     }
 
+    IEnumerator BreachCoroutine()
+    {
+        AudioClip musicClip = audioManager.FetchClip("Music/Pilot Mode");
+        if (musicClip != null)
+        {
+            audioManager.PlayMusicClip(musicClip);
+        }
+        else
+        {
+            Debug.Log("Failed to load music clip for Breaches event.");
+        }
+
+        yield return new WaitUntil(() => currentRoom == "Airlock");
+        audioManager.Play(helmetClip, true);
+
+        yield return new WaitForSeconds(helmetClip.length + 0.25f);
+        audioManager.Play(gooGunPickup, true);
+
+        yield return new WaitForSeconds(gooGunPickup.length + 0.25f);
+        audioManager.Play(historyLesson, true);
+
+        yield return new WaitForSeconds(historyLesson.length + 0.25f);
+        audioManager.Play(rotatorClip, true);
+
+        historyLessonGiven = true;
+
+        yield return new WaitUntil(() => script.playerIsRotating);
+        audioManager.Play(playerIsRotatingClip, true);
+
+        yield return new WaitUntil(() => frontWingBlobbed);
+        audioManager.Play(blobMakesUncomfortable, true);
+
+        yield return new WaitUntil(() => backWingBlobbed && frontWingBlobbed);
+        audioManager.Play(powerBankNeedsIt, true);
+
+        yield return new WaitUntil(() => script.playerIsRotating);
+        audioManager.Play(playerIsRotatingClip, false);
+
+        yield break;
+    }
+
     private bool TheEVA() 
     {
         return true;
@@ -1312,6 +1492,9 @@ public class EventController : MonoBehaviour
         return true;
     }
 
+    bool calibrationCoroutineStarted = false;    
+
+    AudioClip pirateBooty;
     private bool Calibration()
     { 
         if (goodBatteryInPlace)
@@ -1321,10 +1504,33 @@ public class EventController : MonoBehaviour
             turretScript.enabled = true;
 
             turretUIObject.SetActive(false);
-        } 
+        }
+
+        if (calibrationCoroutineStarted == false)
+        {
+            StartCoroutine(CalibrationCoroutine());
+            calibrationCoroutineStarted = true;
+        }
+
+        if (audioClipsFetched == false)
+        {
+            audioClipList.Add(audioManager.FetchClip("Dialogue/8. Calibration/Breach__All you have to do is get rid of the battery_"));
+            audioClipList.Add(audioManager.FetchClip("Dialogue/8. CalibrationBreach__Make sure to put a new battery in the shield generator_"));
 
 
-        if(batteryShotIntoSpace && goodBatteryInPlace && AllShipsDestroyed())
+            //forLaterInCoroutine
+            pirateBooty = audioManager.FetchClip("Dialogue/8. Calibration/Breach__Don_t Call us Pirate Booty_");
+
+
+            checkAudioClipList();
+            audioClipsFetched = true;
+        }
+
+        if (allClipsPlayed == false)
+            PlayAudioClipList();
+
+
+        if (batteryShotIntoSpace && goodBatteryInPlace && AllShipsDestroyed())
         {
             ResetDialogue();
             return true;
@@ -1334,6 +1540,14 @@ public class EventController : MonoBehaviour
         return false;
     }
 
+    IEnumerator CalibrationCoroutine()
+    {
+        yield return new WaitUntil(() => goodBatteryInPlace);
+        audioManager.Play(pirateBooty, true);
+
+    }
+
+    AudioClip cucarachaClip;
     private bool AsteroidField() 
     {
         if (!steroidsSpawned)
@@ -1341,6 +1555,22 @@ public class EventController : MonoBehaviour
             asteroidSpawnScript.SpawnField(evasiveAsteroidCount, evasiveTimer);
             steroidsSpawned = true;
         }
+
+        if (audioClipsFetched == false)
+        {
+            audioClipList.Add(audioManager.FetchClip("Dialogue/9. Asteroid Field/AsteroidField__The Asteroids are back and they brought their friends_"));
+
+            //forLaterInCoroutine
+            pirateBooty = audioManager.FetchClip("Dialogue/8. Calibration/Breach__Don_t Call us Pirate Booty_");
+            cucarachaClip = audioManager.FetchClip("Dialogue/9. Asteroid Field/AsteroidField__I can fly this thing better than the 3 cucarachas ever could_");
+
+
+            checkAudioClipList();
+            audioClipsFetched = true;
+        }
+
+        if (allClipsPlayed == false)
+            PlayAudioClipList();
 
         if (!evasiveTimerSet)
         {
@@ -1372,19 +1602,7 @@ public class EventController : MonoBehaviour
             audioClipList.Add(audioManager.FetchClip("Dialogue/10. BOSSFIGHT/BOSSFIGHT__It_s me, the big Boss Man_"));
             audioClipList.Add(audioManager.FetchClip("Dialogue/10. BOSSFIGHT/BOSSFIGHT__Eat my blasts_"));
             audioClipList.Add(audioManager.FetchClip("BOSSFIGHT__The Pollywoggle Clan will not forget this_"));
-
-
-            for (int i = 0; i < audioClipList.Count; i++)
-            {
-                if (audioClipList[i] == null)
-                {
-                    Debug.Log("Failed to load audio clip at index " + i + " for Routine event.");
-                }
-                else
-                {
-                    Debug.Log("Successfully loaded audio clip: " + audioClipList[i].name);
-                }
-            }
+            checkAudioClipList();   
             audioClipsFetched = true;
         }
 

@@ -27,10 +27,48 @@ public class AudioManager : MonoBehaviour
 
 
 
-    public void Play(AudioClip clip)
+    public void Play(AudioClip clip, bool overrideOrNah)
     {
-        audioSource.clip = clip; // 1. Assign the clip to the "player"
-        audioSource.Play();
+        if (clip == null)
+        {
+            Debug.LogWarning("AudioManager.Play called with null clip.");
+            return;
+        }
+
+        bool wasPlaying = audioSource.isPlaying;
+        Debug.Log($"AudioManager.Play requested: clip='{clip.name}' length={clip.length} override={overrideOrNah} isPlayingBefore={wasPlaying}");
+
+        // If we need to force (override) playback, stop current and start the new clip
+        if (overrideOrNah)
+        {
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
+            audioSource.clip = clip;
+            audioSource.Play();
+
+            Debug.Log($"AudioManager.Play: override -> started '{clip.name}', isPlayingAfter={audioSource.isPlaying}");
+            return;
+        }
+
+        // Non-override behavior:
+        // - If the audioSource is not playing we can assign the clip and Play()
+        // - If it IS already playing, don't clobber audioSource.clip (that can interrupt current playback).
+        //   PlayOneShot is used to play the requested sound without replacing the currently assigned clip.
+        if (!audioSource.isPlaying)
+        {
+            audioSource.clip = clip;
+            audioSource.Play();
+            Debug.Log($"AudioManager.Play: started '{clip.name}' on idle source, isPlayingAfter={audioSource.isPlaying}");
+        }
+        else
+        {
+            // Play as one-shot so we don't replace the currently playing clip
+            /*audioSource.PlayOneShot(clip);
+            Debug.Log($"AudioManager.Play: source already playing -> PlayOneShot('{clip.name}')");*/
+        }
     }
 
     public void PlayOneShot(AudioClip clip)
@@ -49,7 +87,7 @@ public class AudioManager : MonoBehaviour
         Debug.Log("Audioclip index after increment: " + eventController.audioClipIndex);
         Debug.Log("AudioCLip list count: " + eventController.audioClipList.Count);
         eventController.dialogueActive = true;
-        audioSource.Stop();
+        //audioSource.Stop();
         audioSource.volume = volume;
 
         // stop any existing dialogue coroutine instance
@@ -94,7 +132,7 @@ public class AudioManager : MonoBehaviour
             dialogueCoroutine = null;
         }
 
-        audioSource.Stop();
+        //audioSource.Stop();
     }
 
     public void SetVolume(float volume)
@@ -113,6 +151,9 @@ public class AudioManager : MonoBehaviour
         
         musicSource.clip = clip;
         musicSource.Play();
+        musicSource.volume = 0.5f; // Start silent for fade-in
+        FadeAudio(musicSource, 1f, 0.5f); // Fade in to target volume
+        Debug.Log("Music source play attempted");
         //StartCoroutine(FadeAudio(musicSource, 1f, 0.3f)); // Fade in
     }
 
@@ -132,7 +173,7 @@ public class AudioManager : MonoBehaviour
         source.volume = targetVolume;
 
         // Optional: Stop the audio entirely if we faded to zero
-        if (targetVolume <= 0) source.Stop();
+        //if (targetVolume <= 0) source.Stop();
     }
 
     public void StopMusic()
@@ -148,6 +189,7 @@ public class AudioManager : MonoBehaviour
 
     public void PlaySFXOneShot(AudioClip clip, float volume)
     {
+        if(!audioSource.isPlaying)
         audioSource.PlayOneShot(clip, volume);
     }
 
